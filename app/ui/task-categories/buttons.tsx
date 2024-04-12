@@ -1,7 +1,8 @@
 'use client'
 import { useFormState, useFormStatus } from "react-dom";
 import { TaskCategory } from "../../lib/definitions";
-import { deleteTaskCategory } from "../../lib/actions";
+import { deleteTaskCategory, updateTaskCategory } from "../../lib/actions";
+import Link from "next/link";
 
 const initialState = {
     message: "",
@@ -20,9 +21,19 @@ export function CreateTaskCategory() {
     );
 };
 
-export function DeleteTaskCategory({ taskCategory }: { taskCategory: TaskCategory; }) {
+export function UpdateTaskCategory({ id }: { id: string }) {
+    return (
+        <Link href={`/task-categories/${id}/edit`}>
+            Edit
+        </Link>
+
+    );
+};
+
+export function DeleteTaskCategory({ id }: { id: string }) {
     const { pending } = useFormStatus();
-    const [state, formAction] = useFormState(deleteTaskCategory, initialState);
+    const deleteTaskCategoryWithId = deleteTaskCategory.bind(null, id)
+    const [state, formAction] = useFormState(deleteTaskCategoryWithId, initialState);
 
     return (
         <form
@@ -30,8 +41,6 @@ export function DeleteTaskCategory({ taskCategory }: { taskCategory: TaskCategor
             className="flex flex-col bg-slate-950 p-3 gap-y-3 justify-center items-center"
             action={formAction}
         >
-            <input type="hidden" name="taskCategoryId" id="taskCategoryId" value={taskCategory.id} />
-            <input type="hidden" name="taskCategoryTitle" id="taskCategoryTitle" value={taskCategory.title} />
             <button
                 className="flex items-center justify-center border rounded p-3 w-fit"
                 type="submit"

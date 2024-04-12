@@ -9,6 +9,7 @@ export default function Page() {
 
     return (
         <div className="flex w-full h-screen items-center justify-center">
+            <h2>Task category</h2>
             <CreateTaskCategoryForm />
         </div>
     );
