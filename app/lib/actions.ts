@@ -1,7 +1,7 @@
 'use server'
-import { revalidatePath, revalidateTag } from "next/cache";
-import { redirect } from "next/dist/server/api-utils";
+import {revalidateTag } from "next/cache";
 import {z} from "zod";
+import { redirect, RedirectType } from "next/navigation";
 
 const TaskCategorySchema = z.object({
     title: z.string().min(1),
@@ -67,8 +67,6 @@ export const updateTaskCategory = async (id: string, prevState: any, formData: F
 
     const data = validatedFields.data;
 
-    console.log("updateTaskCategory")
-
     try {
         const res = await fetch(
             `http://localhost:3000/api/taskcategory/${id}/update`,
@@ -90,11 +88,11 @@ export const updateTaskCategory = async (id: string, prevState: any, formData: F
         } catch (revalidateErr) {
             console.error("Failed update task category revalidate: ", revalidateErr)
         };
-
-        return {message: `Updated task category ${data.title}`};
+        
+        return {message: `Updated task category ${data.title}`, redirectTo: "/task-categories"};
     } catch (err) {
         console.error("Failed to update task category:", err);
-        return { message: "Failed to update title and description"};
+        return { message: "Failed to update title and description", redirectTo: prevState.redirectTo};
     };
 };
 

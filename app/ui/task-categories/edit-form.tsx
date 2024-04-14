@@ -1,16 +1,27 @@
 'use client'
 import { useFormState } from "react-dom";
-import { updateTaskCategory } from "../../lib/actions";
-import { TaskCategory } from "../../lib/definitions";
+import { updateTaskCategory } from "@/app/lib/actions";
+import { TaskCategory } from "@/app/lib/definitions";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import clsx from "clsx";
 
 const initialState = {
     message: "",
+    redirectTo: null,
 };
 
 export default function EditTaskCategoryForm({ taskCategory }: { taskCategory: TaskCategory }) {
     const updateTaskCategoryWithId = updateTaskCategory.bind(null, `${taskCategory.id}`);
+
     const [state, formAction] = useFormState(updateTaskCategoryWithId, initialState);
+    const router = useRouter();
+    useEffect(() => {
+        if (state.redirectTo) {
+            router.push(state.redirectTo)
+        }
+    }, [state, router]);
 
     return (
         <form

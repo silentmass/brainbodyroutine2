@@ -1,6 +1,12 @@
 import TaskCategoriesTable from "../ui/task-categories/table";
 import { fetchTaskCategories } from "../lib/data";
 import CreateTaskCategory from "../ui/task-categories/create-form";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Task categories"
+}
+
 export default async function Page() {
 
     const taskCategories = await fetchTaskCategories();

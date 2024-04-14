@@ -2,6 +2,7 @@
 import { createTaskCategory } from "../../lib/actions";
 import { useFormState, useFormStatus } from "react-dom";
 import { CreateTaskCategory } from "./buttons";
+import clsx from "clsx";
 
 const initialState = {
     message: "",
@@ -16,7 +17,6 @@ export default function CreateTaskCategoryForm() {
             className="flex flex-col bg-slate-950 p-3 gap-y-3 justify-center items-center w-full"
             action={formAction}
         >
-            <h2>Task category</h2>
             <label className="bg-slate-900 p-3">
                 <p>Title</p>
                 <input
@@ -28,7 +28,10 @@ export default function CreateTaskCategoryForm() {
                 />
             </label>
             <CreateTaskCategory />
-            <p>{state?.message}</p>
+            <p className={clsx({
+                "hidden": state?.message === "",
+                "": state?.message !== ""
+            })}>{state?.message}</p>
             <p aria-live="polite" className="sr-only">
                 {state?.message}
             </p>
