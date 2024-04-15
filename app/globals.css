@@ -31,3 +31,16 @@ body {
     text-wrap: balance;
   }
 }
+
+.link {
+  padding: 3px;
+}
+
+.link.active {
+  border: solid;
+  border-top-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+  border-bottom-width: 1px;
+  border-color: white;
+}

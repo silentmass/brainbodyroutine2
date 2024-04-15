@@ -23,7 +23,20 @@ export const fetchTaskCategoryById = async (id: string) => {
     next: {tags: ["taskcategory"]},
   });
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    throw new Error("Failed to fetch task category data");
   }
   return res.json()
+};
+
+export const fetchTasks = async () => {
+  const res = await fetch('http://localhost:3000/api/tasks', {
+    method: "GET",
+    headers: {"Content-Type": "application/json"},
+    mode: "cors",
+    next: {tags: ["tasks"]},
+  });
+  if(!res.ok) {
+    throw new Error("Failed to fetch tasks data.")
+  };
+  return res.json();
 };

@@ -1,17 +1,32 @@
 'use server'
 import {revalidateTag } from "next/cache";
 import {z} from "zod";
-import { redirect, RedirectType } from "next/navigation";
 
 const TaskCategorySchema = z.object({
     title: z.string().min(1),
     description: z.string().nullable(),
-})
+});
+
 const TaskCategoryWithIdSchema = z.object({
     id: z.number().min(1),
     title: z.string().min(1),
     description: z.string().nullable(),
-})
+});
+
+const TaskSchema = z.object({
+    title: z.string().min(1),
+    is_active: z.boolean(),
+    task_category_id: z.number().min(1),
+    tag_id: z.number().nullable(),
+});
+
+const TaskWithIdSchema = z.object({
+    id: z.number().min(1),
+    title: z.string().min(1),
+    is_active: z.boolean(),
+    task_category_id: z.number().min(1),
+    tag_id: z.number().nullable(),
+});
 
 export const createTaskCategory = async (prevState: any, formData: FormData) => {
     const validatedFields = TaskCategorySchema.safeParse({
@@ -123,3 +138,25 @@ export const deleteTaskCategory = async (id: string) => {
         return {message: "Failed to delete tasks category"};
     };
 };
+
+export const createTask = async (prevState: any, formData:FormData) => {
+    const validatedFields = TaskSchema.safeParse({
+        title: formData.get("taskTitle"),
+        is_active: formData.get("isActive"),
+        task_category_id: formData.get("taskCategoryId"),
+        tag_id: formData.get("taskTagId"),
+    });
+
+    if (!validatedFields.success) {
+        return {errors: validatedFields.error.flatten().fieldErrors};
+    };
+
+    const data = validatedFields.data;
+
+    try {
+        return {message: "Task created"};
+    } catch (err) {
+        console.error("Failed to create a task.", err);
+        return {message: "Failed to create a task."};
+    };
+;}

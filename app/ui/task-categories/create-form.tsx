@@ -1,5 +1,5 @@
 'use client'
-import { createTaskCategory } from "../../lib/actions";
+import { createTaskCategory } from "@/app/lib/actions";
 import { useFormState, useFormStatus } from "react-dom";
 import { CreateTaskCategory } from "./buttons";
 import clsx from "clsx";
