@@ -1,7 +1,7 @@
 'use client'
 import { useFormState, useFormStatus } from "react-dom";
-import { TaskCategory } from "../../lib/definitions";
-import { deleteTaskCategory, updateTaskCategory } from "../../lib/actions";
+import { TaskCategory } from "@/app/lib/definitions";
+import { deleteTaskCategory, updateTaskCategory } from "@/app/lib/actions";
 import Link from "next/link";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import clsx from 'clsx';

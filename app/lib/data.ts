@@ -29,7 +29,7 @@ export const fetchTaskCategoryById = async (id: string) => {
 };
 
 export const fetchTasks = async () => {
-  const res = await fetch('http://localhost:3000/api/tasks', {
+  const res = await fetch('http://localhost:3000/api/tasks/', {
     method: "GET",
     headers: {"Content-Type": "application/json"},
     mode: "cors",

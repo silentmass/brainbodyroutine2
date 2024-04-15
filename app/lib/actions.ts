@@ -1,4 +1,5 @@
 'use server'
+import { error } from "console";
 import {revalidateTag } from "next/cache";
 import {z} from "zod";
 
@@ -17,7 +18,6 @@ const TaskSchema = z.object({
     title: z.string().min(1),
     is_active: z.boolean(),
     task_category_id: z.number().min(1),
-    tag_id: z.number().nullable(),
 });
 
 const TaskWithIdSchema = z.object({
@@ -59,7 +59,7 @@ export const createTaskCategory = async (prevState: any, formData: FormData) => 
         try {
             revalidateTag("taskcategories");
         } catch (revalidateErr) {
-            console.error("Failed create task category revalidate: ", revalidateErr)
+            console.error("Failed create task category revalidate: ", revalidateErr);
         }
         
         return {message: `Created task category ${data.title}`};
@@ -140,23 +140,48 @@ export const deleteTaskCategory = async (id: string) => {
 };
 
 export const createTask = async (prevState: any, formData:FormData) => {
+    const is_active = formData.get("isActive") === "on" ? true : false;
+    const taskCategoryIdValue = formData.get("taskCategoryId")
+    const task_category_id = taskCategoryIdValue !== null && typeof taskCategoryIdValue === "string" && taskCategoryIdValue !== "" 
+    ? parseInt(taskCategoryIdValue) 
+    : null;
+
     const validatedFields = TaskSchema.safeParse({
         title: formData.get("taskTitle"),
-        is_active: formData.get("isActive"),
-        task_category_id: formData.get("taskCategoryId"),
-        tag_id: formData.get("taskTagId"),
+        is_active: is_active,
+        task_category_id: task_category_id,
     });
 
     if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors)
         return {errors: validatedFields.error.flatten().fieldErrors};
     };
 
     const data = validatedFields.data;
 
+    
+
     try {
-        return {message: "Task created"};
+        const res = await fetch("http://localhost:3000/api/tasks", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            mode: "cors",
+            body: JSON.stringify(data),
+        });
+
+        if(!res.ok) {
+            throw new Error("Failed to fetch create task");
+        };
+    
+        try {
+            revalidateTag("tasks");
+        } catch (revalidateErr) {
+            console.error("Failed to create task revalidate: ", revalidateErr);
+        };
+
+        return {message: `Task: ${data.title} created`};
     } catch (err) {
-        console.error("Failed to create a task.", err);
-        return {message: "Failed to create a task."};
+        console.error(`Failed to create a task: ${data.title}`, err);
+        return {message: `Failed to create a task: ${data.title}`};
     };
 ;}

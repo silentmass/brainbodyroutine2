@@ -1,9 +1,9 @@
 'use client';
 import { CreateTaskButton } from "@/app/ui/task/buttons";
-import { fetchTaskCategories } from "@/app/lib/data";
 import { TaskCategory } from "@/app/lib/definitions";
 import { createTask } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
+import clsx from "clsx";
 
 const fieldBaseStyle = "dark:text-white bg-transparent border-b w-full";
 const initialState = {
@@ -15,7 +15,7 @@ export default function CreateTaskForm({ taskCategories }: { taskCategories: Tas
     const [state, formAction] = useFormState(createTask, initialState);
 
     return (
-        <form className="flex flex-col gap-y-3 w-full max-w-2xl border" action={formAction}>
+        <form name="createTaskForm" className="flex flex-col bg-slate-950 p-3 gap-y-3 justify-center items-center w-full" action={formAction}>
             <label className="w-full">
                 <p>Title</p>
                 <input type="text" name="taskTitle" id="taskTitle" required
@@ -38,13 +38,22 @@ export default function CreateTaskForm({ taskCategories }: { taskCategories: Tas
                     ))}
                 </select>
             </label>
-            <label className="w-full">
+            {/* <label className="w-full">
                 <p>Tag</p>
                 <input type="text" name="taskTagId" id="taskTagId"
                     className={`${fieldBaseStyle}`}
                 />
-            </label>
+            </label> */}
             <CreateTaskButton />
+            <p className={`${clsx({
+                "hidden": state?.message === "",
+                "": state?.message !== "",
+            })}`}>
+                {state?.message}
+            </p>
+            <p aria-live="polite" className="sr-only">
+                {state?.message}
+            </p>
         </form>
     );
 };

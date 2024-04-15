@@ -24,6 +24,17 @@ export function Links() {
                 <li>
                     <Link
                         className={`link ${clsx({
+                            "active": pathname === "/task-categories",
+                            "": pathname !== "/task-categories",
+                        })}`}
+                        href={"/task-categories"}
+                    >
+                        Task categories
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        className={`link ${clsx({
                             "active": pathname === "/tasks",
                             "": pathname !== "/tasks",
                         })}`}
