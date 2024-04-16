@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import EditTaskCategoryForm from "../../../ui/task-categories/edit-form";
-import { fetchTaskCategoryById } from "../../../lib/data";
+import EditTaskCategoryForm from "@/app/ui/task-categories/edit-form";
+import { fetchTaskCategoryById } from "@/app/lib/data";
 
 export const metadata: Metadata = {
     title: "Edit Task category",

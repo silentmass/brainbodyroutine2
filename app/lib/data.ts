@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 
 export const fetchTaskCategories = async () => {
   const res = await fetch('http://localhost:3000/api/taskcategories', {
@@ -36,7 +37,21 @@ export const fetchTasks = async () => {
     next: {tags: ["tasks"]},
   });
   if(!res.ok) {
-    throw new Error("Failed to fetch tasks data.")
+    throw new Error("Failed to fetch tasks data.");
   };
+  return res.json();
+};
+
+export const fetchTaskById = async (id: string) => {
+  const res = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      mode: "cors",
+      next: {tags: ["task"]},
+    }
+  );
+  if (!res.ok) {
+    throw new Error(`Failed to fetch task data.`);
+  }
   return res.json();
 };

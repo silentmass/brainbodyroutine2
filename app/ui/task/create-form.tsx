@@ -5,7 +5,7 @@ import { createTask } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
 import clsx from "clsx";
 
-const fieldBaseStyle = "dark:text-white bg-transparent border-b w-full";
+export const fieldBaseStyle = "dark:text-white bg-transparent border-b w-full";
 const initialState = {
     message: "",
 };

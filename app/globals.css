@@ -44,3 +44,25 @@ body {
   border-bottom-width: 1px;
   border-color: white;
 }
+
+@media (prefers-color-scheme: dark) {
+  input.formField,
+  select.formField {
+    color: white;
+    background-color: transparent;
+    border-top-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 1px;
+    border-color: white;
+    width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  input.formField[type='checkbox'] {
+    color: white;
+    background-color: transparent;
+    width: 100%;
+  }
+}

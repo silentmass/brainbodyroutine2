@@ -2,6 +2,8 @@
 import { useFormState, useFormStatus } from "react-dom";
 import { deleteTask } from "@/app/lib/actions";
 import clsx from "clsx";
+import { PencilIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 const initialState = {
     message: "",
@@ -40,4 +42,12 @@ export function DeleteTask({ id }: { id: string }) {
             </p>
         </form>
     );
-}
+};
+
+export function UpdateTask({ id }: { id: string }) {
+    return (
+        <Link href={`/tasks/${id}/edit`}>
+            <PencilIcon className="w-5" />
+        </Link>
+    );
+};

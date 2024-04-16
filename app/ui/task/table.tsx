@@ -1,5 +1,5 @@
 import { Task } from "@/app/lib/definitions";
-import { DeleteTask } from "./buttons";
+import { DeleteTask, UpdateTask } from "./buttons";
 
 export default function TasksTable({ tasks }: { tasks: Task[] }) {
     return (
@@ -9,6 +9,7 @@ export default function TasksTable({ tasks }: { tasks: Task[] }) {
                 tasks.map((task: Task) => (
                     <div key={`${task.id}`} className="flex w-full p-5 justify-between bg-slate-900">
                         <p>{task.title}</p>
+                        <UpdateTask id={`${task.id}`} />
                         <DeleteTask id={`${task.id}`} />
                     </div>
                 ))

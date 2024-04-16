@@ -97,6 +97,7 @@ export const updateTaskCategory = async (id: string, prevState: any, formData: F
         }
 
         try {
+            revalidateTag("taskcategory");
             revalidateTag("taskcategories");
             
         } catch (revalidateErr) {
@@ -158,8 +159,6 @@ export const createTask = async (prevState: any, formData:FormData) => {
 
     const data = validatedFields.data;
 
-    
-
     try {
         const res = await fetch("http://localhost:3000/api/tasks", {
             method: "POST",
@@ -210,5 +209,53 @@ export const deleteTask = async (id: string) => {
     } catch (err) {
         console.error(`Failed to delete task: ${id}`);
         return ({message: `Failed to delete task: ${id}`});
-    }
+    };
 };
+
+export const updateTask = async (id: string, prevState: any, formData: FormData) => {
+    const isActive = formData.get("taskIsActive") === "on" ? true : false;
+    const taskCategoryIdValue = formData.get("taskCategoryId")
+    const task_category_id = taskCategoryIdValue !== null && typeof taskCategoryIdValue === "string" && taskCategoryIdValue !== "" 
+    ? parseInt(taskCategoryIdValue) 
+    : null;
+
+    const validatedFields = TaskWithIdSchema.safeParse({
+        id: parseInt(id),
+        title: formData.get("taskTitle"),
+        is_active: isActive,
+        task_category_id: task_category_id,
+    });
+
+    if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors);
+        return {errors: validatedFields.error.flatten().fieldErrors};
+    }
+
+    const data = validatedFields.data;
+
+    try {
+        const res = await fetch(`http://localhost:3000/api/tasks/${id}/update`,
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                mode: "cors",
+                body: JSON.stringify(data),
+            }
+        );
+
+        if (!res.ok) {
+            throw new Error(`Faild to fetch update task ${id}`);
+        }
+
+        try {
+            revalidateTag("task");
+            revalidateTag("tasks");
+        } catch (revalidateErr) {
+            console.error(`Failed to update task revalidate: `, revalidateErr);
+        }
+        return {message: `Updated task ${id}`, redirectTo: "/tasks"};
+    } catch (err) {
+        console.error(`Failed to fetch update task ${id}`, err)
+        return {message: `Failed to fetch update task ${id}`, redirectTo: prevState.redirectTo};
+    };
+}

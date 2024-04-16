@@ -14,7 +14,6 @@ const initialState = {
 
 export default function EditTaskCategoryForm({ taskCategory }: { taskCategory: TaskCategory }) {
     const updateTaskCategoryWithId = updateTaskCategory.bind(null, `${taskCategory.id}`);
-
     const [state, formAction] = useFormState(updateTaskCategoryWithId, initialState);
     const router = useRouter();
     useEffect(() => {
@@ -26,8 +25,8 @@ export default function EditTaskCategoryForm({ taskCategory }: { taskCategory: T
     return (
         <form
             name="editTaskCategoryForm"
-            className="flex flex-col bg-slate-950 p-3 gap-y-3 justify-center items-center w-full"
             action={formAction}
+            className="flex flex-col bg-slate-950 p-3 gap-y-3 justify-center items-center w-full"
         >
             <label className="bg-slate-900 p-3 w-full">
                 <p>Title</p>
@@ -49,11 +48,11 @@ export default function EditTaskCategoryForm({ taskCategory }: { taskCategory: T
                     className="bg-transparent border-b border-slate-300"
                     defaultValue={taskCategory.description ? taskCategory.description : ""}
                 />
-                <Link href="/task-categories">
-                    Cancel
-                </Link>
-                <button type="submit">Edit task category</button>
             </label>
+            <Link href="/task-categories">
+                Cancel
+            </Link>
+            <button type="submit">Edit task category</button>
         </form>
     );
 };
