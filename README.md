@@ -14,8 +14,12 @@
 - [x] Update task button
 - [x] Update task server action
 - [x] Add create task API endpoints
+- [x] Add create description list API endpoint
+- [ ] Add create description API endpoint
+- [ ] Add delete description API endpoint
+- [x] Add delete description list API endpoint
 - [ ] Add create tag API endpoints
-- [ ] Add create description list API endpoint
+- [ ] Add delete tag API endpoints
 - [ ] Add tag form
 - [ ] Add description list
 - [ ] Add description

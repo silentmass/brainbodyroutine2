@@ -1,7 +1,8 @@
 'use server'
 import { error } from "console";
 import {revalidateTag } from "next/cache";
-import {z} from "zod";
+import { title } from "process";
+import {z, ZodObject} from "zod";
 
 const TaskCategorySchema = z.object({
     title: z.string().min(1),
@@ -25,6 +26,16 @@ const TaskWithIdSchema = z.object({
     title: z.string().min(1),
     is_active: z.boolean(),
     task_category_id: z.number().min(1),
+});
+
+const TaskDescriptionListSchema = z.object({
+    title: z.string().min(1),
+    task_id: z.number().min(1),
+});
+
+const TaskDescriptionListWithIdSchema = z.object({
+    title: z.string().min(1),
+    task_id: z.number().min(1),
 });
 
 export const createTaskCategory = async (prevState: any, formData: FormData) => {
@@ -244,7 +255,7 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
         );
 
         if (!res.ok) {
-            throw new Error(`Faild to fetch update task ${id}`);
+            throw new Error(`Failed to fetch update task ${id}`);
         }
 
         try {
@@ -258,4 +269,74 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
         console.error(`Failed to fetch update task ${id}`, err)
         return {message: `Failed to fetch update task ${id}`, redirectTo: prevState.redirectTo};
     };
+}
+
+export const createTaskDescriptionList = async (taskId: string, prevState: any, formData: FormData) => {
+    const validatedFields = TaskDescriptionListSchema.safeParse({
+        title: formData.get("taskDescriptionListTitle"),
+        task_id: parseInt(taskId),
+    });
+
+    if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors);
+        return {errors: validatedFields.error.flatten().fieldErrors};
+    }
+
+    const data = validatedFields.data;
+
+    try {
+        const res = await fetch(
+            `http://localhost:3000/api/taskdescriptionlists/${taskId}`,
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                mode: "cors",
+                body: JSON.stringify(data),
+            }
+        );
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch task description list create ${taskId}`)
+        }
+
+        try {
+            revalidateTag("descriptionlists");
+        } catch (revalidateErr) {
+            console.error("Failed to fetch task description list create revalidate: ", revalidateErr);
+        }
+
+        return {message: `Create task description list ${data.title}`};
+    } catch (err) {
+        console.error(`Failed to fetch task description list create ${taskId}`, err);
+        return {message: `Failed to fetch task description list create ${taskId}`};
+    }
+};
+
+export const deleteTaskDescriptionList = async (id:string) => {
+    try {
+        const res = await fetch(
+            `http://localhost:3000/api/taskdescriptionlists/${id}/delete`,
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                mode: "cors",
+            }
+        );
+    
+        if (!res.ok) {
+            throw new Error(`Task description list delete fetch failed ${id}`);
+        }
+
+        try {
+            revalidateTag("descriptionlists")
+        } catch (revalidateErr) {
+            console.error(`Task description list delete revalidate failed ${id}`, revalidateErr);
+        }
+
+        return {message: `Task description list ${id} deleted`};
+
+    } catch (err) {
+        console.error(`Task description list delete fetch failed ${id}`, err);
+        return {errors: `Task description list delete fetch failed ${id}`};
+    }
 }

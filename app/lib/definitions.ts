@@ -22,3 +22,12 @@ export interface TaskBase {
 export interface Task extends TaskBase {
     id: number;
 };
+
+export interface TaskDescriptionListBase {
+    title: string;
+    task_id: number;
+};
+
+export interface TaskDescrionList extends TaskDescriptionListBase {
+    id: number;
+};

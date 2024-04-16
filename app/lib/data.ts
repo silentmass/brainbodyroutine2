@@ -55,3 +55,19 @@ export const fetchTaskById = async (id: string) => {
   }
   return res.json();
 };
+
+export const fetchTaskDescriptionLists = async (taskId: string) => {
+  const res = await fetch(
+    `http://localhost:3000/api/taskdescriptionlists/${taskId}`,
+    {
+      method: "GET",
+      headers: {"Content-Type": "application/json"},
+      mode: "cors",
+      next: {tags: ["descriptionlists"]},
+    }
+  )
+  if (!res.ok) {
+    throw new Error(`Failed to fetch task description lists`);
+  }
+  return res.json();
+};
