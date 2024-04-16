@@ -1,5 +1,5 @@
 'use client';
-import { CreateTaskButton } from "@/app/ui/task/buttons";
+import { CreateTask } from "@/app/ui/task/buttons";
 import { TaskCategory } from "@/app/lib/definitions";
 import { createTask } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
@@ -44,7 +44,7 @@ export default function CreateTaskForm({ taskCategories }: { taskCategories: Tas
                     className={`${fieldBaseStyle}`}
                 />
             </label> */}
-            <CreateTaskButton />
+            <CreateTask />
             <p className={`${clsx({
                 "hidden": state?.message === "",
                 "": state?.message !== "",

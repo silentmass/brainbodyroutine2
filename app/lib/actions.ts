@@ -25,7 +25,6 @@ const TaskWithIdSchema = z.object({
     title: z.string().min(1),
     is_active: z.boolean(),
     task_category_id: z.number().min(1),
-    tag_id: z.number().nullable(),
 });
 
 export const createTaskCategory = async (prevState: any, formData: FormData) => {
@@ -185,3 +184,31 @@ export const createTask = async (prevState: any, formData:FormData) => {
         return {message: `Failed to create a task: ${data.title}`};
     };
 ;}
+
+export const deleteTask = async (id: string) => {
+    try {
+        const res = await fetch(
+            `http://localhost:3000/api/tasks/${id}/delete`,
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                mode: "cors",
+            }
+        )
+
+        if (!res.ok) {
+            throw new Error("Failed to fetch delete task");
+        }
+
+        try {
+            revalidateTag("tasks");
+        } catch (revalidateErr) {
+            console.error(`Failed to delete task revalidate: `, revalidateErr);
+        };
+
+        return ({message: `Deleted task: ${id}`});
+    } catch (err) {
+        console.error(`Failed to delete task: ${id}`);
+        return ({message: `Failed to delete task: ${id}`});
+    }
+};

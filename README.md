@@ -8,8 +8,12 @@
 - [x] Add create task form
 - [x] Create main navi
 - [x] Add fetch tasks
-- [ ] Add create task server actions
-- [ ] Add create task API endpoints
+- [x] Add create task server actions
+- [x] Delete task button
+- [x] Delete task server actions
+- [ ] Update task button
+- [ ] Update task server action
+- [x] Add create task API endpoints
 - [ ] Add create tag API endpoints
 - [ ] Add create description list API endpoint
 - [ ] Add tag form
