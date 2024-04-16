@@ -305,10 +305,10 @@ export const createTaskDescriptionList = async (taskId: string, prevState: any, 
             console.error("Failed to fetch task description list create revalidate: ", revalidateErr);
         }
 
-        return {message: `Create task description list ${data.title}`};
+        return {message: `Create task description list ${data.title}`, redirectTo: `/tasks/${taskId}/edit`};
     } catch (err) {
         console.error(`Failed to fetch task description list create ${taskId}`, err);
-        return {message: `Failed to fetch task description list create ${taskId}`};
+        return {message: `Failed to fetch task description list create ${taskId}`, redirectTo: prevState.redirectTo};
     }
 };
 

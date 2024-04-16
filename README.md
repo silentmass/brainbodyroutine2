@@ -16,6 +16,10 @@
 - [x] Add create task API endpoints
 - [x] Add create description list API endpoint
 - [ ] Add create description API endpoint
+  - [x] Fetch list descriptions
+  - [ ] Get description by id
+  - [x] Create description
+  - [ ] Delete description
 - [ ] Add delete description API endpoint
 - [x] Add delete description list API endpoint
 - [ ] Add create tag API endpoints

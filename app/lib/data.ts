@@ -71,3 +71,19 @@ export const fetchTaskDescriptionLists = async (taskId: string) => {
   }
   return res.json();
 };
+
+export const fetchListDescriptions = async (taskDescriptionListId: string) => {
+  const res = await fetch(
+    `http://localhost:3000/api/taskdescriptionlists/${taskDescriptionListId}/descriptions`,
+    {
+      method: "GET",
+      headers: {"Content-Type": "application/json"},
+      mode: "cors",
+      next: {tags: ["descriptions"]},
+    }
+  );
+  if(!res.ok) {
+    throw new Error(`Failed to fetch task description list descriptions`);
+  }
+  return res.json();
+}

@@ -23,11 +23,21 @@ export interface Task extends TaskBase {
     id: number;
 };
 
+export interface ListDescriptionBase {
+    description: string;
+    description_list_id: number;
+};
+
+export interface ListDescription extends ListDescriptionBase {
+    id: number;
+};
+
 export interface TaskDescriptionListBase {
     title: string;
     task_id: number;
 };
 
-export interface TaskDescrionList extends TaskDescriptionListBase {
+export interface TaskDescriptionList extends TaskDescriptionListBase {
     id: number;
+    descriptions: ListDescription[] | null;
 };

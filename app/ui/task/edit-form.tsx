@@ -1,5 +1,5 @@
 'use client'
-import { Task, TaskCategory, TaskDescrionList } from "@/app/lib/definitions";
+import { Task, TaskCategory, TaskDescriptionList } from "@/app/lib/definitions";
 import { updateTask } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,7 @@ const initialState = {
 
 export default function EditTaskForm(
     { task, taskCategories, taskDescriptionLists }
-        : { task: Task, taskCategories: TaskCategory[], taskDescriptionLists: TaskDescrionList[] }) {
+        : { task: Task, taskCategories: TaskCategory[], taskDescriptionLists: TaskDescriptionList[] }) {
     const updateTaskWithId = updateTask.bind(null, `${task.id}`);
     const [state, formAction] = useFormState(updateTaskWithId, initialState);
     const router = useRouter();
