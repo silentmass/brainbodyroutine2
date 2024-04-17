@@ -41,3 +41,12 @@ export interface TaskDescriptionList extends TaskDescriptionListBase {
     id: number;
     descriptions: ListDescription[] | null;
 };
+
+export interface ListDescriptionBase {
+    description: string;
+    description_list_id: number;
+};
+
+export interface ListDescription extends ListDescriptionBase {
+    id: number;
+}

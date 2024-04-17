@@ -5,8 +5,13 @@ import { useFormState } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
-import clsx from "clsx";
-import TaskDescriptionListsTable from "./task-description-lists/table";
+import DescriptionListsTable from "./description-lists/table";
+import { fieldBaseStyle, formLabelStyle } from "@/app/ui/form-components/form-styles";
+import TaskCategoriesSelect from "@/app/ui/form-components/task-categories-select";
+import FormActionStateMessage from "@/app/ui/form-components/form-action-message";
+import { IsTaskActive } from "../form-components/is-task-active";
+
+
 
 const initialState = {
     message: "",
@@ -26,76 +31,63 @@ export default function EditTaskForm(
         }
     }, [state, router]);
 
-    const IsActive = ({ isActiveValue }: { isActiveValue: boolean }) => (
-        isActiveValue
-            ? <input
-                type="checkbox"
-                name="taskIsActive"
-                id="taskIsActive"
-                className={`formField`}
-                required
-                defaultChecked
-            />
-            : <input
-                type="checkbox"
-                name="taskIsActive"
-                id="taskIsActive"
-                className={`formField`}
-                required
-            />
-    );
+    const isList = taskDescriptionLists && taskDescriptionLists.length > 0;
 
     return (
-        <div className="flex flex-col p-3 gap-y-5">
+        <div className="flex flex-col w-full p-5 gap-y-5 bg-slate-950">
             <form
                 name="editTaskForm"
                 action={formAction}
-                className="flex flex-col bg-slate-950 p-3 gap-y-3 justify-start w-full items-start border"
+                className="flex flex-col gap-y-1 justify-start w-full items-start"
             >
-                <label className="formField w-full p-3 bg-slate-900">
+                {/* Task title */}
+                <label className={`${formLabelStyle}`}>
                     <p>Title</p>
                     <input
                         type="text"
                         name="taskTitle"
                         id="taskTitle"
                         required
-                        className={`formField`}
+                        className={`${fieldBaseStyle}`}
                         defaultValue={task.title}
                     />
                 </label>
-                <label className="formField w-full p-3 bg-slate-900">
+                {/* Task category */}
+                <label className={`${formLabelStyle}`}>
                     <p>Task category</p>
-                    <select name="taskCategoryId" id="taskCategoryId" defaultValue={task.task_category_id} className={`formField`}>
-                        {taskCategories.map((taskCategory) => (
-                            <option key={`${taskCategory.id}`} value={taskCategory.id} >{taskCategory.title}</option>
-                        ))}
-                    </select>
+                    <TaskCategoriesSelect categories={taskCategories} defaultCategoryId={task.task_category_id} />
                 </label>
-                <label className="formField w-full p-3 bg-slate-900">
-                    <p>Is active</p>
-                    <IsActive isActiveValue={task.is_active} />
+                {/* Task is active */}
+                <label className={`formField p-5 flex gap-x-5 items-center h-full`}>
+                    <div className=""><p>Is active </p></div>
+                    <div className="flex w-4 h-4"><IsTaskActive isActiveValue={task.is_active} /></div>
                 </label>
-
-
-                <Link href="/tasks">
-                    Cancel
-                </Link>
-                <button type="submit">Edit task</button>
-                <p className={`${clsx({
-                    "hidden": state?.message === "",
-                    "": state?.message !== "",
-                })}`}>{state?.message}</p>
-                <p aria-live="polite" className="sr-only" >
-                    {state?.message}
-                </p>
+                {/* Task controls */}
+                <div className="flex w-full justify-between">
+                    <div className="flex justify-start p-5 bg-slate-800 hover:bg-slate-900 active:bg-slate-950"><Link href="/tasks">Cancel</Link></div>
+                    <div className="flex justify-end p-5 bg-slate-800 hover:bg-slate-900 active:bg-slate-950"><button type="submit">Edit task</button></div>
+                </div>
+                {/* Form action state message */}
+                <FormActionStateMessage state={state} />
             </form>
-            <div className="p-3 bg-slate-950">
-                <Link href={`/tasks/${task.id}/task-description-list/create`}>
+            {/* Task description lists */}
+            <div className="flex justify-between items-center">
+                {
+                    (isList)
+                        ? <h2>Lists</h2>
+                        : <h2>No lists</h2>
+                }
+                <Link
+                    href={`/tasks/${task.id}/description-lists/create`}
+                    className="flex justify-end p-5 bg-slate-800 hover:bg-slate-900 active:bg-slate-950"
+                >
                     Create List
                 </Link>
             </div>
-            <TaskDescriptionListsTable taskDescriptionLists={taskDescriptionLists} />
-        </div>
+            <div className="flex flex-col gap-y-1">
+                <DescriptionListsTable taskDescriptionLists={taskDescriptionLists} />
+            </div>
+        </div >
 
     );
 };

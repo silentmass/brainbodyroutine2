@@ -38,6 +38,17 @@ const TaskDescriptionListWithIdSchema = z.object({
     task_id: z.number().min(1),
 });
 
+const ListDescriptionSchema = z.object({
+    description: z.string().min(1),
+    description_list_id: z.number().min(1),
+});
+
+const ListDescriptionWithIdSchema = z.object({
+    id: z.number().min(1),
+    description: z.string().min(1),
+    description_list_id: z.number().min(1),
+});
+
 export const createTaskCategory = async (prevState: any, formData: FormData) => {
     const validatedFields = TaskCategorySchema.safeParse({
         title: formData.get("taskCategoryTitle"),
@@ -271,6 +282,8 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
     };
 }
 
+// Description list actions
+
 export const createTaskDescriptionList = async (taskId: string, prevState: any, formData: FormData) => {
     const validatedFields = TaskDescriptionListSchema.safeParse({
         title: formData.get("taskDescriptionListTitle"),
@@ -338,5 +351,84 @@ export const deleteTaskDescriptionList = async (id:string) => {
     } catch (err) {
         console.error(`Task description list delete fetch failed ${id}`, err);
         return {errors: `Task description list delete fetch failed ${id}`};
+    }
+}
+
+// Description actions
+
+
+export const createListDescription = async (listId: string, prevState: any, formData: FormData) => {
+    const validatedFields = ListDescriptionSchema.safeParse({
+        description: formData.get("description"),
+        description_list_id: parseInt(listId),
+        owner: parseInt(listId),
+    });
+
+    if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors);
+        return {errors: validatedFields.error.flatten().fieldErrors};
+    }
+
+    const data = validatedFields.data;
+
+    console.log(data)
+
+    try {
+        const res = await fetch(
+            `http://localhost:3000/api/descriptionlists/${listId}/descriptions`,
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                mode: "cors",
+                body: JSON.stringify(data)
+            }
+        )
+
+        if (!res.ok) {
+            throw new Error(`List description create fetch failed`);
+        }
+
+        try {
+            revalidateTag(`descriptions`);
+            revalidateTag(`descriptionlist`);
+            revalidateTag(`descriptionlists`);
+        } catch (revalidateErr) {
+            console.error(`List description create revalidate failed: `, revalidateErr);
+        }
+
+        return {message: `List description created`};
+    } catch (err) {
+        console.error(`List description create fetch failed`, err);
+        return {errors: `List description create fetch failed`};
+    };
+};
+
+export const deleteListDescription = async (id: string, prevState: any, formData:FormData) => {
+    try {
+        const res = await fetch(
+            `http://localhost:3000/api/descriptions/${id}/delete`,
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                mode: "cors",
+            }
+        )
+
+        if (!res.ok) {
+            throw new Error(`List description delete fetch failed`)
+        }
+
+        try {
+            revalidateTag(`descriptions`);
+            revalidateTag(`descriptionlist`);
+            revalidateTag(`descriptionlists`);
+        } catch (revalidateErr) {
+            console.log(`List description deleted revalidation failed`, revalidateErr);
+        };
+
+        return {message: `List description deleted`};
+    } catch(err) {
+        console.error(`List description delete fetch failed`, err);
+        return {errors: `List description delete fetch failed`};
     }
 }

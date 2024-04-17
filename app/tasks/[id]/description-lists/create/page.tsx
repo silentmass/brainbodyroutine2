@@ -1,4 +1,5 @@
-import CreateTaskDescriptionListForm from "@/app/ui/task/task-description-lists/create-form";
+import { fetchTaskById } from "@/app/lib/data";
+import CreateTaskDescriptionListForm from "@/app/ui/task/description-lists/create-form";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: string } }) {
     const taskId = params.id
+    const task = await fetchTaskById(taskId);
     return (
-        <CreateTaskDescriptionListForm taskId={taskId} />
+        <CreateTaskDescriptionListForm task={task} />
     );
 };

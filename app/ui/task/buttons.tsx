@@ -14,7 +14,7 @@ export function CreateTask() {
 
     return (
         <button
-            className="flex items-center justify-center border rounded p-3 w-fit"
+            className="flex items-center justify-center p-5 bg-slate-800 hover:bg-slate-900"
             type="submit" aria-disabled={pending}>
             Create task
         </button>

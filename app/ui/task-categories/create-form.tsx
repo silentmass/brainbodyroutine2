@@ -3,6 +3,8 @@ import { createTaskCategory } from "@/app/lib/actions";
 import { useFormState, useFormStatus } from "react-dom";
 import { CreateTaskCategory } from "./buttons";
 import clsx from "clsx";
+import FormActionStateMessage from "../form-components/form-action-message";
+import { fieldBaseStyle } from "../form-components/form-styles";
 
 const initialState = {
     message: "",
@@ -24,17 +26,11 @@ export default function CreateTaskCategoryForm() {
                     id="taskCategoryTitle"
                     name="taskCategoryTitle"
                     required
-                    className="bg-transparent border-b border-slate-300"
+                    className={`${fieldBaseStyle}`}
                 />
             </label>
             <CreateTaskCategory />
-            <p className={clsx({
-                "hidden": state?.message === "",
-                "": state?.message !== ""
-            })}>{state?.message}</p>
-            <p aria-live="polite" className="sr-only">
-                {state?.message}
-            </p>
+            <FormActionStateMessage state={state} />
         </form>
     );
 }

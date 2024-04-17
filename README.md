@@ -17,6 +17,7 @@
 - [x] Add create description list API endpoint
 - [ ] Add create description API endpoint
   - [x] Fetch list descriptions
+  - [ ] Fetch description list
   - [ ] Get description by id
   - [x] Create description
   - [ ] Delete description

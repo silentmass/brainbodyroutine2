@@ -46,8 +46,21 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  input.formField,
-  select.formField {
+  label.formField {
+    color: white;
+    background-color: #0f172a;
+    width: 100%;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  div.formField {
+    color: white;
+    background-color: #0f172a;
+    width: 100%;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  input.formField {
     color: white;
     background-color: transparent;
     border-top-width: 0;
@@ -58,11 +71,20 @@ body {
     width: 100%;
   }
 }
+@media (prefers-color-scheme: dark) {
+  select.formField {
+    color: white;
+    background-color: transparent;
+    border-top-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 1px;
+    border-color: white;
+  }
+}
 
 @media (prefers-color-scheme: dark) {
   input.formField[type='checkbox'] {
-    color: white;
-    background-color: transparent;
-    width: 100%;
+    color: transparent;
   }
 }

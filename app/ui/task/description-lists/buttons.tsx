@@ -15,7 +15,7 @@ export function CreateTaskDescriptionList() {
             type="submit"
             aria-disabled={pending}
         >
-            Create Task description list
+            Create list
         </button>
     );
 };
