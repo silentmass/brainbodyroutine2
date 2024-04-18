@@ -1,21 +1,5 @@
 import { TaskDescriptionList } from "@/app/lib/definitions";
-import Link from "next/link";
-import { DescriptionListCard } from "./card";
-
-export const DescriptionLists = ({ lists }: { lists: TaskDescriptionList[] }) => {
-    return (
-        <>
-            {
-                lists.map((taskDescriptionList) => (
-                    <DescriptionListCard
-                        key={taskDescriptionList.id}
-                        taskDescriptionList={taskDescriptionList}
-                    />
-                ))
-            }
-        </>
-    );
-};
+import DescriptionLists from "./card-list";
 
 export default function DescriptionListsTable(
     { taskDescriptionLists }: { taskDescriptionLists: TaskDescriptionList[] }

@@ -3,6 +3,7 @@ import { error } from "console";
 import {revalidateTag } from "next/cache";
 import { title } from "process";
 import {z, ZodObject} from "zod";
+import { ListDescription } from "./definitions";
 
 const TaskCategorySchema = z.object({
     title: z.string().min(1),
@@ -28,16 +29,6 @@ const TaskWithIdSchema = z.object({
     task_category_id: z.number().min(1),
 });
 
-const TaskDescriptionListSchema = z.object({
-    title: z.string().min(1),
-    task_id: z.number().min(1),
-});
-
-const TaskDescriptionListWithIdSchema = z.object({
-    title: z.string().min(1),
-    task_id: z.number().min(1),
-});
-
 const ListDescriptionSchema = z.object({
     description: z.string().min(1),
     description_list_id: z.number().min(1),
@@ -48,6 +39,19 @@ const ListDescriptionWithIdSchema = z.object({
     description: z.string().min(1),
     description_list_id: z.number().min(1),
 });
+
+const TaskDescriptionListSchema = z.object({
+    title: z.string().min(1),
+    task_id: z.number().min(1),
+});
+
+const TaskDescriptionListWithIdSchema = z.object({
+    title: z.string().min(1),
+    task_id: z.number().min(1),
+    descriptions: z.array(ListDescriptionSchema).nullable(),
+});
+
+
 
 export const createTaskCategory = async (prevState: any, formData: FormData) => {
     const validatedFields = TaskCategorySchema.safeParse({
@@ -161,6 +165,8 @@ export const deleteTaskCategory = async (id: string) => {
     };
 };
 
+// Task operations
+
 export const createTask = async (prevState: any, formData:FormData) => {
     const is_active = formData.get("isActive") === "on" ? true : false;
     const taskCategoryIdValue = formData.get("taskCategoryId")
@@ -244,8 +250,8 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
     const validatedFields = TaskWithIdSchema.safeParse({
         id: parseInt(id),
         title: formData.get("taskTitle"),
-        is_active: isActive,
         task_category_id: task_category_id,
+        is_active: isActive,
     });
 
     if (!validatedFields.success) {
@@ -284,7 +290,7 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
 
 // Description list actions
 
-export const createTaskDescriptionList = async (taskId: string, prevState: any, formData: FormData) => {
+export const createDescriptionList = async (taskId: string, prevState: any, formData: FormData) => {
     const validatedFields = TaskDescriptionListSchema.safeParse({
         title: formData.get("taskDescriptionListTitle"),
         task_id: parseInt(taskId),
@@ -299,7 +305,7 @@ export const createTaskDescriptionList = async (taskId: string, prevState: any, 
 
     try {
         const res = await fetch(
-            `http://localhost:3000/api/taskdescriptionlists/${taskId}`,
+            `http://localhost:3000/api/tasks/${taskId}/descriptionlists`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -325,10 +331,61 @@ export const createTaskDescriptionList = async (taskId: string, prevState: any, 
     }
 };
 
-export const deleteTaskDescriptionList = async (id:string) => {
+export const updateDescriptionList = async(id: string, descriptions: ListDescription[]|null, prevState:any, formData:FormData) => {
+    const taskIdValue = formData.get("taskId")
+    const taskId = (
+        taskIdValue && typeof taskIdValue == "string" && taskIdValue !== ""
+        ? parseInt(taskIdValue)
+        : null
+    );
+
+    const validatedFields = TaskDescriptionListWithIdSchema.safeParse({
+        id: parseInt(id),
+        title: formData.get("title"),
+        task_id: taskId,
+        descriptions: descriptions
+    });
+
+    if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors);
+        return {errors: validatedFields.error.flatten().fieldErrors};
+    }
+
+    const data = validatedFields.data
+
     try {
         const res = await fetch(
-            `http://localhost:3000/api/taskdescriptionlists/${id}/delete`,
+            `http://localhost:3000/api/descriptionlists/${id}/update`,
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                mode: "cors",
+                body: JSON.stringify(data),
+            }
+        );
+
+        if(!res.ok) {
+            throw new Error("Failed to update description list fetch");
+        }
+
+        try {
+            revalidateTag("descriptionlists");
+            revalidateTag(`descriptionlist`);
+        } catch(revalidateErr) {
+            console.error("Description list update revalidate failed: ", revalidateErr);
+        }
+
+        return {message: "Description list updated"};
+    } catch (err) {
+        console.error("Failed to update description list fetch: ", err);
+        return {errors: "Failed to update description list fetch"};
+    };
+}
+
+export const deleteDescriptionList = async (id:string) => {
+    try {
+        const res = await fetch(
+            `http://localhost:3000/api/descriptionlists/${id}/delete`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -422,6 +479,7 @@ export const deleteListDescription = async (id: string, prevState: any, formData
             revalidateTag(`descriptions`);
             revalidateTag(`descriptionlist`);
             revalidateTag(`descriptionlists`);
+            revalidateTag(`task`)
         } catch (revalidateErr) {
             console.log(`List description deleted revalidation failed`, revalidateErr);
         };

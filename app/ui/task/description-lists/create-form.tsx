@@ -1,10 +1,10 @@
 'use client'
 import { useFormState } from "react-dom";
 import { CreateTaskDescriptionList } from "./buttons";
-import { createTaskDescriptionList } from "@/app/lib/actions";
+import { createDescriptionList } from "@/app/lib/actions";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { fieldBaseStyle, formLabelStyle } from "../../form-components/form-styles";
+import { fieldBaseStyle, formLabelStyle, rowButtonsStyle } from "../../form-components/form-styles";
 import FormActionStateMessage from "../../form-components/form-action-message";
 import { Task } from "@/app/lib/definitions";
 import Link from "next/link";
@@ -15,7 +15,7 @@ const initialState = {
 };
 
 export default function CreateTaskDescriptionListForm({ task }: { task: Task }) {
-    const createTaskDescriptionListWithTaskId = createTaskDescriptionList.bind(null, `${task.id}`);
+    const createTaskDescriptionListWithTaskId = createDescriptionList.bind(null, `${task.id}`);
     const [state, formAction] = useFormState(createTaskDescriptionListWithTaskId, initialState)
     const router = useRouter();
 
@@ -48,12 +48,12 @@ export default function CreateTaskDescriptionListForm({ task }: { task: Task }) 
                 </label>
 
                 <div className="flex w-full justify-between">
-                    <div className="flex justify-start p-5 bg-slate-800 hover:bg-slate-900 active:bg-slate-950">
-                        <Link href={`/tasks/${task.id}/edit`}>Cancel</Link>
-                    </div>
-                    <div className="flex justify-end p-5 bg-slate-800 hover:bg-slate-900 active:bg-slate-950">
-                        <CreateTaskDescriptionList />
-                    </div>
+                    <Link href={`/tasks/${task.id}/edit`} className={`${rowButtonsStyle}`} >
+                        Cancel
+                    </Link>
+                    <CreateTaskDescriptionList className={`${rowButtonsStyle}`} >
+                        Create list
+                    </CreateTaskDescriptionList>
                 </div>
                 <FormActionStateMessage state={state} />
             </div>

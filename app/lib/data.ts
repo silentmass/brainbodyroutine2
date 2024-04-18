@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+// Task category operations
 
 export const fetchTaskCategories = async () => {
   const res = await fetch('http://localhost:3000/api/taskcategories', {
@@ -28,6 +28,8 @@ export const fetchTaskCategoryById = async (id: string) => {
   }
   return res.json()
 };
+
+// Task operations
 
 export const fetchTasks = async () => {
   const res = await fetch('http://localhost:3000/api/tasks/', {

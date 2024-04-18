@@ -1,6 +1,7 @@
 import { fetchListDescriptions, fetchTaskById, fetchTaskDescriptionListById } from "@/app/lib/data";
 import CreateListDescriptionForm from "@/app/ui/task/description-lists/descriptions/create-form";
 import ListDescriptionsTable from "@/app/ui/task/description-lists/descriptions/table";
+import UpdateDescriptionListForm from "@/app/ui/task/description-lists/edit-form";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -19,9 +20,7 @@ export default async function Page({ params }: { params: { id: string, listid: s
             <div className={`formField p-5`}>
                 {task.title}
             </div>
-            <div className={`formField p-5`}>
-                {descriptionList.title}
-            </div>
+            <UpdateDescriptionListForm list={descriptionList} />
             <div className={`formField`}>
                 <CreateListDescriptionForm
                     descriptionList={descriptionList}

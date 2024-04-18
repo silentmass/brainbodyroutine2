@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
 import DescriptionListsTable from "./description-lists/table";
-import { fieldBaseStyle, formLabelStyle } from "@/app/ui/form-components/form-styles";
+import { fieldBaseStyle, formLabelStyle, rowButtonsStyle } from "@/app/ui/form-components/form-styles";
 import TaskCategoriesSelect from "@/app/ui/form-components/task-categories-select";
 import FormActionStateMessage from "@/app/ui/form-components/form-action-message";
 import { IsTaskActive } from "../form-components/is-task-active";
+import { EditTask } from "./buttons";
+import clsx from "clsx";
 
 
 
@@ -63,29 +65,38 @@ export default function EditTaskForm(
                     <div className="flex w-4 h-4"><IsTaskActive isActiveValue={task.is_active} /></div>
                 </label>
                 {/* Task controls */}
-                <div className="flex w-full justify-between">
-                    <div className="flex justify-start p-5 bg-slate-800 hover:bg-slate-900 active:bg-slate-950"><Link href="/tasks">Cancel</Link></div>
-                    <div className="flex justify-end p-5 bg-slate-800 hover:bg-slate-900 active:bg-slate-950"><button type="submit">Edit task</button></div>
+
+                <div className="w-full flex justify-between">
+
+                    <Link href={`/tasks`} className={`${rowButtonsStyle}`} >
+                        Cancel
+                    </Link>
+                    <EditTask className={`${rowButtonsStyle}`} >
+                        Edit task
+                    </EditTask>
                 </div>
                 {/* Form action state message */}
                 <FormActionStateMessage state={state} />
             </form>
             {/* Task description lists */}
-            <div className="flex justify-between items-center">
-                {
-                    (isList)
-                        ? <h2>Lists</h2>
-                        : <h2>No lists</h2>
-                }
-                <Link
-                    href={`/tasks/${task.id}/description-lists/create`}
-                    className="flex justify-end p-5 bg-slate-800 hover:bg-slate-900 active:bg-slate-950"
-                >
-                    Create List
-                </Link>
-            </div>
-            <div className="flex flex-col gap-y-1">
-                <DescriptionListsTable taskDescriptionLists={taskDescriptionLists} />
+
+
+
+            <div className="flex flex-col gap-y-1 p-5">
+                <div className="flex justify-between w-full items-end">
+                    <h2>
+                        {clsx({
+                            "Lists": isList,
+                            "No lists": !isList
+                        })}
+                    </h2>
+                    <Link href={`/tasks/${task.id}/description-lists/create`} className={`${rowButtonsStyle}`} >
+                        Create List
+                    </Link>
+                </div>
+                <div className="flex justify-between w-full items-end">
+                    <DescriptionListsTable taskDescriptionLists={taskDescriptionLists} />
+                </div>
             </div>
         </div >
 

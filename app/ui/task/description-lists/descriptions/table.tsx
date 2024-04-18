@@ -6,7 +6,7 @@ export default function ListDescriptionsTable({ descriptions }: { descriptions: 
     return (
         <div>
             {(descriptions && descriptions.length)
-                ? <><p>List Descriptions</p><DescriptionsCardList descriptions={descriptions} /></>
+                ? <><p>Descriptions</p><DescriptionsCardList descriptions={descriptions} /></>
                 : <p>No descriptions</p>
             }
         </div>

@@ -51,3 +51,22 @@ export function UpdateTask({ id }: { id: string }) {
         </Link>
     );
 };
+
+
+export function EditTask({
+    children, className
+}: Readonly<{
+    children: React.ReactNode, className: string;
+}>) {
+    const { pending } = useFormStatus();
+
+    return (
+        <button
+            type="submit"
+            aria-disabled={pending}
+            className={className}
+        >
+            {children}
+        </button>
+    );
+};

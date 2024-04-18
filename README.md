@@ -17,14 +17,17 @@
 - [x] Add create description list API endpoint
 - [ ] Add create description API endpoint
   - [x] Fetch list descriptions
-  - [ ] Fetch description list
-  - [ ] Get description by id
+  - [x] Fetch description list
+  - [x] Get description by id
   - [x] Create description
-  - [ ] Delete description
-- [ ] Add delete description API endpoint
+  - [x] Delete description
+- [x] Add delete description API endpoint
 - [x] Add delete description list API endpoint
+- [ ] Handle deletion chain: task -> description list -> descriptions
+- [ ] Check description list update
+- [ ] Check description update
+- [ ] Check revalidations
+- [ ] Finish form visuals
 - [ ] Add create tag API endpoints
 - [ ] Add delete tag API endpoints
 - [ ] Add tag form
-- [ ] Add description list
-- [ ] Add description
