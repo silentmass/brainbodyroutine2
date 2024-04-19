@@ -38,8 +38,9 @@ export function DeleteListDescription({ id }: { id: string }) {
             name="deleteListDescriptionForm"
             id="deleteListDescriptionForm"
             action={formAction}
+            className="flex h-full"
         >
-            <button>
+            <button className="flex items-center justify-center">
                 <TrashIcon className="w-5" />
             </button>
         </form>

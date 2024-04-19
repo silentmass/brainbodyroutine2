@@ -3,8 +3,13 @@ import DescriptionCard from "./card";
 
 export default function DescriptionsCardList({ descriptions }: { descriptions: ListDescription[] }) {
     return (
-        descriptions.map((description) => (
-            <DescriptionCard key={`${description.id}`} description={description} />
-        ))
+        <div className="flex flex-col w-full gap-y-1">
+            {
+                descriptions.map((description) => (
+                    <DescriptionCard key={`${description.id}`} description={description} />
+                ))
+            }
+        </div>
+
     );
 }

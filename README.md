@@ -24,9 +24,9 @@
 - [x] Add delete description API endpoint
 - [x] Add delete description list API endpoint
 - [x] Handle deletion chain: task -> description list -> descriptions
-- [ ] Fix description list update fetch
-- [ ] Check description list update
-- [ ] Check description update
+- [x] Fix description list update fetch
+- [x] Check description list update
+- [x] Check description update
 - [ ] Check revalidations
 - [ ] Finish form visuals
 - [ ] Add create tag API endpoints

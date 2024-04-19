@@ -14,7 +14,10 @@ export default async function Page() {
     return (
         <div className="flex flex-col gap-y-3 w-full max-w-sm">
             <CreateTaskCategoryForm />
-            <TaskCategoriesTable taskCategories={taskCategories} />
+            <div className="flex flex-col w-full gap-y-1">
+                <TaskCategoriesTable taskCategories={taskCategories} />
+            </div>
+
         </div>
     );
 }

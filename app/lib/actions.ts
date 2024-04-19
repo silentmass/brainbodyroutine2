@@ -49,7 +49,6 @@ const TaskDescriptionListWithIdSchema = z.object({
     id: z.number().min(1),
     title: z.string().min(1),
     task_id: z.number().min(1),
-    descriptions: z.array(ListDescriptionSchema).nullable(),
 });
 
 
@@ -83,6 +82,7 @@ export const createTaskCategory = async (prevState: any, formData: FormData) => 
         }
 
         try {
+            revalidateTag("taskcategory");
             revalidateTag("taskcategories");
         } catch (revalidateErr) {
             console.error("Failed create task category revalidate: ", revalidateErr);
@@ -154,6 +154,7 @@ export const deleteTaskCategory = async (id: string) => {
         }
 
         try {
+            revalidateTag("taskcategory");
             revalidateTag("taskcategories");
         } catch (revalidateErr) {
             console.error("Failed delete task category revalidate: ", revalidateErr)
@@ -344,7 +345,6 @@ export const updateDescriptionList = async(id: string, descriptions: ListDescrip
         id: parseInt(id),
         title: formData.get("title"),
         task_id: taskId,
-        descriptions: descriptions
     });
 
     if (!validatedFields.success) {
@@ -353,8 +353,6 @@ export const updateDescriptionList = async(id: string, descriptions: ListDescrip
     }
 
     const data = validatedFields.data
-
-    console.log(data)
 
     try {
         const res = await fetch(
@@ -461,6 +459,51 @@ export const createListDescription = async (listId: string, prevState: any, form
         console.error(`List description create fetch failed`, err);
         return {errors: `List description create fetch failed`};
     };
+};
+
+export const updateListDescription = async (descriptionId: string, descriptionListId: string, prevState: any, formData: FormData) => {
+    const validatedFields = ListDescriptionWithIdSchema.safeParse({
+        id: parseInt(descriptionId),
+        description: formData.get("description"),
+        description_list_id: parseInt(descriptionListId),
+    });
+
+    if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors);
+        return {errors: validatedFields.error.flatten().fieldErrors};
+    }
+
+    const data = validatedFields.data;
+
+    try {
+        const res = await fetch(
+            `http://localhost:3000/api/descriptions/${data.id}/update`,
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                mode: "cors",
+                body: JSON.stringify(data),
+            }
+        );
+
+        if (!res.ok) {
+            throw new Error("List description update fetch result failed");
+        };
+
+        try {
+            revalidateTag(`descriptions`);
+            revalidateTag(`descriptionlist`);
+            revalidateTag(`descriptionlists`);
+            revalidateTag(`task`)
+        } catch (revalidateErr) {
+            console.error("List description update revalidation failed:", revalidateErr);
+        };
+
+        return {message: "List description updated"};
+    } catch (err) {
+        console.error("List description update fetch failed", err);
+        return {errors: "List description update fetch failed"};
+    }
 };
 
 export const deleteListDescription = async (id: string, prevState: any, formData:FormData) => {

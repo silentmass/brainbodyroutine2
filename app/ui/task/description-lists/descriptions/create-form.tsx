@@ -17,6 +17,7 @@ export default function CreateListDescriptionForm(
 ) {
     const createListDescriptionWithId = createListDescription.bind(null, `${descriptionList.id}`);
     const [state, formAction] = useFormState(createListDescriptionWithId, initialState);
+
     return (
         <form
             name="createListDescriptionForm"

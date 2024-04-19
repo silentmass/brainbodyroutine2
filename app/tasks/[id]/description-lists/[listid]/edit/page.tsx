@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { id: string, listid: s
                     redirectTo={`/tasks/${taskId}/edit`}
                 />
             </div>
-            <div className={`formField p-5`}>
+            <div className={`p-5`}>
                 <ListDescriptionsTable descriptions={descriptions} />
             </div>
         </div>
