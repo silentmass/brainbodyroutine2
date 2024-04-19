@@ -4,7 +4,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { CreateTaskCategory } from "./buttons";
 import clsx from "clsx";
 import FormActionStateMessage from "../form-components/form-action-message";
-import { fieldBaseStyle } from "../form-components/form-styles";
+import { fieldBaseStyle, formLabelStyle, rowButtonsStyle } from "../form-components/form-styles";
 
 const initialState = {
     message: "",
@@ -16,21 +16,23 @@ export default function CreateTaskCategoryForm() {
     return (
         <form
             name="createTaskCategoryForm"
-            className="flex flex-col bg-slate-950 p-3 gap-y-3 justify-center items-center w-full"
+            className="flex flex-col gap-y-1 justify-start w-full items-start"
             action={formAction}
         >
-            <label className="bg-slate-900 p-3">
-                <p>Title</p>
-                <input
-                    type="text"
-                    id="taskCategoryTitle"
-                    name="taskCategoryTitle"
-                    required
-                    className={`${fieldBaseStyle}`}
-                />
-            </label>
-            <CreateTaskCategory />
-            <FormActionStateMessage state={state} />
+            <div className="flex flex-col p-5 gap-y-1 bg-slate-950 w-full">
+                <label className={`${formLabelStyle}`}>
+                    <p>Title</p>
+                    <input
+                        type="text"
+                        id="taskCategoryTitle"
+                        name="taskCategoryTitle"
+                        required
+                        className={`${fieldBaseStyle}`}
+                    />
+                </label>
+                <CreateTaskCategory className={`w-full ${rowButtonsStyle}`}>Create category</CreateTaskCategory>
+                <FormActionStateMessage state={state} />
+            </div>
         </form>
     );
 }

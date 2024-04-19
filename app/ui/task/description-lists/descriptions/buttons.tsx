@@ -8,15 +8,22 @@ const initialState = {
     message: "",
 }
 
-export function CreateListDescription() {
+export function CreateListDescription({
+    children,
+    className
+}: Readonly<{
+    children: React.ReactNode,
+    className: string,
+}>) {
     const { pending } = useFormStatus();
 
     return (
         <button
             type="submit"
             aria-disabled={pending}
+            className={className}
         >
-            Create description
+            {children}
         </button>
     );
 };

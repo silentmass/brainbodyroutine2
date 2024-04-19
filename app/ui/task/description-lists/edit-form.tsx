@@ -40,10 +40,10 @@ export const UpdateDescriptionListForm = ({ list }: { list: TaskDescriptionList 
                 />
             </label>
             <div className="flex justify-between">
-                <Link href={`/tasks/${list.task_id}/edit`} className={`${rowButtonsStyle}`} >
+                <Link href={`/tasks/${list.task_id}/edit`} className={`w-1/3 ${rowButtonsStyle}`} >
                     Cancel
                 </Link>
-                <UpdateTaskDescriptionList className={`${rowButtonsStyle}`} >
+                <UpdateTaskDescriptionList className={`w-1/3 ${rowButtonsStyle}`} >
                     Update list
                 </UpdateTaskDescriptionList>
             </div>

@@ -10,15 +10,20 @@ const initialState = {
     message: "",
 };
 
-export function CreateTaskCategory() {
+export function CreateTaskCategory({
+    children, className
+}: Readonly<{
+    children: React.ReactNode,
+    className: string,
+}>) {
     const { pending } = useFormStatus();
 
     return (
-        <button className="flex items-center justify-center border rounded p-3 w-fit"
+        <button className={className}
             type="submit"
             aria-disabled={pending}
         >
-            Create
+            {children}
         </button>
     );
 };
@@ -28,7 +33,24 @@ export function UpdateTaskCategory({ id }: { id: string }) {
         <Link href={`/task-categories/${id}/edit`}>
             <PencilIcon className="w-5" />
         </Link>
+    );
+};
 
+export function EditCategory({
+    children, className
+}: Readonly<{
+    children: React.ReactNode,
+    className: string,
+}>) {
+    const { pending } = useFormStatus();
+
+    return (
+        <button className={className}
+            type="submit"
+            aria-disabled={pending}
+        >
+            {children}
+        </button>
     );
 };
 

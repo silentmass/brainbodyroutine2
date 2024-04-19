@@ -46,6 +46,7 @@ const TaskDescriptionListSchema = z.object({
 });
 
 const TaskDescriptionListWithIdSchema = z.object({
+    id: z.number().min(1),
     title: z.string().min(1),
     task_id: z.number().min(1),
     descriptions: z.array(ListDescriptionSchema).nullable(),
@@ -352,6 +353,8 @@ export const updateDescriptionList = async(id: string, descriptions: ListDescrip
     }
 
     const data = validatedFields.data
+
+    console.log(data)
 
     try {
         const res = await fetch(

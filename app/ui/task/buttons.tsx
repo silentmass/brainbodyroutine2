@@ -2,8 +2,9 @@
 import { useFormState, useFormStatus } from "react-dom";
 import { deleteTask } from "@/app/lib/actions";
 import clsx from "clsx";
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import FormActionStateMessage from "../form-components/form-action-message";
 
 const initialState = {
     message: "",
@@ -29,17 +30,9 @@ export function DeleteTask({ id }: { id: string }) {
     return (
         <form name="deleteTaskForm" action={formAction}>
             <button type="submit" aria-disabled={pending}>
-                Delete
+                <TrashIcon className="w-5" />
             </button>
-            <p className={`${clsx({
-                "hidden": state?.message === "",
-                "": state?.message !== "",
-            })}`}>
-                {state?.message}
-            </p>
-            <p aria-live="polite" className="sr-only" role="status" >
-                {state?.message}
-            </p>
+            <FormActionStateMessage state={state} />
         </form>
     );
 };

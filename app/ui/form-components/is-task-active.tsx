@@ -5,7 +5,6 @@ export const IsTaskActive = ({ isActiveValue }: { isActiveValue: boolean }) => (
             name="taskIsActive"
             id="taskIsActive"
             className={`h-full w-full`}
-            required
             defaultChecked
         />
         : <input
@@ -13,6 +12,5 @@ export const IsTaskActive = ({ isActiveValue }: { isActiveValue: boolean }) => (
             name="taskIsActive"
             id="taskIsActive"
             className={`bg-transparent border`}
-            required
         />
 );

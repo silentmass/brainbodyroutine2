@@ -68,10 +68,10 @@ export default function EditTaskForm(
 
                 <div className="w-full flex justify-between">
 
-                    <Link href={`/tasks`} className={`${rowButtonsStyle}`} >
+                    <Link href={`/tasks`} className={`w-1/3 ${rowButtonsStyle}`} >
                         Cancel
                     </Link>
-                    <EditTask className={`${rowButtonsStyle}`} >
+                    <EditTask className={`w-1/3 ${rowButtonsStyle}`} >
                         Edit task
                     </EditTask>
                 </div>
@@ -90,7 +90,7 @@ export default function EditTaskForm(
                             "No lists": !isList
                         })}
                     </h2>
-                    <Link href={`/tasks/${task.id}/description-lists/create`} className={`${rowButtonsStyle}`} >
+                    <Link href={`/tasks/${task.id}/description-lists/create`} className={`w-1/2 ${rowButtonsStyle}`} >
                         Create List
                     </Link>
                 </div>

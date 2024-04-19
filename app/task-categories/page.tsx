@@ -12,8 +12,7 @@ export default async function Page() {
     const taskCategories = await fetchTaskCategories();
 
     return (
-        <div className="flex flex-col gap-y-3 border w-full max-w-sm pt-10 pb-10 pl-5 pr-5">
-            <h2>Task categories</h2>
+        <div className="flex flex-col gap-y-3 w-full max-w-sm">
             <CreateTaskCategoryForm />
             <TaskCategoriesTable taskCategories={taskCategories} />
         </div>

@@ -9,7 +9,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
     const taskCategory = await fetchTaskCategoryById(id);
     return (
-        <div className="flex w-full h-screen items-center justify-center flex-col">
+        <div className="flex w-full h-screen items-center flex-col">
             <h2>Edit Task category</h2>
             <EditTaskCategoryForm taskCategory={taskCategory} />
         </div>

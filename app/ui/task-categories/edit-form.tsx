@@ -6,6 +6,9 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
+import { fieldBaseStyle, formLabelStyle, rowButtonsStyle } from "../form-components/form-styles";
+import FormActionStateMessage from "../form-components/form-action-message";
+import { EditCategory } from "./buttons";
 
 const initialState = {
     message: "",
@@ -26,33 +29,40 @@ export default function EditTaskCategoryForm({ taskCategory }: { taskCategory: T
         <form
             name="editTaskCategoryForm"
             action={formAction}
-            className="flex flex-col bg-slate-950 p-3 gap-y-3 justify-center items-center w-full"
+            className="flex flex-col gap-y-1 justify-start w-full items-start"
         >
-            <label className="bg-slate-900 p-3 w-full">
-                <p>Title</p>
-                <input
-                    type="text"
-                    id="taskCategoryTitle"
-                    name="taskCategoryTitle"
-                    required
-                    className="bg-transparent border-b border-slate-300"
-                    defaultValue={taskCategory.title}
-                />
-            </label>
-            <label className="bg-slate-900 p-3 w-full">
-                <p>Description</p>
-                <input
-                    type="text"
-                    id="taskCategoryDescription"
-                    name="taskCategoryDescription"
-                    className="bg-transparent border-b border-slate-300"
-                    defaultValue={taskCategory.description ? taskCategory.description : ""}
-                />
-            </label>
-            <Link href="/task-categories">
-                Cancel
-            </Link>
-            <button type="submit">Edit task category</button>
-        </form>
+            <div className="flex flex-col p-5 gap-y-1 bg-slate-950 w-full">
+                <label className={`${formLabelStyle}`}>
+                    <p>Title</p>
+                    <input
+                        type="text"
+                        id="taskCategoryTitle"
+                        name="taskCategoryTitle"
+                        required
+                        className={`${fieldBaseStyle}`}
+                        defaultValue={taskCategory.title}
+                    />
+                </label>
+                <label className={`${formLabelStyle}`}>
+                    <p>Description</p>
+                    <input
+                        type="text"
+                        id="taskCategoryDescription"
+                        name="taskCategoryDescription"
+                        className={`${fieldBaseStyle}`}
+                        defaultValue={taskCategory.description ? taskCategory.description : ""}
+                    />
+                </label>
+                <div className="flex w-full justify-between">
+                    <Link href={`/task-categories`} className={`w-1/3 items-center ${rowButtonsStyle}`} >
+                        Cancel
+                    </Link>
+                    <EditCategory className={`w-1/3 items-center ${rowButtonsStyle}`} >
+                        Update
+                    </EditCategory>
+                </div>
+                <FormActionStateMessage state={state} />
+            </div>
+        </form >
     );
 };

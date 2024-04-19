@@ -23,7 +23,8 @@
   - [x] Delete description
 - [x] Add delete description API endpoint
 - [x] Add delete description list API endpoint
-- [ ] Handle deletion chain: task -> description list -> descriptions
+- [x] Handle deletion chain: task -> description list -> descriptions
+- [ ] Fix description list update fetch
 - [ ] Check description list update
 - [ ] Check description update
 - [ ] Check revalidations

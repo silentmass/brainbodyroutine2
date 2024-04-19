@@ -3,8 +3,9 @@ import { createListDescription } from "@/app/lib/actions";
 import { TaskDescriptionList } from "@/app/lib/definitions";
 import { useFormState } from "react-dom";
 import { CreateListDescription } from "./buttons";
-import { formLabelStyle } from "@/app/ui/form-components/form-styles";
+import { formLabelStyle, rowButtonsStyle } from "@/app/ui/form-components/form-styles";
 import Link from "next/link";
+import clsx from "clsx";
 
 const initialState = {
     message: "",
@@ -35,11 +36,14 @@ export default function CreateListDescriptionForm(
                     </textarea>
                 </label>
                 <div className="flex w-full justify-between">
-                    <div className="flex justify-center p-5 bg-slate-800 hover:bg-slate-900 active:bg-slate-950 w-full">
-                        <CreateListDescription />
-                    </div>
+
+                    <CreateListDescription
+                        className={`w-full ${rowButtonsStyle}`}
+                    >
+                        Create description
+                    </CreateListDescription>
                 </div>
             </div>
-        </form>
+        </form >
     );
 }

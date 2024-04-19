@@ -48,10 +48,10 @@ export default function CreateTaskDescriptionListForm({ task }: { task: Task }) 
                 </label>
 
                 <div className="flex w-full justify-between">
-                    <Link href={`/tasks/${task.id}/edit`} className={`${rowButtonsStyle}`} >
+                    <Link href={`/tasks/${task.id}/edit`} className={`w-1/3 ${rowButtonsStyle}`} >
                         Cancel
                     </Link>
-                    <CreateTaskDescriptionList className={`${rowButtonsStyle}`} >
+                    <CreateTaskDescriptionList className={`w-1/3 ${rowButtonsStyle}`} >
                         Create list
                     </CreateTaskDescriptionList>
                 </div>
