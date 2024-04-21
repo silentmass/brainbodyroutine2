@@ -17,9 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <main className="flex min-h-screen flex-col items-center gap-y-5">
-          <div className="flex justify-center items-center sticky top-0 dark:bg-black/70 w-full"><Links /></div>
+      <body className={`${inter.className} bg-white`}>
+        <main className="flex flex-col items-center">
+          <div className="flex w-full justify-center items-center sticky top-0 max-w-2xl bg-gray-200/70"><Links /></div>
           <div className="flex w-full justify-center max-w-2xl">{children}</div>
         </main>
       </body>

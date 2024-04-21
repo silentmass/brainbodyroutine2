@@ -26,7 +26,7 @@ export default function CreateListDescriptionForm(
             className="flex flex-col gap-y-1 justify-start w-full items-start"
         >
             <div className="flex flex-col gap-y-1 w-full">
-                <label className={`${formLabelStyle}`}>
+                <label className={`flex w-full`}>
                     <p>Description</p>
                     <textarea
                         name="description"

@@ -248,10 +248,11 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
     const task_category_id = taskCategoryIdValue !== null && typeof taskCategoryIdValue === "string" && taskCategoryIdValue !== "" 
     ? parseInt(taskCategoryIdValue) 
     : null;
+    const title = formData.get("taskTitle");
 
     const validatedFields = TaskWithIdSchema.safeParse({
         id: parseInt(id),
-        title: formData.get("taskTitle"),
+        title: title,
         task_category_id: task_category_id,
         is_active: isActive,
     });
@@ -283,9 +284,9 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
         } catch (revalidateErr) {
             console.error(`Failed to update task revalidate: `, revalidateErr);
         }
-        return {message: `Updated task ${id}`, redirectTo: "/tasks"};
+        return {message: `Task updated`, redirectTo: "/tasks"};
     } catch (err) {
-        console.error(`Failed to fetch update task ${id}`, err)
+        console.error(`Failed to fetch update task ${title}`, err)
         return {message: `Failed to fetch update task ${id}`, redirectTo: prevState.redirectTo};
     };
 }

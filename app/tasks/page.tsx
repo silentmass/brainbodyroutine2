@@ -7,7 +7,7 @@ export default async function Page() {
     const taskCategories = await fetchTaskCategories();
     const tasks = await fetchTasks();
     return (
-        <div className="flex flex-col w-full h-full justify-center items-center gap-y-5">
+        <div className="flex flex-col w-full justify-center items-center gap-y-5">
             <Suspense fallback={<p>Loading task categories...</p>}>
                 <CreateTaskForm taskCategories={taskCategories} />
             </Suspense>

@@ -16,7 +16,8 @@ export interface TaskBase {
     title: string;
     is_active: boolean;
     task_category_id: number;
-    tag_id: number | null;
+    tags: Tag[] | null;
+    description_lists: TaskDescriptionList[] | null;
 };
 
 export interface Task extends TaskBase {
@@ -48,5 +49,14 @@ export interface ListDescriptionBase {
 };
 
 export interface ListDescription extends ListDescriptionBase {
+    id: number;
+}
+
+export interface TagBase {
+    title: string;
+    task_id: number;
+};
+
+export interface Tag extends TagBase {
     id: number;
 }

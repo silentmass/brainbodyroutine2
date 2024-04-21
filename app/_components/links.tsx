@@ -8,42 +8,38 @@ export function Links() {
     const pathname = usePathname();
 
     return (
-        <nav>
-            <ul className="flex gap-5 pt-5 pb-5 border-b">
-                <li>
-                    <Link
-                        className={`link ${clsx({
-                            "active": pathname === "/",
-                            "": pathname !== "/",
-                        })}`}
-                        href="/"
-                    >
-                        Home
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        className={`link ${clsx({
-                            "active": pathname === "/task-categories",
-                            "": pathname !== "/task-categories",
-                        })}`}
-                        href={"/task-categories"}
-                    >
-                        Task categories
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        className={`link ${clsx({
-                            "active": pathname === "/tasks",
-                            "": pathname !== "/tasks",
-                        })}`}
-                        href={"/tasks"}
-                    >
-                        Tasks
-                    </Link>
-                </li>
-            </ul>
-        </nav>
+        <div className="flex flex-col w-full justify-center items-center p-2 gap-y-1">
+            <div className="flex w-full items-center justify-center pl-8 pr-8">
+                <nav>
+                    <ul className="flex gap-2 pt-1 pb-1">
+                        <li>
+                            <Link
+                                className={`link ${clsx({
+                                    "active": pathname === "/",
+                                    "": pathname !== "/",
+                                })}`}
+                                href="/"
+                            >
+                                Home
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                className={`link ${clsx({
+                                    "active": pathname && (/^\/tasks$|^\/tasks\//).test(pathname),
+                                    "": pathname !== "/tasks",
+                                })}`}
+                                href={"/tasks"}
+                            >
+                                Tasks
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+            <div className="w-full bg-gray-50 h-[2px]"></div>
+        </div>
+
     );
 };

@@ -36,7 +36,7 @@ export default function EditTaskForm(
     const isList = taskDescriptionLists && taskDescriptionLists.length > 0;
 
     return (
-        <div className="flex flex-col w-full p-5 gap-y-5 bg-slate-950">
+        <div className="flex flex-col w-full p-5 gap-y-5 border">
             <form
                 name="editTaskForm"
                 action={formAction}
@@ -94,7 +94,7 @@ export default function EditTaskForm(
                         Create List
                     </Link>
                 </div>
-                <div className="flex justify-between w-full items-end">
+                <div className="flex w-full">
                     <DescriptionListsTable taskDescriptionLists={taskDescriptionLists} />
                 </div>
             </div>
