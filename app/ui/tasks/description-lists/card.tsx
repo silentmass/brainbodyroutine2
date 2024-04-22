@@ -11,14 +11,20 @@ export const DescriptionListCard = ({
   taskDescriptionList: TaskDescriptionList
 }) => {
   return (
-    <div className='flex flex-col bg-slate-900 gap-y-3 p-3'>
-      <div className='flex justify-between w-full'>
-        <p>{taskDescriptionList.title}</p>
-        <Link
-          href={`/tasks/${taskDescriptionList.task_id}/description-lists/${taskDescriptionList.id}/edit`}
-        >
-          <PencilIcon className='w-5' />
-        </Link>
+    <div className='card-create rounded-2xl flex flex-col gap-y-3 p-5'>
+      <div className='flex justify-between items-center w-full'>
+        <div className='flex gap-5'>
+          <label className='flex gap-5'>
+            <h2 className='card-create'>Title</h2>
+            {taskDescriptionList.title}
+          </label>
+          <Link
+            href={`/tasks/${taskDescriptionList.task_id}/description-lists/${taskDescriptionList.id}/edit`}
+          >
+            <PencilIcon className='icon w-5' />
+          </Link>
+        </div>
+
         <DeleteTaskDescriptionList
           taskDescriptionListId={`${taskDescriptionList.id}`}
         />

@@ -27,6 +27,10 @@
 - [x] Fix description list update fetch
 - [x] Check description list update
 - [x] Check description update
+- [ ] Add order column in tasks, descriptionlist, and descriptions
+- [ ] Check how navigation works when is open
+  - [ ] Horizontal > Change task category
+  - [ ] Vertical > Change task
 - [ ] Check revalidations
 - [ ] Finish form visuals
 - [ ] Add create tag API endpoints

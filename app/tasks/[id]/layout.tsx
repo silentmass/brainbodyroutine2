@@ -30,7 +30,7 @@ export default async function Layout ({
           className='topnavi flex flex-row w-full gap-x-5 pl-2 pr-2 pb-2 justify-center rounded-br-2xl rounded-bl-2xl'
         />
       </div>
-      <div className='flex w-full gap-4 pr-4 pb-4'>
+      <div className='flex w-full gap-4 pb-4'>
         <div className='sticky top-[82px] flex flex-col h-fit items-center justify-center pt-5 pb-5 pl-4 pr-4 text-xl gap-5 font-extrabold rounded-tr-2xl rounded-br-2xl from-neutral-500 to-neutral-100 bg-gradient-to-b '>
           <TasksSideNavi
             tasks={categoryTasks}
@@ -38,7 +38,7 @@ export default async function Layout ({
             className=''
           />
         </div>
-        <div className='flex flex-col w-full'>{children}</div>
+        <div className='flex flex-col w-full h-fit'>{children}</div>
       </div>
     </div>
   )

@@ -12,7 +12,7 @@ export const CreateButton = ({
 
   return (
     <button
-      className={`${className} card-create flex w-fit items-center justify-center p-2 rounded-2xl`}
+      className={`${className} flex w-fit items-center justify-center p-2 rounded-2xl`}
       type='submit'
       aria-disabled={pending}
     >

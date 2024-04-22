@@ -20,7 +20,8 @@ import { CreateButton } from '../form-components/buttons'
 
 const initialState = {
   message: '',
-  redirectTo: null
+  redirectTo: null,
+  responseDuration: 0
 }
 
 export default function EditTaskForm ({
@@ -45,11 +46,7 @@ export default function EditTaskForm ({
   const [responseDuration, setResponseDuration] = useState(performance.now())
   const durationRef = useRef(responseDuration)
   const [showStateMessage, setShowStateMessage] = useState(true)
-  const [responseState, setResponseState] = useState({
-    message: '',
-    redirectTo: null,
-    responseDuration: 0
-  })
+  const [responseState, setResponseState] = useState(initialState)
 
   useEffect(() => {
     durationRef.current = responseDuration
@@ -78,15 +75,15 @@ export default function EditTaskForm ({
   const isList = taskDescriptionLists && taskDescriptionLists.length > 0
 
   return (
-    <div className=''>
+    <div className='flex flex-col w-full gap-y-4'>
       <form
         name='editTaskForm'
         action={formAction}
-        className='relative card-create flex flex-col p-2 gap-y-2 w-full rounded-2xl'
+        className='relative card-create flex flex-col gap-y-4 w-full rounded-2xl p-5'
       >
         {/* Task title */}
-        <label className={`w-full p-2 gap-2`}>
-          <h2 className='card-create'>Task Title</h2>
+        <label className={`flex w-full gap-2`}>
+          <h2 className='card-create'>Title</h2>
           <input
             type='text'
             name='taskTitle'
@@ -97,7 +94,7 @@ export default function EditTaskForm ({
           />
         </label>
         {/* Task category */}
-        <label className={`flex pl-2 pr-2 pb-2 gap-4`}>
+        <label className={`flex gap-4`}>
           <h2 className='card-create'>Category</h2>
           <TaskCategoriesSelect
             categories={taskCategories}
@@ -105,7 +102,7 @@ export default function EditTaskForm ({
           />
         </label>
         {/* Task is active */}
-        <label className={`flex pl-2 pr-2 pb-2 gap-4 items-center`}>
+        <label className={`flex gap-4 items-center`}>
           <h2 className='card-create'>Is active</h2>
           <div className='flex w-4 h-4'>
             <IsTaskActive isActiveValue={task.is_active} />
@@ -113,15 +110,16 @@ export default function EditTaskForm ({
         </label>
         {/* Task controls */}
 
-        <div className='flex w-full justify-center pb-2 items-center gap-4'>
+        <div className='flex w-full justify-center items-center gap-4'>
           <Link href={`/tasks`} className={`rounded-2xl`}>
-            <CreateButton className=''>Cancel</CreateButton>
+            <CreateButton className='card-create '>Cancel</CreateButton>
           </Link>
-          <EditTask className={``}>Edit task</EditTask>
+          <EditTask className={`card-create`}>Edit task</EditTask>
         </div>
+
         {/* Form action state message floating above card */}
         <div
-          className={`absolute top-0 flex w-full items-center justify-center rounded-2xl ${clsx(
+          className={`absolute top-0 left-0 flex w-full items-center justify-center rounded-2xl ${clsx(
             {
               'bg-neutral-200/30': showStateMessage,
               'hidden bg-transparent': !showStateMessage
@@ -133,9 +131,9 @@ export default function EditTaskForm ({
       </form>
       {/* Task description lists */}
 
-      <div className='flex flex-col gap-y-1 p-5'>
-        <div className='flex justify-between w-full items-end'>
-          <h2>
+      <div className='flex flex-col gap-y-2 w-full'>
+        <div className='flex justify-between items-center w-full pl-5'>
+          <h2 className='card-create'>
             {clsx({
               Lists: isList,
               'No lists': !isList
@@ -143,9 +141,9 @@ export default function EditTaskForm ({
           </h2>
           <Link
             href={`/tasks/${task.id}/description-lists/create`}
-            className={`w-1/2 ${rowButtonsStyle}`}
+            className={``}
           >
-            Create List
+            <CreateButton className='card-create-dim'>Create List</CreateButton>
           </Link>
         </div>
         <div className='flex w-full'>

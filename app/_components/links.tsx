@@ -33,6 +33,18 @@ export function Links ({ className }: { className: string }) {
               Tasks
             </Link>
           </li>
+          <li>
+            <Link
+              className={`link ${clsx({
+                active:
+                  pathname && /^\/task-categories$|^\/tasks\//.test(pathname),
+                '': pathname !== '/task-categories'
+              })}`}
+              href={'/task-categories'}
+            >
+              Categories
+            </Link>
+          </li>
         </ul>
       </nav>
       <div className='flex w-full bg-gray-50 h-[2px]'></div>

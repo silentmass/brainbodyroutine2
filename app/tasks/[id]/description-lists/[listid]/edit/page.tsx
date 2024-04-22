@@ -24,16 +24,15 @@ export default async function Page ({
   const descriptions = await fetchListDescriptions(listId)
 
   return (
-    <div className='flex flex-col gap-y-1 bg-slate-950 w-full'>
-      <div className={`formField p-5`}>{task.title}</div>
+    <div className='flex flex-col gap-y-3 w-full'>
       <UpdateDescriptionListForm list={descriptionList} />
-      <div className={`formField`}>
+      <div className={``}>
         <CreateListDescriptionForm
           descriptionList={descriptionList}
           redirectTo={`/tasks/${taskId}/edit`}
         />
       </div>
-      <div className={`p-5`}>
+      <div className={``}>
         <ListDescriptionsTable descriptions={descriptions} />
       </div>
     </div>

@@ -246,7 +246,6 @@ export const deleteTask = async (id: string) => {
 export const updateTask = async (id: string, prevState: any, formData: FormData) => {
     const isActiveValue = formData.get("taskIsActive");
     const isActive = (isActiveValue === "on" || isActiveValue === "true") ? true : false;
-    console.log(isActiveValue, isActive);
     const taskCategoryIdValue = formData.get("taskCategoryId")
     const task_category_id = taskCategoryIdValue !== null && typeof taskCategoryIdValue === "string" && taskCategoryIdValue !== "" 
     ? parseInt(taskCategoryIdValue) 
@@ -282,7 +281,6 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
         }
 
         try {
-            console.log("Revalidating");
             revalidateTag("task");
             revalidateTag("tasks");
         } catch (revalidateErr) {

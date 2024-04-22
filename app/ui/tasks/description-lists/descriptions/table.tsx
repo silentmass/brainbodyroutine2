@@ -1,11 +1,16 @@
-import { ListDescription } from "@/app/lib/definitions";
-import DescriptionsCardList from "./card-list";
+import { ListDescription } from '@/app/lib/definitions'
+import DescriptionsCardList from './card-list'
 
-export default function ListDescriptionsTable({ descriptions }: { descriptions: ListDescription[] | null }) {
-
-    return (
-        (descriptions && descriptions.length)
-            ? <><p>Descriptions</p><DescriptionsCardList descriptions={descriptions} /></>
-            : <p>No descriptions</p>
-    );
-};
+export default function ListDescriptionsTable ({
+  descriptions
+}: {
+  descriptions: ListDescription[] | null
+}) {
+  return descriptions && descriptions.length ? (
+    <>
+      <DescriptionsCardList descriptions={descriptions} />
+    </>
+  ) : (
+    <p>No descriptions</p>
+  )
+}

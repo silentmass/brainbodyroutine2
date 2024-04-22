@@ -20,7 +20,7 @@ export default async function Page ({ params }: { params: { id: string } }) {
 
   // console.log(taskDescriptionLists)
   return (
-    <div className='flex w-full h-screen flex-col'>
+    <div className='flex w-full h-fit flex-col'>
       <EditTaskForm
         task={task}
         taskCategories={taskCategories}
