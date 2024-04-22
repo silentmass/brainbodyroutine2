@@ -84,10 +84,12 @@ path.unchecked.mark.check-over.check-active {
 }
 
 .link {
-  padding: 4px;
+  color: #a3a3a3;
+  font-weight: bold;
 }
 
 .link.active {
+  color: #525252;
   border: solid;
   border-top-width: 0;
   border-left-width: 0;
@@ -172,4 +174,36 @@ li.card {
 
 ul.topnavi {
   color: #525252;
+}
+
+.card-create {
+  background-color: #f5f5f5;
+  color: #525252;
+}
+
+button.card-create {
+  background-color: #525252;
+  color: white;
+  box-shadow: inset 0 4px 6.8em rgba(0, 0, 0, 0.25);
+}
+button.card-create:hover {
+  background-color: #404040;
+  color: white;
+}
+button.card-create:active {
+  background-color: #0a0a0a;
+  color: white;
+}
+
+h2.card-create {
+  font-weight: 600;
+  color: #525252;
+  background-color: transparent;
+}
+
+input.card-create {
+  background-color: transparent;
+  width: 100%;
+  border-color: #d4d4d4;
+  border-bottom-width: 1px;
 }

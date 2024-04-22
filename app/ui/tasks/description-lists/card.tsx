@@ -3,7 +3,7 @@ import { DeleteTaskDescriptionList } from './buttons'
 import ListDescriptionsTable from './descriptions/table'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { DescriptionsCardListView } from '@/app/ui/task/description-lists/descriptions/card-list'
+import { DescriptionsCardListView } from '@/app/ui/tasks/description-lists/descriptions/card-list'
 
 export const DescriptionListCard = ({
   taskDescriptionList

@@ -7,10 +7,11 @@ import Link from 'next/link'
 import FormActionStateMessage from '../form-components/form-action-message'
 import { Task } from '@/app/lib/definitions'
 import { FormEvent, useRef, useState, useEffect } from 'react'
+import { CreateButton } from '../form-components/buttons'
 
 const initialState = {
   message: '',
-  redirectTo: ''
+  redirectTo: null
 }
 
 export function CreateTask () {
@@ -18,11 +19,11 @@ export function CreateTask () {
 
   return (
     <button
-      className='flex items-center justify-center p-5 bg-slate-800 hover:bg-slate-900'
+      className='card-create flex w-fit items-center justify-center p-2 rounded-2xl'
       type='submit'
       aria-disabled={pending}
     >
-      Create task
+      Create
     </button>
   )
 }
@@ -59,11 +60,7 @@ export function EditTask ({
 }>) {
   const { pending } = useFormStatus()
 
-  return (
-    <button type='submit' aria-disabled={pending} className={className}>
-      {children}
-    </button>
-  )
+  return <CreateButton className={className}>{children}</CreateButton>
 }
 
 export function SetTaskActive ({

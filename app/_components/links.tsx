@@ -10,7 +10,7 @@ export function Links ({ className }: { className: string }) {
   return (
     <div className={`${className}`}>
       <nav>
-        <ul className='topnavi flex'>
+        <ul className='topnavi flex gap-5'>
           <li>
             <Link
               className={`link ${clsx({

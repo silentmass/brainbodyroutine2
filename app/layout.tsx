@@ -19,7 +19,7 @@ export default function RootLayout ({
     <html lang='en'>
       <body className={`${inter.className} bg-white`}>
         <main className='flex flex-col items-center'>
-          <Links className='topnavi flex flex-col w-full gap-2 pt-1 pb-1 pl-8 pr-8 justify-center items-center sticky top-0 max-w-2xl z-10' />
+          <Links className='topnavi flex flex-col w-full gap-2 pt-1 pb-1 pl-8 pr-8 justify-center items-center sticky top-0 max-w-2xl z-10 ' />
           <div className='flex w-full justify-center max-w-2xl'>{children}</div>
         </main>
       </body>
