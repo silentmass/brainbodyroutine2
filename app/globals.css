@@ -36,11 +36,6 @@
   background-color: transparent;
 }
 
-.icon:hover {
-  fill: red; /* Changes the fill color on hover */
-  stroke: blue; /* Changes the stroke color on hover */
-}
-
 circle.checked,
 circle.unchecked,
 path.checked,
@@ -108,7 +103,7 @@ path.unchecked.mark.check-over.check-active {
 
 @media (prefers-color-scheme: light) {
   .link.active {
-    border-color: black;
+    border-color: #525252;
   }
 }
 
@@ -158,4 +153,23 @@ path.unchecked.mark.check-over.check-active {
 
 li.card {
   color: black;
+}
+
+.icon {
+  color: #d4d4d4;
+}
+.icon:hover {
+  color: #a3a3a3;
+}
+.icon:active {
+  color: #0a0a0a;
+}
+
+.topnavi {
+  background-color: #d4d4d4;
+  opacity: 0.9;
+}
+
+ul.topnavi {
+  color: #525252;
 }

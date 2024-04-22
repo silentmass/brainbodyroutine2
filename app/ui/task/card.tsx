@@ -4,9 +4,10 @@ import { DeleteTask, SetTaskActive, UpdateTask } from './buttons'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
+import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useState } from 'react'
-import FormActionStateMessage from '../form-components/form-action-message'
+import FormActionStateMessage from '@/app/ui/form-components/form-action-message'
 
 const TaskCard = ({ task }: { task: Task }) => {
   const [showStateMessage, setShowStateMessage] = useState(true)
@@ -42,7 +43,7 @@ const TaskCard = ({ task }: { task: Task }) => {
       </div>
       <div className='absolute flex items-center left-0 top-0 z-10 pt-6 pb-6 pl-4 pr-4 h-full'>
         <Link href={`/tasks/${task.id}`}>
-          <ArrowRightIcon className='w-10' color='#1f2937' />
+          <ChevronRightIcon className='icon w-7' />
         </Link>
       </div>
       <div className='absolute flex flex-col gap-y-4 right-0 top-0 z-10 pt-6 pb-6 pl-4 pr-4 h-full justify-between'>
