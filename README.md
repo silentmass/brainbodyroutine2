@@ -27,6 +27,7 @@
 - [x] Fix description list update fetch
 - [x] Check description list update
 - [x] Check description update
+- [x] Change categories visuals
 - [ ] Add order column in tasks, descriptionlist, and descriptions
 - [ ] Check how navigation works when is open
   - [ ] Horizontal > Change task category

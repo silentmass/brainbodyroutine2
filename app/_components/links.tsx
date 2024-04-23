@@ -37,12 +37,13 @@ export function Links ({ className }: { className: string }) {
             <Link
               className={`link ${clsx({
                 active:
-                  pathname && /^\/task-categories$|^\/tasks\//.test(pathname),
+                  pathname &&
+                  /^\/task-categories$|^\/task-categories\//.test(pathname),
                 '': pathname !== '/task-categories'
               })}`}
               href={'/task-categories'}
             >
-              Categories
+              Settings
             </Link>
           </li>
         </ul>
