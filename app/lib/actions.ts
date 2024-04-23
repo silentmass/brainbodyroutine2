@@ -82,16 +82,16 @@ export const createTaskCategory = async (prevState: any, formData: FormData) => 
         }
 
         try {
-            revalidateTag("taskcategory");
             revalidateTag("taskcategories");
+            revalidateTag("taskcategory");
         } catch (revalidateErr) {
-            console.error("Failed create task category revalidate: ", revalidateErr);
+            console.error("Failed revalidate after create task category: ", revalidateErr);
         }
         
-        return {message: `Created task category ${data.title}`};
+        return {...prevState, message: `Created task category ${data.title}`};
     } catch (err) {
         console.error("Failed to create task category:", err);
-        return { message: "Failed to create title and description"};
+        return {...prevState, message: "Failed to create title and description"};
     };
 };
 
@@ -126,7 +126,6 @@ export const updateTaskCategory = async (id: string, prevState: any, formData: F
         try {
             revalidateTag("taskcategory");
             revalidateTag("taskcategories");
-            
         } catch (revalidateErr) {
             console.error("Failed update task category revalidate: ", revalidateErr)
         };
@@ -154,8 +153,8 @@ export const deleteTaskCategory = async (id: string) => {
         }
 
         try {
-            revalidateTag("taskcategory");
             revalidateTag("taskcategories");
+            revalidateTag("taskcategory");
         } catch (revalidateErr) {
             console.error("Failed delete task category revalidate: ", revalidateErr)
         }

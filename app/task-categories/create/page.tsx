@@ -6,9 +6,5 @@ export const metadata: Metadata = {
 }
 
 export default function Page () {
-  return (
-    <div className='flex w-full pt-2'>
-      <CreateTaskCategoryForm />
-    </div>
-  )
+  return <CreateTaskCategoryForm />
 }
