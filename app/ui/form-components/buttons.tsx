@@ -1,4 +1,6 @@
 'use client'
+import { PencilIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 import { useFormStatus } from 'react-dom'
 
 export const CreateButton = ({
@@ -18,5 +20,13 @@ export const CreateButton = ({
     >
       {children}
     </button>
+  )
+}
+
+export function UpdateButton ({ href }: { href: string }) {
+  return (
+    <Link href={href}>
+      <PencilIcon className='icon w-5' />
+    </Link>
   )
 }

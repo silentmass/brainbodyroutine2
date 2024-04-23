@@ -1,54 +1,8 @@
 'use client'
 import { useFormState, useFormStatus } from 'react-dom'
-import { TaskCategory } from '@/app/lib/definitions'
-import { deleteTaskCategory, updateTaskCategory } from '@/app/lib/actions'
-import Link from 'next/link'
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
-import clsx from 'clsx'
-
-const initialState = {
-  message: ''
-}
-
-export function CreateTaskCategory ({
-  children,
-  className
-}: Readonly<{
-  children: React.ReactNode
-  className: string
-}>) {
-  const { pending } = useFormStatus()
-
-  return (
-    <button className={className} type='submit' aria-disabled={pending}>
-      {children}
-    </button>
-  )
-}
-
-export function UpdateTaskCategory ({ id }: { id: string }) {
-  return (
-    <Link href={`/task-categories/${id}/edit`}>
-      <PencilIcon className='icon w-5' />
-    </Link>
-  )
-}
-
-export function EditCategory ({
-  children,
-  className
-}: Readonly<{
-  children: React.ReactNode
-  className: string
-}>) {
-  const { pending } = useFormStatus()
-
-  return (
-    <button className={className} type='submit' aria-disabled={pending}>
-      {children}
-    </button>
-  )
-}
+import { deleteTaskCategory } from '@/app/lib/actions'
+import { TrashIcon } from '@heroicons/react/24/outline'
+import { initialState } from '@/app/_components/response-state'
 
 export function DeleteTaskCategory ({ id }: { id: string }) {
   const { pending } = useFormStatus()

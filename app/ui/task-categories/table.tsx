@@ -1,7 +1,4 @@
-import { useEffect } from 'react'
 import { TaskCategory } from '../../lib/definitions'
-import { DeleteTaskCategory, UpdateTaskCategory } from './buttons'
-import clsx from 'clsx'
 import CategoryCard from './card'
 
 export default function TaskCategoriesTable ({

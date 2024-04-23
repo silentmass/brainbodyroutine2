@@ -4,6 +4,7 @@ import ListDescriptionsTable from './descriptions/table'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { DescriptionsCardListView } from '@/app/ui/tasks/description-lists/descriptions/card-list'
+import { UpdateButton } from '../../form-components/buttons'
 
 export const DescriptionListCard = ({
   taskDescriptionList
@@ -18,11 +19,9 @@ export const DescriptionListCard = ({
             <h2 className='card-create'>Title</h2>
             {taskDescriptionList.title}
           </label>
-          <Link
+          <UpdateButton
             href={`/tasks/${taskDescriptionList.task_id}/description-lists/${taskDescriptionList.id}/edit`}
-          >
-            <PencilIcon className='icon w-5' />
-          </Link>
+          />
         </div>
 
         <DeleteTaskDescriptionList

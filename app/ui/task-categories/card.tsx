@@ -1,5 +1,6 @@
 import { TaskCategory } from '@/app/lib/definitions'
-import { DeleteTaskCategory, UpdateTaskCategory } from './buttons'
+import { DeleteTaskCategory } from './buttons'
+import { UpdateButton } from '@/app/ui/form-components/buttons'
 
 export const CategoryCard = ({ category }: { category: TaskCategory }) => {
   return (
@@ -11,7 +12,7 @@ export const CategoryCard = ({ category }: { category: TaskCategory }) => {
         <label className='card-create flex gap-5'>
           <h2 className='card-create'>{category.title}</h2>
         </label>
-        <UpdateTaskCategory id={`${category.id}`} />
+        <UpdateButton href={`/task-categories/${category.id}/edit`} />
       </div>
       <div className='flex w-fit'></div>
       <DeleteTaskCategory id={`${category.id}`} />

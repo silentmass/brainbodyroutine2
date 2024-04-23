@@ -3,26 +3,7 @@
 import { useFormState, useFormStatus } from 'react-dom'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { deleteListDescription } from '@/app/lib/actions'
-
-const initialState = {
-  message: ''
-}
-
-export function CreateListDescription ({
-  children,
-  className
-}: Readonly<{
-  children: React.ReactNode
-  className: string
-}>) {
-  const { pending } = useFormStatus()
-
-  return (
-    <button type='submit' aria-disabled={pending} className={className}>
-      {children}
-    </button>
-  )
-}
+import { initialState } from '@/app/_components/response-state'
 
 export function DeleteListDescription ({ id }: { id: string }) {
   const { pending } = useFormStatus()

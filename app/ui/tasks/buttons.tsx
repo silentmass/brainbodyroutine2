@@ -1,18 +1,23 @@
 'use client'
 import { useFormState, useFormStatus } from 'react-dom'
 import { deleteTask, updateTask } from '@/app/lib/actions'
-import clsx from 'clsx'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import FormActionStateMessage from '../form-components/form-action-message'
 import { Task } from '@/app/lib/definitions'
-import { FormEvent, useRef, useState, useEffect } from 'react'
+import {
+  FormEvent,
+  useRef,
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction
+} from 'react'
 import { CreateButton } from '../form-components/buttons'
+import { InitialState } from '@/app/_components/response-state'
 
-const initialState = {
-  message: '',
-  redirectTo: null
-}
+import { initialState } from '@/app/_components/response-state'
+import ResponseDurationMessage from '@/app/_components/response-duration'
+import { Struct } from 'next/dist/compiled/superstruct'
 
 export function CreateTask () {
   const { pending } = useFormStatus()
@@ -38,7 +43,7 @@ export function DeleteTask ({ id }: { id: string }) {
       <button type='submit' aria-disabled={pending}>
         <TrashIcon className='icon w-5' />
       </button>
-      <FormActionStateMessage state={state} />
+      <ResponseDurationMessage state={state} />
     </form>
   )
 }
@@ -65,347 +70,236 @@ export function EditTask ({
 
 export function SetTaskActive ({
   task,
-  handleResponseMessage,
-  setResponseState
+  isMouseOverCheck,
+  isMouseActiveCheck
 }: {
   task: Task
-  handleResponseMessage: (state: boolean) => void
-  setResponseState: (state: any) => void
+  isMouseOverCheck: boolean
+  isMouseActiveCheck: boolean
 }) {
-  const updateTaskWithId = updateTask.bind(null, `${task.id}`)
-  const [state, formAction] = useFormState(updateTaskWithId, initialState)
-  const [isActive, setIsActive] = useState(task.is_active)
-  const formRef = useRef<HTMLFormElement>(null)
-  const [isMouseOverCheck, setIsMouseOverCheck] = useState(false)
-  const [isMouseActiveCheck, setIsMouseActiveCheck] = useState(false)
-
-  const [responseDuration, setResponseDuration] = useState(performance.now())
-
-  const durationRef = useRef(responseDuration)
+  const isActive = task.is_active
 
   const mouseOverStyle = isMouseOverCheck ? 'check-over' : 'check-out'
   const mouseActiveStyle = isMouseActiveCheck
     ? 'check-active'
     : 'check-nonactive'
 
-  useEffect(() => {
-    durationRef.current = responseDuration
-  }, [responseDuration])
-
-  useEffect(() => {
-    const responseTime = performance.now()
-    const responseDuration = responseTime - durationRef.current
-    setResponseDuration(responseDuration)
-    setResponseState({ ...state, responseDuration: responseDuration })
-    handleResponseMessage(true)
-
-    setTimeout(
-      () => {
-        handleResponseMessage(false)
-      },
-      1000,
-      state.message
-    )
-  }, [state])
-
-  const handleOnClick = (event: FormEvent<HTMLButtonElement>) => {
-    event.preventDefault()
-    setIsActive(previousValue => !previousValue)
-    if (formRef.current) {
-      formRef.current.requestSubmit()
-      setResponseDuration(performance.now())
-    }
-  }
-
-  return (
-    <form
-      name='editTaskForm'
-      id='editTaskForm'
-      action={formAction}
-      ref={formRef}
-      className='flex flex-col justify-center'
+  return isActive === true ? (
+    <svg
+      width='28'
+      height='38'
+      viewBox='0 0 28 38'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
     >
-      {/* Task title */}
-      <input
-        type='hidden'
-        name='taskTitle'
-        id='taskTitle'
-        defaultValue={task.title}
-      />
-      {/* Task category */}
-      <input
-        type='hidden'
-        name='taskCategoryId'
-        id='taskCategoryId'
-        defaultValue={task.task_category_id}
-      />
-      <input
-        type='hidden'
-        name='taskIsActive'
-        id='taskIsActive'
-        defaultValue={`${isActive}`}
-      />
-      <div className='relative'>
-        {/* Task is active */}
-        {isActive === true ? (
-          <svg
-            width='28'
-            height='38'
-            viewBox='0 0 28 38'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <g clipPath='url(#clip0_102_1221)'>
-              <circle
-                cx='14'
-                cy='14'
-                r='11.5'
-                fill='#F3F4F6'
-                stroke='#374151'
-                className={`unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
-              />
-              <g clipPath='url(#clip1_102_1221)'>
-                {/* Reflection */}
-                <path
-                  opacity='0.1'
-                  d='M23 30.5C23 29.5631 22.1801 28.5641 20.5035 27.7699C18.8649 26.9937 16.5662 26.5 14 26.5C11.4338 26.5 9.13506 26.9937 7.49653 27.7699C5.81986 28.5641 5 29.5631 5 30.5C5 31.4369 5.81986 32.4359 7.49653 33.2301C9.13506 34.0063 11.4338 34.5 14 34.5C16.5662 34.5 18.8649 34.0063 20.5035 33.2301C22.1801 32.4359 23 31.4369 23 30.5Z'
-                  fill='#F3F4F6'
-                  stroke='#374151'
-                  className={`unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
-                />
-                <g opacity='0.1' filter='url(#filter0_d_102_1221)'>
-                  <path
-                    d='M24 36C12.9276 33.1564 16.7083 24.4554 10 32.0115'
-                    stroke='#374151'
-                    strokeWidth='2'
-                    className={`mark unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
-                  />
-                </g>
-                <rect
-                  width='28'
-                  height='12'
-                  transform='translate(0 26)'
-                  fill='url(#paint0_linear_102_1221)'
-                />
-              </g>
-              <g filter='url(#filter1_d_102_1221)'>
-                <path
-                  d='M27 1C12.764 7.90595 17.625 29.0368 9 10.6864'
-                  stroke='#374151'
-                  strokeWidth='2'
-                  className={`mark unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
-                />
-              </g>
-            </g>
-            <defs>
-              <filter
-                id='filter0_d_102_1221'
-                x='6.2522'
-                y='25.9999'
-                width='20.9966'
-                height='14.9686'
-                filterUnits='userSpaceOnUse'
-                colorInterpolationFilters='sRGB'
-              >
-                <feFlood floodOpacity='0' result='BackgroundImageFix' />
-                <feColorMatrix
-                  in='SourceAlpha'
-                  type='matrix'
-                  values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0'
-                  result='hardAlpha'
-                />
-                <feOffset dy='1' />
-                <feGaussianBlur stdDeviation='1.5' />
-                <feComposite in2='hardAlpha' operator='out' />
-                <feColorMatrix
-                  type='matrix'
-                  values='0 0 0 0 0 0 0 0 0 0.52 0 0 0 0 1 0 0 0 0.8 0'
-                />
-                <feBlend
-                  mode='normal'
-                  in2='BackgroundImageFix'
-                  result='effect1_dropShadow_102_1221'
-                />
-                <feBlend
-                  mode='normal'
-                  in='SourceGraphic'
-                  in2='effect1_dropShadow_102_1221'
-                  result='shape'
-                />
-              </filter>
-              {/* {
-                                (isMouseActiveCheck)
-                                    ? (
-                                        <filter id="filter1_d_102_1221" x="5.09497" y="-1.89972" width="25.3414" height="24.8998" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                                            <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                                            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-                                            <feOffset dy="1" />
-                                            <feGaussianBlur stdDeviation="1.5" />
-                                            <feComposite in2="hardAlpha" operator="out" />
-                                            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0.52 0 0 0 0 1 0 0 0 0.8 0" />
-                                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_102_1221" />
-                                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_102_1221" result="shape" />
-                                        </filter>
-                                    )
-                                    : <></>
-                            } */}
-
-              <linearGradient
-                id='paint0_linear_102_1221'
-                x1='14'
-                y1='0'
-                x2='14'
-                y2='12'
-                gradientUnits='userSpaceOnUse'
-              >
-                <stop stopColor='#F9FAFB' stopOpacity='0' />
-                <stop offset='1' stopColor='#F9FAFB' />
-              </linearGradient>
-              <clipPath id='clip0_102_1221'>
-                <rect width='28' height='38' fill='white' />
-              </clipPath>
-              <clipPath id='clip1_102_1221'>
-                <rect
-                  width='28'
-                  height='12'
-                  fill='white'
-                  transform='translate(0 26)'
-                />
-              </clipPath>
-            </defs>
-          </svg>
-        ) : (
-          <svg
-            width='28'
-            height='38'
-            viewBox='0 0 28 38'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <g clipPath='url(#clip0_102_1221)'>
-              <circle
-                cx='14'
-                cy='14'
-                r='11.5'
-                fill='#F3F4F6'
-                stroke='#374151'
-                className={`checked ${mouseOverStyle} ${mouseActiveStyle}`}
-              />
-              <g clipPath='url(#clip1_102_1221)'>
-                <path
-                  opacity='0.1'
-                  d='M23 30.5C23 29.5631 22.1801 28.5641 20.5035 27.7699C18.8649 26.9937 16.5662 26.5 14 26.5C11.4338 26.5 9.13506 26.9937 7.49653 27.7699C5.81986 28.5641 5 29.5631 5 30.5C5 31.4369 5.81986 32.4359 7.49653 33.2301C9.13506 34.0063 11.4338 34.5 14 34.5C16.5662 34.5 18.8649 34.0063 20.5035 33.2301C22.1801 32.4359 23 31.4369 23 30.5Z'
-                  fill='#F3F4F6'
-                  stroke='#374151'
-                  className={`checked ${mouseOverStyle} ${mouseActiveStyle}`}
-                />
-                <g opacity='0.1' filter='url(#filter0_d_102_1221)'>
-                  <path
-                    d='M24 36C12.9276 33.1564 16.7083 24.4554 10 32.0115'
-                    stroke='#374151'
-                    strokeWidth='2'
-                  />
-                </g>
-                <rect
-                  width='28'
-                  height='12'
-                  transform='translate(0 26)'
-                  fill='url(#paint0_linear_102_1221)'
-                />
-              </g>
-              <g filter='url(#filter1_d_102_1221)'>
-                <path
-                  d='M27 1C12.764 7.90595 17.625 29.0368 9 10.6864'
-                  stroke='#374151'
-                  strokeWidth='2'
-                />
-              </g>
-            </g>
-            <defs>
-              <filter
-                id='filter0_d_102_1221'
-                x='6.2522'
-                y='25.9999'
-                width='20.9966'
-                height='14.9686'
-                filterUnits='userSpaceOnUse'
-                colorInterpolationFilters='sRGB'
-              >
-                <feFlood floodOpacity='0' result='BackgroundImageFix' />
-                <feColorMatrix
-                  in='SourceAlpha'
-                  type='matrix'
-                  values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0'
-                  result='hardAlpha'
-                />
-                <feOffset dy='1' />
-                <feGaussianBlur stdDeviation='1.5' />
-                <feComposite in2='hardAlpha' operator='out' />
-                <feColorMatrix
-                  type='matrix'
-                  values='0 0 0 0 0 0 0 0 0 0.52 0 0 0 0 1 0 0 0 0.8 0'
-                />
-                <feBlend
-                  mode='normal'
-                  in2='BackgroundImageFix'
-                  result='effect1_dropShadow_102_1221'
-                />
-                <feBlend
-                  mode='normal'
-                  in='SourceGraphic'
-                  in2='effect1_dropShadow_102_1221'
-                  result='shape'
-                />
-              </filter>
-              {/* Mark drop shadow */}
-              {/* <filter id="filter1_d_102_1221" x="5.09497" y="-1.89972" width="25.3414" height="24.8998" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                                <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-                                <feOffset dy="1" />
-                                <feGaussianBlur stdDeviation="1.5" />
-                                <feComposite in2="hardAlpha" operator="out" />
-                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0.52 0 0 0 0 1 0 0 0 0.8 0" />
-                                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_102_1221" />
-                                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_102_1221" result="shape" />
-                            </filter> */}
-              <linearGradient
-                id='paint0_linear_102_1221'
-                x1='14'
-                y1='0'
-                x2='14'
-                y2='12'
-                gradientUnits='userSpaceOnUse'
-              >
-                <stop stopColor='#F9FAFB' stopOpacity='0' />
-                <stop offset='1' stopColor='#F9FAFB' />
-              </linearGradient>
-              <clipPath id='clip0_102_1221'>
-                <rect width='28' height='38' fill='white' />
-              </clipPath>
-              <clipPath id='clip1_102_1221'>
-                <rect
-                  width='28'
-                  height='12'
-                  fill='white'
-                  transform='translate(0 26)'
-                />
-              </clipPath>
-            </defs>
-          </svg>
-        )}
-        <button
-          type='submit'
-          onMouseEnter={() => setIsMouseOverCheck(true)}
-          onMouseLeave={() => {
-            setIsMouseOverCheck(false)
-            setIsMouseActiveCheck(false)
-          }}
-          onMouseDown={() => setIsMouseActiveCheck(true)}
-          onMouseUp={() => setIsMouseActiveCheck(false)}
-          onClick={handleOnClick}
-          className='absolute flex left-[2px] top-[2px] rounded-full w-[24px] h-[24px]'
+      <g clipPath='url(#clip0_102_1221)'>
+        <circle
+          cx='14'
+          cy='14'
+          r='11.5'
+          fill='#F3F4F6'
+          stroke='#374151'
+          className={`unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
         />
-      </div>
-    </form>
+        <g clipPath='url(#clip1_102_1221)'>
+          {/* Reflection */}
+          <path
+            opacity='0.1'
+            d='M23 30.5C23 29.5631 22.1801 28.5641 20.5035 27.7699C18.8649 26.9937 16.5662 26.5 14 26.5C11.4338 26.5 9.13506 26.9937 7.49653 27.7699C5.81986 28.5641 5 29.5631 5 30.5C5 31.4369 5.81986 32.4359 7.49653 33.2301C9.13506 34.0063 11.4338 34.5 14 34.5C16.5662 34.5 18.8649 34.0063 20.5035 33.2301C22.1801 32.4359 23 31.4369 23 30.5Z'
+            fill='#F3F4F6'
+            stroke='#374151'
+            className={`unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
+          />
+          <g opacity='0.1' filter='url(#filter0_d_102_1221)'>
+            <path
+              d='M24 36C12.9276 33.1564 16.7083 24.4554 10 32.0115'
+              stroke='#374151'
+              strokeWidth='2'
+              className={`mark unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
+            />
+          </g>
+          <rect
+            width='28'
+            height='12'
+            transform='translate(0 26)'
+            fill='url(#paint0_linear_102_1221)'
+          />
+        </g>
+        <g filter='url(#filter1_d_102_1221)'>
+          <path
+            d='M27 1C12.764 7.90595 17.625 29.0368 9 10.6864'
+            stroke='#374151'
+            strokeWidth='2'
+            className={`mark unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
+          />
+        </g>
+      </g>
+      <defs>
+        <filter
+          id='filter0_d_102_1221'
+          x='6.2522'
+          y='25.9999'
+          width='20.9966'
+          height='14.9686'
+          filterUnits='userSpaceOnUse'
+          colorInterpolationFilters='sRGB'
+        >
+          <feFlood floodOpacity='0' result='BackgroundImageFix' />
+          <feColorMatrix
+            in='SourceAlpha'
+            type='matrix'
+            values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0'
+            result='hardAlpha'
+          />
+          <feOffset dy='1' />
+          <feGaussianBlur stdDeviation='1.5' />
+          <feComposite in2='hardAlpha' operator='out' />
+          <feColorMatrix
+            type='matrix'
+            values='0 0 0 0 0 0 0 0 0 0.52 0 0 0 0 1 0 0 0 0.8 0'
+          />
+          <feBlend
+            mode='normal'
+            in2='BackgroundImageFix'
+            result='effect1_dropShadow_102_1221'
+          />
+          <feBlend
+            mode='normal'
+            in='SourceGraphic'
+            in2='effect1_dropShadow_102_1221'
+            result='shape'
+          />
+        </filter>
+        <linearGradient
+          id='paint0_linear_102_1221'
+          x1='14'
+          y1='0'
+          x2='14'
+          y2='12'
+          gradientUnits='userSpaceOnUse'
+        >
+          <stop stopColor='#F9FAFB' stopOpacity='0' />
+          <stop offset='1' stopColor='#F9FAFB' />
+        </linearGradient>
+        <clipPath id='clip0_102_1221'>
+          <rect width='28' height='38' fill='white' />
+        </clipPath>
+        <clipPath id='clip1_102_1221'>
+          <rect
+            width='28'
+            height='12'
+            fill='white'
+            transform='translate(0 26)'
+          />
+        </clipPath>
+      </defs>
+    </svg>
+  ) : (
+    <svg
+      width='28'
+      height='38'
+      viewBox='0 0 28 38'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <g clipPath='url(#clip0_102_1221)'>
+        <circle
+          cx='14'
+          cy='14'
+          r='11.5'
+          fill='#F3F4F6'
+          stroke='#374151'
+          className={`checked ${mouseOverStyle} ${mouseActiveStyle}`}
+        />
+        <g clipPath='url(#clip1_102_1221)'>
+          <path
+            opacity='0.1'
+            d='M23 30.5C23 29.5631 22.1801 28.5641 20.5035 27.7699C18.8649 26.9937 16.5662 26.5 14 26.5C11.4338 26.5 9.13506 26.9937 7.49653 27.7699C5.81986 28.5641 5 29.5631 5 30.5C5 31.4369 5.81986 32.4359 7.49653 33.2301C9.13506 34.0063 11.4338 34.5 14 34.5C16.5662 34.5 18.8649 34.0063 20.5035 33.2301C22.1801 32.4359 23 31.4369 23 30.5Z'
+            fill='#F3F4F6'
+            stroke='#374151'
+            className={`checked ${mouseOverStyle} ${mouseActiveStyle}`}
+          />
+          <g opacity='0.1' filter='url(#filter0_d_102_1221)'>
+            <path
+              d='M24 36C12.9276 33.1564 16.7083 24.4554 10 32.0115'
+              stroke='#374151'
+              strokeWidth='2'
+            />
+          </g>
+          <rect
+            width='28'
+            height='12'
+            transform='translate(0 26)'
+            fill='url(#paint0_linear_102_1221)'
+          />
+        </g>
+        <g filter='url(#filter1_d_102_1221)'>
+          <path
+            d='M27 1C12.764 7.90595 17.625 29.0368 9 10.6864'
+            stroke='#374151'
+            strokeWidth='2'
+          />
+        </g>
+      </g>
+      <defs>
+        <filter
+          id='filter0_d_102_1221'
+          x='6.2522'
+          y='25.9999'
+          width='20.9966'
+          height='14.9686'
+          filterUnits='userSpaceOnUse'
+          colorInterpolationFilters='sRGB'
+        >
+          <feFlood floodOpacity='0' result='BackgroundImageFix' />
+          <feColorMatrix
+            in='SourceAlpha'
+            type='matrix'
+            values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0'
+            result='hardAlpha'
+          />
+          <feOffset dy='1' />
+          <feGaussianBlur stdDeviation='1.5' />
+          <feComposite in2='hardAlpha' operator='out' />
+          <feColorMatrix
+            type='matrix'
+            values='0 0 0 0 0 0 0 0 0 0.52 0 0 0 0 1 0 0 0 0.8 0'
+          />
+          <feBlend
+            mode='normal'
+            in2='BackgroundImageFix'
+            result='effect1_dropShadow_102_1221'
+          />
+          <feBlend
+            mode='normal'
+            in='SourceGraphic'
+            in2='effect1_dropShadow_102_1221'
+            result='shape'
+          />
+        </filter>
+        <linearGradient
+          id='paint0_linear_102_1221'
+          x1='14'
+          y1='0'
+          x2='14'
+          y2='12'
+          gradientUnits='userSpaceOnUse'
+        >
+          <stop stopColor='#F9FAFB' stopOpacity='0' />
+          <stop offset='1' stopColor='#F9FAFB' />
+        </linearGradient>
+        <clipPath id='clip0_102_1221'>
+          <rect width='28' height='38' fill='white' />
+        </clipPath>
+        <clipPath id='clip1_102_1221'>
+          <rect
+            width='28'
+            height='12'
+            fill='white'
+            transform='translate(0 26)'
+          />
+        </clipPath>
+      </defs>
+    </svg>
   )
 }

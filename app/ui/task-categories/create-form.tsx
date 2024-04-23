@@ -1,54 +1,12 @@
 'use client'
 import { createTaskCategory } from '@/app/lib/actions'
-import { useFormState, useFormStatus } from 'react-dom'
-import { CreateTaskCategory } from './buttons'
-import clsx from 'clsx'
-import FormActionStateMessage from '../form-components/form-action-message'
-import {
-  fieldBaseStyle,
-  formLabelStyle,
-  rowButtonsStyle
-} from '../form-components/form-styles'
+import { useFormState } from 'react-dom'
 import { CreateButton } from '../form-components/buttons'
-import { useState, useRef, useEffect } from 'react'
-
-const initialState = {
-  message: '',
-  redirectTo: null,
-  responseDuration: 0
-}
+import ResponseDurationMessage from '@/app/_components/response-duration'
+import { initialState } from '@/app/_components/response-state'
 
 export default function CreateTaskCategoryForm () {
   const [state, formAction] = useFormState(createTaskCategory, initialState)
-
-  const [responseDuration, setResponseDuration] = useState(performance.now())
-  const durationRef = useRef(responseDuration)
-  const [showStateMessage, setShowStateMessage] = useState(true)
-  const [responseState, setResponseState] = useState(initialState)
-
-  useEffect(() => {
-    durationRef.current = responseDuration
-  }, [responseDuration])
-
-  useEffect(() => {
-    const responseTime = performance.now()
-    const responseDuration = responseTime - durationRef.current
-    setResponseDuration(responseDuration)
-    setResponseState(previousState => ({
-      ...previousState,
-      ...state,
-      responseDuration: responseDuration
-    }))
-    setShowStateMessage(true)
-
-    setTimeout(
-      () => {
-        setShowStateMessage(false)
-      },
-      1000,
-      state.message
-    )
-  }, [state])
 
   return (
     <form
@@ -71,17 +29,8 @@ export default function CreateTaskCategoryForm () {
           <CreateButton className='card-create'>Create</CreateButton>
         </div>
       </div>
-      {/* Form action state message floating above card */}
-      <div
-        className={`absolute top-0 left-0 flex w-full items-center justify-center rounded-2xl ${clsx(
-          {
-            'bg-neutral-200/30': showStateMessage,
-            'hidden bg-transparent': !showStateMessage
-          }
-        )}`}
-      >
-        <FormActionStateMessage state={responseState} />
-      </div>
+      {/* Form action state message floating above card requires relative parent */}
+      <ResponseDurationMessage state={state} />
     </form>
   )
 }

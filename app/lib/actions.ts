@@ -88,7 +88,7 @@ export const createTaskCategory = async (prevState: any, formData: FormData) => 
             console.error("Failed revalidate after create task category: ", revalidateErr);
         }
         
-        return {...prevState, message: `Created task category ${data.title}`};
+        return {...prevState, message: `Created category ${data.title}`};
     } catch (err) {
         console.error("Failed to create task category:", err);
         return {...prevState, message: "Failed to create title and description"};
@@ -130,14 +130,14 @@ export const updateTaskCategory = async (id: string, prevState: any, formData: F
             console.error("Failed update task category revalidate: ", revalidateErr)
         };
         
-        return {message: `Updated task category ${data.title}`, redirectTo: "/task-categories"};
+        return {...prevState, message: `Updated category ${data.title}`, redirectTo: "/task-categories"};
     } catch (err) {
         console.error("Failed to update task category:", err);
-        return { message: "Failed to update title and description", redirectTo: prevState.redirectTo};
+        return {...prevState, message: "Failed to update title and description"};
     };
 };
 
-export const deleteTaskCategory = async (id: string) => {
+export const deleteTaskCategory = async (id: string, prevState:any, formData: FormData) => {
     try {
         const res = await fetch(
             `http://localhost:3000/api/taskcategory/${id}/delete`,
@@ -159,10 +159,10 @@ export const deleteTaskCategory = async (id: string) => {
             console.error("Failed delete task category revalidate: ", revalidateErr)
         }
 
-        return {message: `Deleted task category`};
+        return {...prevState, message: `Deleted category`};
     } catch (err) {
         console.error("Failed to delete task category: ", err);
-        return {message: "Failed to delete tasks category"};
+        return {...prevState, message: "Failed to delete tasks category"};
     };
 };
 
@@ -207,14 +207,14 @@ export const createTask = async (prevState: any, formData:FormData) => {
             console.error("Failed to create task revalidate: ", revalidateErr);
         };
 
-        return {message: `Task: ${data.title} created`};
+        return {...prevState, message: `Task: ${data.title} created`};
     } catch (err) {
         console.error(`Failed to create a task: ${data.title}`, err);
-        return {message: `Failed to create a task: ${data.title}`};
+        return {...prevState, message: `Failed to create a task: ${data.title}`};
     };
 ;}
 
-export const deleteTask = async (id: string) => {
+export const deleteTask = async (id: string, prevState:any, formData:FormData) => {
     try {
         const res = await fetch(
             `http://localhost:3000/api/tasks/${id}/delete`,
@@ -235,16 +235,17 @@ export const deleteTask = async (id: string) => {
             console.error(`Failed to delete task revalidate: `, revalidateErr);
         };
 
-        return ({message: `Deleted task: ${id}`});
+        return ({...prevState, message: `Deleted task: ${id}`});
     } catch (err) {
         console.error(`Failed to delete task: ${id}`);
-        return ({message: `Failed to delete task: ${id}`});
+        return ({...prevState, message: `Failed to delete task: ${id}`});
     };
 };
 
 export const updateTask = async (id: string, prevState: any, formData: FormData) => {
-    const isActiveValue = formData.get("taskIsActive");
-    const isActive = (isActiveValue === "on" || isActiveValue === "true") ? true : false;
+    const isActive= formData.get("taskIsActive")
+    console.log("Server", "taskIsActive", isActive)
+
     const taskCategoryIdValue = formData.get("taskCategoryId")
     const task_category_id = taskCategoryIdValue !== null && typeof taskCategoryIdValue === "string" && taskCategoryIdValue !== "" 
     ? parseInt(taskCategoryIdValue) 
@@ -255,7 +256,7 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
         id: parseInt(id),
         title: title,
         task_category_id: task_category_id,
-        is_active: isActive,
+        is_active: (isActive === "on" || isActive === "true") ? true : false,
     });
 
     if (!validatedFields.success) {
@@ -285,10 +286,10 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
         } catch (revalidateErr) {
             console.error(`Failed to update task revalidate: `, revalidateErr);
         }
-        return {message: `Task updated`, redirectTo: "/tasks"};
+        return {...prevState,message: `Task updated`, redirectTo: "/tasks"};
     } catch (err) {
         console.error(`Failed to fetch update task ${title}`, err)
-        return {message: `Failed to fetch update task ${id}`, redirectTo: prevState.redirectTo};
+        return {...prevState,message: `Failed to fetch update task ${id}`, redirectTo: prevState.redirectTo};
     };
 }
 
@@ -328,10 +329,10 @@ export const createDescriptionList = async (taskId: string, prevState: any, form
             console.error("Failed to fetch task description list create revalidate: ", revalidateErr);
         }
 
-        return {message: `Create task description list ${data.title}`, redirectTo: `/tasks/${taskId}/edit`};
+        return {...prevState, message: `List ${data.title} created`, redirectTo: `/tasks/${taskId}/edit`};
     } catch (err) {
         console.error(`Failed to fetch task description list create ${taskId}`, err);
-        return {message: `Failed to fetch task description list create ${taskId}`, redirectTo: prevState.redirectTo};
+        return {...prevState, message: `Failed to fetch task description list create ${taskId}`, redirectTo: prevState.redirectTo};
     }
 };
 
@@ -378,14 +379,14 @@ export const updateDescriptionList = async(id: string, descriptions: ListDescrip
             console.error("Description list update revalidate failed: ", revalidateErr);
         }
 
-        return {message: "Description list updated"};
+        return {...prevState, message: "List updated"};
     } catch (err) {
         console.error("Failed to update description list fetch: ", err);
-        return {errors: "Failed to update description list fetch"};
+        return {...prevState,errors: "Failed to update description list fetch"};
     };
 }
 
-export const deleteDescriptionList = async (id:string) => {
+export const deleteDescriptionList = async (id:string, prevState:any, formData:FormData) => {
     try {
         const res = await fetch(
             `http://localhost:3000/api/descriptionlists/${id}/delete`,
@@ -406,16 +407,15 @@ export const deleteDescriptionList = async (id:string) => {
             console.error(`Task description list delete revalidate failed ${id}`, revalidateErr);
         }
 
-        return {message: `Task description list ${id} deleted`};
+        return {...prevState, message: `List ${id} deleted`};
 
     } catch (err) {
         console.error(`Task description list delete fetch failed ${id}`, err);
-        return {errors: `Task description list delete fetch failed ${id}`};
+        return {...prevState, errors: `Task description list delete fetch failed ${id}`};
     }
 }
 
 // Description actions
-
 
 export const createListDescription = async (listId: string, prevState: any, formData: FormData) => {
     const validatedFields = ListDescriptionSchema.safeParse({
@@ -456,10 +456,10 @@ export const createListDescription = async (listId: string, prevState: any, form
             console.error(`List description create revalidate failed: `, revalidateErr);
         }
 
-        return {message: `List description created`};
+        return {...prevState, message: `Description created`};
     } catch (err) {
         console.error(`List description create fetch failed`, err);
-        return {errors: `List description create fetch failed`};
+        return {...prevState, errors: `List description create fetch failed`};
     };
 };
 
@@ -501,10 +501,10 @@ export const updateListDescription = async (descriptionId: string, descriptionLi
             console.error("List description update revalidation failed:", revalidateErr);
         };
 
-        return {message: "List description updated"};
+        return {...prevState, message: "Description updated"};
     } catch (err) {
         console.error("List description update fetch failed", err);
-        return {errors: "List description update fetch failed"};
+        return {...prevState, errors: "List description update fetch failed"};
     }
 };
 
@@ -532,9 +532,9 @@ export const deleteListDescription = async (id: string, prevState: any, formData
             console.log(`List description deleted revalidation failed`, revalidateErr);
         };
 
-        return {message: `List description deleted`};
+        return {...prevState, message: `Description deleted`};
     } catch(err) {
         console.error(`List description delete fetch failed`, err);
-        return {errors: `List description delete fetch failed`};
+        return {...prevState, errors: `List description delete fetch failed`};
     }
 }

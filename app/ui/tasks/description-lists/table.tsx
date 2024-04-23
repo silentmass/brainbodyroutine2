@@ -8,9 +8,12 @@ export default function DescriptionListsTable ({
 }) {
   const isList = taskDescriptionLists && taskDescriptionLists.length
 
-  return (
-    <div className='flex flex-col w-full gap-y-1'>
-      {isList ? <DescriptionLists lists={taskDescriptionLists} /> : <></>}
-    </div>
+  return isList ? (
+    <DescriptionLists
+      lists={taskDescriptionLists}
+      className='flex flex-col w-full gap-y-1'
+    />
+  ) : (
+    <></>
   )
 }

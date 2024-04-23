@@ -3,30 +3,42 @@ import DescriptionListCard from './card'
 import { DescriptionListCardView } from './card'
 
 export const DescriptionLists = ({
-  lists
+  lists,
+  className
 }: {
   lists: TaskDescriptionList[]
+  className: string
 }) => {
   return (
-    <>
+    <ul className={`${className}`}>
       {lists.map(list => (
-        <DescriptionListCard key={list.id} taskDescriptionList={list} />
+        <li key={list.id}>
+          <DescriptionListCard taskDescriptionList={list} />
+        </li>
       ))}
-    </>
+    </ul>
   )
 }
 
 export const DescriptionListsView = ({
-  lists
+  lists,
+  className
 }: {
   lists: TaskDescriptionList[] | null
+  className: string
 }) => {
   return lists ? (
-    lists.map(list => {
-      if (list !== null && list.descriptions) {
-        return <DescriptionListCardView key={list.id} list={list} />
-      }
-    })
+    <ul className={`${className}`}>
+      {lists.map(list => {
+        if (list !== null && list.descriptions) {
+          return (
+            <li key={list.id}>
+              <DescriptionListCardView list={list} />
+            </li>
+          )
+        }
+      })}
+    </ul>
   ) : (
     <></>
   )

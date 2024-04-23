@@ -15,18 +15,17 @@ export const TaskCategoriesTopNavi = ({
     <nav>
       <ul className={`${className}`}>
         {categories.map((category: TaskCategory) => (
-          <Link
-            key={category.id}
-            href={`/tasks/filter/${category.id}`}
-            className={`link ${clsx({
-              active: activeID === category.id,
-              '': activeID !== category.id
-            })}`}
-          >
-            <li className={`flex item-center justify-center`}>
+          <li key={category.id} className={`flex item-center justify-center`}>
+            <Link
+              href={`/tasks/filter/${category.id}`}
+              className={`link ${clsx({
+                active: activeID === category.id,
+                '': activeID !== category.id
+              })}`}
+            >
               {category.title}
-            </li>
-          </Link>
+            </Link>
+          </li>
         ))}
       </ul>
     </nav>

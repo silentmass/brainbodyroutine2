@@ -2,22 +2,12 @@
 import { createListDescription } from '@/app/lib/actions'
 import { TaskDescriptionList } from '@/app/lib/definitions'
 import { useFormState } from 'react-dom'
-import { CreateListDescription } from './buttons'
-import {
-  formLabelStyle,
-  rowButtonsStyle
-} from '@/app/ui/form-components/form-styles'
-import Link from 'next/link'
 import clsx from 'clsx'
 import { CreateButton } from '@/app/ui/form-components/buttons'
 import { useEffect, useRef, useState } from 'react'
 import FormActionStateMessage from '@/app/ui/form-components/form-action-message'
-
-const initialState = {
-  message: '',
-  redirectTo: null,
-  responseDuration: 0
-}
+import { initialState } from '@/app/_components/response-state'
+import ResponseDurationMessage from '@/app/_components/response-duration'
 
 export default function CreateListDescriptionForm ({
   descriptionList,
@@ -34,35 +24,6 @@ export default function CreateListDescriptionForm ({
     createListDescriptionWithId,
     initialState
   )
-
-  const [responseDuration, setResponseDuration] = useState(performance.now())
-  const durationRef = useRef(responseDuration)
-  const [showStateMessage, setShowStateMessage] = useState(true)
-  const [responseState, setResponseState] = useState(initialState)
-
-  useEffect(() => {
-    durationRef.current = responseDuration
-  }, [responseDuration])
-
-  useEffect(() => {
-    const responseTime = performance.now()
-    const responseDuration = responseTime - durationRef.current
-    setResponseDuration(responseDuration)
-    setResponseState(previousState => ({
-      ...previousState,
-      ...state,
-      responseDuration: responseDuration
-    }))
-    setShowStateMessage(true)
-
-    setTimeout(
-      () => {
-        setShowStateMessage(false)
-      },
-      1000,
-      state.message
-    )
-  }, [state])
 
   return (
     <form
@@ -84,17 +45,8 @@ export default function CreateListDescriptionForm ({
           <CreateButton className='card-create'>Create</CreateButton>
         </div>
       </div>
-      {/* Form action state message floating above card */}
-      <div
-        className={`absolute top-0 left-0 flex w-full items-center justify-center rounded-2xl ${clsx(
-          {
-            'bg-neutral-200/30': showStateMessage,
-            'hidden bg-transparent': !showStateMessage
-          }
-        )}`}
-      >
-        <FormActionStateMessage state={responseState} />
-      </div>
+      {/* Form action state message floating above card. Requires relative parent. */}
+      <ResponseDurationMessage state={state} />
     </form>
   )
 }

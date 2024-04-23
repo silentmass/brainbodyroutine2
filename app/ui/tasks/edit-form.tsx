@@ -6,24 +6,13 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import DescriptionListsTable from './description-lists/table'
-import {
-  fieldBaseStyle,
-  formLabelStyle,
-  rowButtonsStyle
-} from '@/app/ui/form-components/form-styles'
 import TaskCategoriesSelect from '@/app/ui/form-components/task-categories-select'
-import FormActionStateMessage from '@/app/ui/form-components/form-action-message'
 import { IsTaskActive } from '../form-components/is-task-active'
 import { EditTask } from './buttons'
 import clsx from 'clsx'
 import { CreateButton } from '../form-components/buttons'
-
-const initialState = {
-  message: '',
-  redirectTo: null,
-  responseDuration: 0
-}
-
+import ResponseDurationMessage from '@/app/_components/response-duration'
+import { initialState } from '@/app/_components/response-state'
 export default function EditTaskForm ({
   task,
   taskCategories,
@@ -33,6 +22,7 @@ export default function EditTaskForm ({
   taskCategories: TaskCategory[]
   taskDescriptionLists: TaskDescriptionList[]
 }) {
+  const [isActive, setIsActive] = useState(task.is_active)
   const updateTaskWithId = updateTask.bind(null, `${task.id}`)
   const [state, formAction] = useFormState(updateTaskWithId, initialState)
   const router = useRouter()
@@ -42,35 +32,6 @@ export default function EditTaskForm ({
       router.push(state.redirectTo)
     }
   }, [state, router])
-
-  const [responseDuration, setResponseDuration] = useState(performance.now())
-  const durationRef = useRef(responseDuration)
-  const [showStateMessage, setShowStateMessage] = useState(true)
-  const [responseState, setResponseState] = useState(initialState)
-
-  useEffect(() => {
-    durationRef.current = responseDuration
-  }, [responseDuration])
-
-  useEffect(() => {
-    const responseTime = performance.now()
-    const responseDuration = responseTime - durationRef.current
-    setResponseDuration(responseDuration)
-    setResponseState(previousState => ({
-      ...previousState,
-      ...state,
-      responseDuration: responseDuration
-    }))
-    setShowStateMessage(true)
-
-    setTimeout(
-      () => {
-        setShowStateMessage(false)
-      },
-      1000,
-      state.message
-    )
-  }, [state])
 
   const isList = taskDescriptionLists && taskDescriptionLists.length > 0
 
@@ -82,7 +43,7 @@ export default function EditTaskForm ({
         className='relative card-create flex flex-col gap-y-4 w-full rounded-2xl p-5'
       >
         {/* Task title */}
-        <label className={`flex w-full gap-2`}>
+        <label className={`card-create flex w-full gap-2`}>
           <h2 className='card-create'>Title</h2>
           <input
             type='text'
@@ -94,7 +55,7 @@ export default function EditTaskForm ({
           />
         </label>
         {/* Task category */}
-        <label className={`flex gap-4`}>
+        <label className={`card-create flex gap-4`}>
           <h2 className='card-create'>Category</h2>
           <TaskCategoriesSelect
             categories={taskCategories}
@@ -102,33 +63,23 @@ export default function EditTaskForm ({
           />
         </label>
         {/* Task is active */}
-        <label className={`flex gap-4 items-center`}>
+        <label className={`card-create flex gap-4 items-center`}>
           <h2 className='card-create'>Is active</h2>
           <div className='flex w-4 h-4'>
-            <IsTaskActive isActiveValue={task.is_active} />
+            <IsTaskActive isActiveValue={isActive} />
           </div>
         </label>
         {/* Task controls */}
-
         <div className='flex w-full justify-center items-center gap-4'>
           <Link href={`/tasks`} className={`rounded-2xl`}>
             <CreateButton className='card-create '>Cancel</CreateButton>
           </Link>
           <EditTask className={`card-create`}>Edit task</EditTask>
         </div>
-
-        {/* Form action state message floating above card */}
-        <div
-          className={`absolute top-0 left-0 flex w-full items-center justify-center rounded-2xl ${clsx(
-            {
-              'bg-neutral-200/30': showStateMessage,
-              'hidden bg-transparent': !showStateMessage
-            }
-          )}`}
-        >
-          <FormActionStateMessage state={responseState} />
-        </div>
+        {/* Form action state message floating above card requires relative parent */}
+        <ResponseDurationMessage state={state} />
       </form>
+
       {/* Task description lists */}
 
       <div className='flex flex-col gap-y-2 w-full'>
