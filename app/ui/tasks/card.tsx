@@ -21,50 +21,18 @@ import { updateTask } from '@/app/lib/actions'
 import { useFormState } from 'react-dom'
 
 const TaskCard = ({ task }: { task: Task }) => {
-  const [showStateMessage, setShowStateMessage] = useState(true)
-  const [responseState, setResponseState] = useState(initialState)
-
   const [isActive, setIsActive] = useState(task.is_active)
   const updateTaskWithId = updateTask.bind(null, `${task.id}`)
   const [state, formAction] = useFormState(updateTaskWithId, initialState)
   const [isMouseOverCheck, setIsMouseOverCheck] = useState(false)
   const [isMouseActiveCheck, setIsMouseActiveCheck] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
-  const [responseDuration, setResponseDuration] = useState(performance.now())
-  const durationRef = useRef(responseDuration)
-
-  useEffect(() => {
-    durationRef.current = responseDuration
-  }, [responseDuration])
-
-  useEffect(() => {
-    const responseTime = performance.now()
-    const responseDuration = responseTime - durationRef.current
-    setResponseDuration(responseDuration)
-    setResponseState(prevState => ({
-      ...prevState,
-      ...state,
-      responseDuration: responseDuration
-    }))
-    setShowStateMessage(true)
-
-    setTimeout(
-      () => {
-        setShowStateMessage(false)
-      },
-      1000,
-      state.message
-    )
-  }, [state])
 
   const handleOnClick = (event: FormEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    const valueBefore = isActive
     setIsActive(previousValue => !previousValue)
-    console.log('Client before:', valueBefore)
     if (formRef.current) {
       formRef.current.requestSubmit()
-      setResponseDuration(performance.now())
     }
   }
 
@@ -124,7 +92,7 @@ const TaskCard = ({ task }: { task: Task }) => {
           </p>
         </div>
       </div>
-      <ResponseDurationMessage state={responseState} />
+      <ResponseDurationMessage state={state} />
       <div className='absolute flex items-center left-0 top-0 z-10 pt-6 pb-6 pl-4 pr-4 h-full'>
         <Link href={`/tasks/${task.id}`}>
           <ChevronRightIcon className='icon w-10' />
@@ -139,51 +107,19 @@ const TaskCard = ({ task }: { task: Task }) => {
 }
 
 export const TaskCardView = ({ task }: { task: Task }) => {
-  const [showStateMessage, setShowStateMessage] = useState(true)
-  const [responseState, setResponseState] = useState(initialState)
-
   const [isActive, setIsActive] = useState(task.is_active)
   const updateTaskWithId = updateTask.bind(null, `${task.id}`)
   const [state, formAction] = useFormState(updateTaskWithId, initialState)
   const [isMouseOverCheck, setIsMouseOverCheck] = useState(false)
   const [isMouseActiveCheck, setIsMouseActiveCheck] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
-  const [responseDuration, setResponseDuration] = useState(performance.now())
-  const durationRef = useRef(responseDuration)
-
-  useEffect(() => {
-    durationRef.current = responseDuration
-  }, [responseDuration])
-
-  useEffect(() => {
-    const responseTime = performance.now()
-    const responseDuration = responseTime - durationRef.current
-    setResponseDuration(responseDuration)
-    setResponseState(prevState => ({
-      ...prevState,
-      ...state,
-      responseDuration: responseDuration
-    }))
-    setShowStateMessage(true)
-
-    setTimeout(
-      () => {
-        setShowStateMessage(false)
-      },
-      1000,
-      state.message
-    )
-  }, [state])
 
   const handleOnClick = (event: FormEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    const valueBefore = isActive
     setIsActive(previousValue => !previousValue)
-    console.log('Client before:', valueBefore, '>', !valueBefore)
 
     if (formRef.current) {
       formRef.current.requestSubmit()
-      setResponseDuration(performance.now())
     }
   }
 
@@ -248,16 +184,7 @@ export const TaskCardView = ({ task }: { task: Task }) => {
         </div>
       </div>
       {/* Form action state message floating above card */}
-      <div
-        className={`absolute top-0 flex w-full items-center justify-center rounded-2xl ${clsx(
-          {
-            'bg-neutral-200/30': showStateMessage,
-            'hidden bg-transparent': !showStateMessage
-          }
-        )}`}
-      >
-        <FormActionStateMessage state={responseState} />
-      </div>
+      <ResponseDurationMessage state={state} />
     </div>
   )
 }

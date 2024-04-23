@@ -244,8 +244,6 @@ export const deleteTask = async (id: string, prevState:any, formData:FormData) =
 
 export const updateTask = async (id: string, prevState: any, formData: FormData) => {
     const isActive= formData.get("taskIsActive")
-    console.log("Server", "taskIsActive", isActive)
-
     const taskCategoryIdValue = formData.get("taskCategoryId")
     const task_category_id = taskCategoryIdValue !== null && typeof taskCategoryIdValue === "string" && taskCategoryIdValue !== "" 
     ? parseInt(taskCategoryIdValue) 
