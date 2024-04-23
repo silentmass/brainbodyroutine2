@@ -24,7 +24,7 @@ export const DeleteTaskDescriptionList = ({
       id='deleteTaskDescriptionListForm'
       action={formAction}
     >
-      <button type='submit' className='flex'>
+      <button type='submit' className='flex' aria-label='Delete'>
         <TrashIcon className='icon w-5' />
       </button>
     </form>

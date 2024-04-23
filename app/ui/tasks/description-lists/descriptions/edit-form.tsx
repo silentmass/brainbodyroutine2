@@ -40,7 +40,12 @@ export default function EditListDescriptionForm ({
               className='flex w-full p-2 bg-transparent border border-neutral-300 rounded-2xl'
             ></textarea>
           </label>
-          <CreateButton className={'card-create'}>Update</CreateButton>
+          <CreateButton
+            className={'card-create'}
+            ariaLabel='Update description'
+          >
+            Update
+          </CreateButton>
         </div>
       </div>
       {/* Form action state message floating above card. Requires relative parent. */}

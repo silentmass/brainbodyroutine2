@@ -26,7 +26,9 @@ export default function CreateTaskCategoryForm () {
           />
         </label>
         <div className='flex w-full justify-center'>
-          <CreateButton className='card-create'>Create</CreateButton>
+          <CreateButton className='card-create' ariaLabel='Create category'>
+            Create
+          </CreateButton>
         </div>
       </div>
       {/* Form action state message floating above card requires relative parent */}

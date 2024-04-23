@@ -12,7 +12,7 @@ import {
   Dispatch,
   SetStateAction
 } from 'react'
-import { CreateButton } from '../form-components/buttons'
+import { CreateButton, DeleteButton } from '../form-components/buttons'
 import { InitialState } from '@/app/_components/response-state'
 
 import { initialState } from '@/app/_components/response-state'
@@ -27,6 +27,7 @@ export function CreateTask () {
       className='card-create flex w-fit items-center justify-center p-2 rounded-2xl'
       type='submit'
       aria-disabled={pending}
+      aria-label='Create'
     >
       Create
     </button>
@@ -40,9 +41,7 @@ export function DeleteTask ({ id }: { id: string }) {
 
   return (
     <form name='deleteTaskForm' action={formAction}>
-      <button type='submit' aria-disabled={pending}>
-        <TrashIcon className='icon w-5' />
-      </button>
+      <DeleteButton ariaDisabled={pending} />
       <ResponseDurationMessage state={state} />
     </form>
   )
@@ -58,14 +57,20 @@ export function UpdateTask ({ id }: { id: string }) {
 
 export function EditTask ({
   children,
-  className
+  className,
+  ariaLabel
 }: Readonly<{
   children: React.ReactNode
   className: string
+  ariaLabel: string
 }>) {
   const { pending } = useFormStatus()
 
-  return <CreateButton className={className}>{children}</CreateButton>
+  return (
+    <CreateButton className={className} ariaLabel={ariaLabel}>
+      {children}
+    </CreateButton>
+  )
 }
 
 export function SetTaskActive ({

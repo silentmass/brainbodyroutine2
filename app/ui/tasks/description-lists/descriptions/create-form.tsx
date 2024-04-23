@@ -42,7 +42,9 @@ export default function CreateListDescriptionForm ({
           ></textarea>
         </label>
         <div className='flex w-full justify-center'>
-          <CreateButton className='card-create'>Create</CreateButton>
+          <CreateButton className='card-create' ariaLabel='Create description'>
+            Create
+          </CreateButton>
         </div>
       </div>
       {/* Form action state message floating above card. Requires relative parent. */}

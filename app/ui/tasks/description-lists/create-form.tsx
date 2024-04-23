@@ -50,9 +50,13 @@ export default function CreateTaskDescriptionListForm ({
       {/* Form controls */}
       <div className='flex w-full justify-center items-center gap-4'>
         <Link href={`/tasks/${task.id}/edit`} className={`rounded-2xl`}>
-          <CreateButton className='card-create '>Cancel</CreateButton>
+          <CreateButton className='card-create' ariaLabel='Cancel'>
+            Cancel
+          </CreateButton>
         </Link>
-        <CreateButton className='card-create '>Create</CreateButton>
+        <CreateButton className='card-create' ariaLabel='Create list'>
+          Create
+        </CreateButton>
       </div>
       {/* Form action state message floating above card requires relative parent */}
       <ResponseDurationMessage state={state} />

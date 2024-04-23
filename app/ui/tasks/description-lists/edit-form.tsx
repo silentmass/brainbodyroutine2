@@ -48,9 +48,13 @@ export const UpdateDescriptionListForm = ({
       {/* Controls */}
       <div className='flex w-full justify-center items-center gap-4'>
         <Link href={`/tasks/${list.task_id}/edit`} className={``}>
-          <CreateButton className='card-create'>Cancel</CreateButton>
+          <CreateButton className='card-create' ariaLabel='Cancel'>
+            Cancel
+          </CreateButton>
         </Link>
-        <CreateButton className='card-create'>Update list</CreateButton>
+        <CreateButton className='card-create' ariaLabel='Update list'>
+          Update list
+        </CreateButton>
       </div>
       {/* Form action state message floating above card requires relative parent */}
       <ResponseDurationMessage state={state} />

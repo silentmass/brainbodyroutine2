@@ -1,9 +1,9 @@
 'use client'
 
 import { useFormState, useFormStatus } from 'react-dom'
-import { TrashIcon } from '@heroicons/react/24/outline'
 import { deleteListDescription } from '@/app/lib/actions'
 import { initialState } from '@/app/_components/response-state'
+import { DeleteButton } from '@/app/ui/form-components/buttons'
 
 export function DeleteListDescription ({ id }: { id: string }) {
   const { pending } = useFormStatus()
@@ -20,9 +20,7 @@ export function DeleteListDescription ({ id }: { id: string }) {
       action={formAction}
       className='flex h-full'
     >
-      <button className='flex items-center justify-center'>
-        <TrashIcon className='icon w-5' />
-      </button>
+      <DeleteButton ariaDisabled={pending} />
     </form>
   )
 }

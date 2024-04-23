@@ -15,7 +15,7 @@
 - [x] Update task server action
 - [x] Add create task API endpoints
 - [x] Add create description list API endpoint
-- [ ] Add create description API endpoint
+- [x] Add create description API endpoint
   - [x] Fetch list descriptions
   - [x] Fetch description list
   - [x] Get description by id
@@ -28,11 +28,11 @@
 - [x] Check description list update
 - [x] Check description update
 - [x] Change categories visuals
+- [x] Check revalidations
 - [ ] Add order column in tasks, descriptionlist, and descriptions
 - [ ] Check how navigation works when is open
   - [ ] Horizontal > Change task category
   - [ ] Vertical > Change task
-- [ ] Check revalidations
 - [ ] Finish form visuals
 - [ ] Add create tag API endpoints
 - [ ] Add delete tag API endpoints

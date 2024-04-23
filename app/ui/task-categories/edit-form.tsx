@@ -63,9 +63,13 @@ export default function EditTaskCategoryForm ({
         {/* Controls */}
         <div className='flex w-full justify-center items-center gap-4'>
           <Link href={`/task-categories`} className={``}>
-            <CreateButton className='card-create'>Cancel</CreateButton>
+            <CreateButton className='card-create' ariaLabel='Cancel'>
+              Cancel
+            </CreateButton>
           </Link>
-          <CreateButton className='card-create'>Update</CreateButton>
+          <CreateButton className='card-create' ariaLabel='Update category'>
+            Update
+          </CreateButton>
         </div>
       </div>
       {/* Form action state message floating above card requires relative parent */}

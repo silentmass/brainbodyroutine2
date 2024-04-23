@@ -72,9 +72,13 @@ export default function EditTaskForm ({
         {/* Task controls */}
         <div className='flex w-full justify-center items-center gap-4'>
           <Link href={`/tasks`} className={`rounded-2xl`}>
-            <CreateButton className='card-create '>Cancel</CreateButton>
+            <CreateButton className='card-create' ariaLabel='Cancel'>
+              Cancel
+            </CreateButton>
           </Link>
-          <EditTask className={`card-create`}>Edit task</EditTask>
+          <EditTask className={`card-create`} ariaLabel='Edit task'>
+            Edit task
+          </EditTask>
         </div>
         {/* Form action state message floating above card requires relative parent */}
         <ResponseDurationMessage state={state} />
@@ -94,7 +98,9 @@ export default function EditTaskForm ({
             href={`/tasks/${task.id}/description-lists/create`}
             className={``}
           >
-            <CreateButton className='card-create-dim'>Create List</CreateButton>
+            <CreateButton className='card-create-dim' ariaLabel='Create list'>
+              Create List
+            </CreateButton>
           </Link>
         </div>
         <div className='flex w-full'>
