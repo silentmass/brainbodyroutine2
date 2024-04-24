@@ -104,14 +104,24 @@ export const TouchCarousel = ({
       ref={divRef}
       className={`flex flex-col w-60 h-60 border justify-center items-center`}
     >
-      {
-        carouselList[
-          getRangeRelativeIndex(
-            relativeIndex ? relativeIndex : 0,
-            carouselList.length
-          )
-        ]
-      }
+      <ul>
+        {carouselList.map((element, id) => (
+          <li
+            key={`${element}${id}`}
+            className={`${
+              id ===
+              getRangeRelativeIndex(
+                relativeIndex ? relativeIndex : 0,
+                carouselList.length
+              )
+                ? 'bg-red-500'
+                : ''
+            }`}
+          >
+            {element}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
