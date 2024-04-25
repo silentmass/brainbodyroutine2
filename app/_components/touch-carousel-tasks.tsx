@@ -1,9 +1,7 @@
 'use client'
-import clsx from 'clsx'
 import { RefObject, useEffect, useRef, useState } from 'react'
-import { number } from 'zod'
-import { Task } from '../lib/definitions'
-import TaskCard from '../ui/tasks/card'
+import { Task } from '@/app/lib/definitions'
+import TaskCard from '@/app/ui/tasks/card'
 
 export interface coords {
   x: number | null
@@ -69,13 +67,27 @@ export function getCardListTopPosition (
   }
 }
 
+export function getListBoundingRect (ref: RefObject<HTMLDivElement | null>) {
+  if (ref) {
+    return ref.current?.querySelector('#taskList')?.getBoundingClientRect()
+  } else {
+    console.error('No main div ref')
+    return null
+  }
+}
+
 export function getCardBoundingRect (
-  listElementRef: RefObject<HTMLDivElement>,
+  ref: RefObject<HTMLDivElement | null>,
   taskID: number
 ) {
-  return listElementRef.current
-    ?.querySelector(`#taskCard${taskID}`)
-    ?.getBoundingClientRect()
+  if (ref) {
+    return ref.current
+      ?.querySelector(`#taskCard${taskID}`)
+      ?.getBoundingClientRect()
+  } else {
+    console.error('No card div ref')
+    return null
+  }
 }
 
 export const TouchCarouselTasks = ({
@@ -113,30 +125,34 @@ export const TouchCarouselTasks = ({
   }, [selectedTaskState])
 
   useEffect(() => {
-    // Init list height
-    const listHeight = divRef.current
-      ?.querySelector('#taskList')
-      ?.getBoundingClientRect()?.height
-
-    console.log('init listHeight', listHeight)
-
-    // Init card height
-    const cardHeight = getCardBoundingRect(divRef, selectedTaskState.id)?.height
-
-    console.log('init cardHeight', cardHeight)
-
-    if (cardHeight) {
-      const initialTopPosition = (touchAreaHeight - cardHeight) / 2
-      setListTopPosition(initialTopPosition)
-      setListInitialTopPosition(initialTopPosition)
-      console.log('init top shifted', initialTopPosition)
+    function initListTop (cardHeight: number | undefined) {
+      if (cardHeight !== undefined && cardHeight !== null) {
+        const initialTopPosition = (touchAreaHeight - cardHeight) / 2
+        setListTopPosition(initialTopPosition)
+        setListInitialTopPosition(initialTopPosition)
+        console.log('init cardHeight', cardHeight)
+        console.log('init list top shifted', initialTopPosition)
+      } else {
+        console.error('No card height')
+      }
     }
+
+    // Init list rect dimensions
+    const listRect = getListBoundingRect(divRef)
+
+    const mainOffsetWidth = divRef.current?.offsetWidth
+    const mainOffsetHeight = divRef.current?.offsetHeight
+    const mainOffsetTop = divRef.current?.offsetTop
+    const mainOffsetLeft = divRef.current?.offsetLeft
+
+    initListTop(getCardBoundingRect(divRef, selectedTaskState.id)?.height)
 
     // Touch event handlers
 
     const handleTouchStart = (event: TouchEvent) => {
       event.preventDefault()
       setIsTouchMove(true)
+      console.log('handleTouchStart')
     }
 
     const handleTouchEnd = (event: TouchEvent) => {
@@ -147,27 +163,28 @@ export const TouchCarouselTasks = ({
         divRef,
         selectedTaskStateRef.current.id
       )
-      const cardHeight = cardRect?.height
-      const cardTop = cardRect?.top
+      const endCardHeight = cardRect?.height
+      const endCardTop = cardRect?.top
 
       const endCardListTopPosition = getCardListTopPosition(
         divRef,
         selectedTaskStateRef.current.id
       )
 
-      console.log(cardHeight, cardTop, endCardListTopPosition)
-
       if (
-        cardHeight !== undefined &&
+        endCardHeight !== undefined &&
+        endCardHeight !== null &&
         endCardListTopPosition !== undefined &&
-        cardTop !== undefined
+        endCardListTopPosition !== null &&
+        endCardTop !== undefined &&
+        endCardTop !== null
       ) {
         const correctedListTopPosition =
-          -endCardListTopPosition + (touchAreaHeight - cardHeight) / 2
+          -endCardListTopPosition + (touchAreaHeight - endCardHeight) / 2
 
         const startCorrectedListTopPosition =
-          cardTop < -cardHeight / 2
-            ? (touchAreaHeight - cardHeight) / 2
+          endCardTop < -endCardHeight / 2
+            ? (touchAreaHeight - endCardHeight) / 2
             : correctedListTopPosition
 
         setListTopPosition(startCorrectedListTopPosition)
@@ -175,7 +192,7 @@ export const TouchCarouselTasks = ({
           'handleTouchEnd',
           startCorrectedListTopPosition,
           selectedTaskStateRef.current.title,
-          cardTop
+          endCardTop
         )
       }
     }
@@ -188,28 +205,32 @@ export const TouchCarouselTasks = ({
         y: event.touches[0].clientY
       })
 
+      const listRect = getListBoundingRect(divRef)
+      const moveListHeight = listRect?.height
+
       // Set
       if (
-        divRef.current?.offsetLeft &&
-        divRef.current?.offsetWidth &&
-        divRef.current?.offsetTop &&
-        divRef.current?.offsetHeight
+        mainOffsetLeft !== undefined &&
+        mainOffsetLeft !== null &&
+        mainOffsetWidth !== undefined &&
+        mainOffsetWidth !== null &&
+        mainOffsetTop !== undefined &&
+        mainOffsetTop !== null &&
+        mainOffsetHeight !== undefined &&
+        mainOffsetHeight !== null
       ) {
+        // Logic for selecting card
         const localRelativePosition = horizontal
           ? !invert
-            ? (event.touches[0].clientX - divRef.current?.offsetLeft) /
-              divRef.current?.offsetWidth
-            : 1 -
-              (event.touches[0].clientX - divRef.current?.offsetLeft) /
-                divRef.current?.offsetWidth
+            ? (event.touches[0].clientX - mainOffsetLeft) / mainOffsetWidth
+            : 1 - (event.touches[0].clientX - mainOffsetLeft) / mainOffsetWidth
           : !invert
-          ? 1 -
-            (event.touches[0].clientY - divRef.current?.offsetTop) /
-              divRef.current?.offsetHeight
-          : (event.touches[0].clientY - divRef.current?.offsetTop) /
-            divRef.current?.offsetHeight
+          ? 1 - (event.touches[0].clientY - mainOffsetTop) / mainOffsetHeight
+          : (event.touches[0].clientY - mainOffsetTop) / mainOffsetHeight
 
         setRelativePosition(localRelativePosition)
+
+        console.log('handleTouchMove', localRelativePosition)
 
         // Set current card as selected
         const currentTask =
@@ -221,27 +242,19 @@ export const TouchCarouselTasks = ({
           ]
         setSelectedTaskState(currentTask)
 
-        const currentCardElement = divRef.current?.querySelector(
-          `#taskCard${currentTask.id}`
-        )
-        const cardHeight = currentCardElement?.getBoundingClientRect().height
+        const cardRect = getCardBoundingRect(divRef, currentTask.id)
+        const moveCardHeight = cardRect?.height
 
-        const listRect = divRef.current
-          ?.querySelector('#taskList')
-          ?.getBoundingClientRect()
-
-        const listHeight = listRect?.height
-
-        console.log(currentTask.title)
+        console.log(currentTask.title, moveListHeight, mainOffsetHeight)
 
         // Card list scrolling logic
         if (
-          cardHeight &&
-          cardHeight !== null &&
-          listHeight &&
-          listHeight !== null
+          moveCardHeight !== undefined &&
+          moveCardHeight !== null &&
+          moveListHeight !== undefined &&
+          moveListHeight !== null
         ) {
-          const startListShift = (touchAreaHeight - cardHeight) / 2 // Center card
+          const startListShift = (touchAreaHeight - moveCardHeight) / 2 // Center card
           const touchDistanceFromStart =
             event.touches[0].clientY - startListShift
 
@@ -255,10 +268,10 @@ export const TouchCarouselTasks = ({
               : relTouchAreaDistance
 
           // Transform touch area displacement as list displacement
-          const listShiftFactor = listHeight / touchAreaHeight
+          const listShiftFactor = moveListHeight / touchAreaHeight
           const pos =
             relClippedTouchAreaDistance * touchAreaHeight * listShiftFactor
-          const endListShift = relClippedTouchAreaDistance * cardHeight // Correct end position
+          const endListShift = relClippedTouchAreaDistance * moveCardHeight // Correct end position
 
           // Set new list top position
           const newListTopPosition = -pos + startListShift + endListShift
@@ -290,39 +303,43 @@ export const TouchCarouselTasks = ({
     }
   }, [])
 
-  // bg-gradient-to-t from-transparent to-white
+  const mainContainerSizeStyle = `min-h-[${touchAreaHeight}px] max-h-[${touchAreaHeight}px]`
+  const gradientHeight = `${Math.round(touchAreaHeight / 4)}`
+  const gradientContainerStyle = `absolute from-transparent to-white to-80% w-full z-10`
 
   return (
     <div
       ref={divRef}
-      className={`relative flex flex-col w-10/12 min-h-[${touchAreaHeight}px] max-h-[${touchAreaHeight}px] justify-center items-center overflow-hidden rounded-2xl z-10 select-none `}
+      className={`relative flex flex-col w-screen h-screen ${mainContainerSizeStyle} justify-center items-center overflow-hidden rounded-2xl select-none`}
     >
-      <div className='absolute top-0 h-[30px] bg-gradient-to-t from-transparent to-white w-full z-20'></div>
-      <div className='absolute bottom-0 h-[30px] bg-gradient-to-b from-transparent to-white w-full z-20'></div>
-      {/* <div className={`absolute top-0 h-15 bg-red w-full z-20`}></div> */}
+      <div
+        className={`top-0 bg-gradient-to-t ${gradientContainerStyle}`}
+        style={{
+          height: `${gradientHeight}px`
+        }}
+      ></div>
+      <div
+        className={`bottom-0 bg-gradient-to-b ${gradientContainerStyle}`}
+        style={{
+          height: `${gradientHeight}px`
+        }}
+      ></div>
       <ul
         id='taskList'
-        className={`absolute flex flex-col w-full h-fit gap-y-1 items-center pl-4 pr-4 select-none  ${
-          listTopPosition === null ? 'opacity-0' : ''
-        }`}
+        className={`absolute flex flex-col w-full h-fit gap-y-1 items-center pl-4 pr-4 select-none z-1`}
         style={{
           top: `${listTopPosition}px`
         }}
       >
         {isTouchMove && relativePosition !== null
           ? tasks.map(task =>
-              task.id ===
-              tasks[
-                getRangeRelativeIndex(
-                  getRangeRelativePosition(relativePosition, 0, 1),
-                  tasks.length
-                )
-              ].id ? (
+              // Touch moving
+              task.id === selectedTaskState.id ? (
                 // Selected card
                 <li
                   id={`taskCard${task.id}`}
                   key={task.id}
-                  className={`flex rounded-2xl ${'outline-2 outline-offset-0 outline-dashed outline-black w-11/12'} `}
+                  className={`flex rounded-2xl ${'outline-2 outline-offset-0 outline-dashed outline-black w-11/12 opacity-100'} `}
                 >
                   <TaskCard task={task} />
                 </li>
@@ -337,13 +354,13 @@ export const TouchCarouselTasks = ({
                 </li>
               )
             )
-          : // Not moving
-            // Show only single card
+          : // Touc not moving
+            // Show only a single card
             tasks.map(task => (
               <li
                 id={`taskCard${task.id}`}
                 key={task.id}
-                className={`flex rounded-2xl w-full z-30 ${
+                className={`flex rounded-2xl w-full ${
                   task.id !== selectedTaskState.id ? 'opacity-0' : ''
                 } `}
               >
