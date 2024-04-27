@@ -1,200 +1,126 @@
 'use client'
-import { RefObject, useEffect, useRef, useState } from 'react'
-import { Task } from '@/app/lib/definitions'
+import { FormEvent, RefObject, useEffect, useRef, useState } from 'react'
+import { Task, TaskCategory } from '@/app/lib/definitions'
 import TaskCard from '@/app/ui/tasks/card'
+import clsx from 'clsx'
 
 export interface coords {
   x: number | null
   y: number | null
 }
 
-export function getRangeRelativePosition (
-  value: number,
-  rangeStart: number,
-  rangeEnd: number
-) {
-  if (value <= rangeStart) {
-    return rangeStart
-  } else if (value >= rangeEnd) {
-    return rangeEnd
-  } else {
-    return value
-  }
-}
-
-export function getRangeRelativeMappedPosition (
-  value: number,
-  rangeStart: number,
-  rangeEnd: number
-) {
-  const rangeLength = rangeEnd - rangeStart
-  if (value <= rangeStart / rangeLength) {
-    return rangeStart
-  } else if (value >= rangeEnd / rangeLength) {
-    return rangeEnd
-  } else {
-    return value * (rangeEnd - rangeStart)
-  }
-}
-
-export function getRangeRelativeIndex (value: number, spacings: number) {
-  const spacingsInt = Math.round(spacings)
-  return Math.round(value * (spacingsInt - 1))
-}
-
-export function getScaledInt (value: number | null, scale: number) {
-  if (value !== null && scale !== null) {
-    return Math.round(value * scale)
-  }
-  {
-    return null
-  }
-}
-
-export function getCardListTopPosition (
-  listElementRef: RefObject<HTMLDivElement>,
-  taskID: number
-) {
-  const cardTop = listElementRef.current
-    ?.querySelector(`#taskCard${taskID}`)
-    ?.getBoundingClientRect()?.top
-  const listTop = listElementRef.current
+function yCenterTask (ref: RefObject<HTMLDivElement>, taskID: number) {
+  // Find touch area dimensions
+  const touchAreaRect = ref.current?.getBoundingClientRect()
+  const listRect = ref.current
     ?.querySelector('#taskList')
-    ?.getBoundingClientRect()?.top
+    ?.getBoundingClientRect()
+  const cardRect = ref.current
+    ?.querySelector(`#taskCard${taskID}`)
+    ?.getBoundingClientRect()
 
-  if (cardTop && listTop) {
-    return cardTop - listTop
+  if (touchAreaRect && cardRect && listRect) {
+    const touchAreaCenterY = touchAreaRect?.height / 2
+    const cardYCenter = cardRect.y + cardRect.height / 2
+    console.log('yCenterTask', listRect.y - (cardYCenter - touchAreaCenterY))
+    return listRect.y - (cardYCenter - touchAreaCenterY)
   }
-}
-
-export function getListBoundingRect (ref: RefObject<HTMLDivElement | null>) {
-  if (ref) {
-    return ref.current?.querySelector('#taskList')?.getBoundingClientRect()
-  } else {
-    console.error('No main div ref')
-    return null
-  }
-}
-
-export function getCardBoundingRect (
-  ref: RefObject<HTMLDivElement | null>,
-  taskID: number
-) {
-  if (ref) {
-    return ref.current
-      ?.querySelector(`#taskCard${taskID}`)
-      ?.getBoundingClientRect()
-  } else {
-    console.error('No card div ref')
-    return null
-  }
+  return null
 }
 
 export const TouchCarouselTasks = ({
+  divRef,
   tasks,
   initialTask,
   horizontal,
   invert
 }: {
+  divRef: RefObject<HTMLDivElement>
   tasks: Task[]
   initialTask: Task
   horizontal: boolean
   invert: boolean
 }) => {
-  const divRef = useRef<HTMLDivElement>(null)
-  const [selectedTaskState, setSelectedTaskState] = useState<Task>(initialTask)
-  const selectedTaskStateRef = useRef(selectedTaskState)
-
-  const [touchCoords, setTouchCoords] = useState<coords>({ x: null, y: null })
-  const [relativePosition, setRelativePosition] = useState<number | null>(null)
-  const [rangeRelativePosition, setRangeRelativePosition] = useState<
-    number | null
-  >(null)
-
-  // List states
-  const [listInitialTopPosition, setListInitialTopPosition] = useState<
-    number | null
-  >(null)
-  const [listTopPosition, setListTopPosition] = useState<number | null>(null)
+  const listRef = useRef<HTMLUListElement>(null)
+  // Touch movement flag state
   const [isTouchMove, setIsTouchMove] = useState(false)
 
-  const touchAreaHeight = 200
+  // Changed during touch move
+  const [selectedTaskState, setSelectedTaskState] = useState<Task | null>(
+    initialTask
+  )
+  const selectedTaskStateRef = useRef(selectedTaskState)
+
+  // State used to calculate touch position
+  const [touchCoords, setTouchCoords] = useState<coords>({ x: null, y: null })
+
+  // Task list dimension and position states
+  const [listBoundingRectState, setListBoundingRectState] =
+    useState<DOMRect | null>(null)
+
+  const listBoundingRectStateRef = useRef(listBoundingRectState)
+
+  const [listTopPositionState, setListTopPositionState] = useState<
+    number | null
+  >(null)
+
+  // Use effect functions
+  useEffect(() => {
+    listBoundingRectStateRef.current = listBoundingRectState
+  }, [listBoundingRectState])
 
   useEffect(() => {
     selectedTaskStateRef.current = selectedTaskState
   }, [selectedTaskState])
 
   useEffect(() => {
-    function initListTop (cardHeight: number | undefined) {
-      if (cardHeight !== undefined && cardHeight !== null) {
-        const initialTopPosition = (touchAreaHeight - cardHeight) / 2
-        setListTopPosition(initialTopPosition)
-        setListInitialTopPosition(initialTopPosition)
-        console.log('init cardHeight', cardHeight)
-        console.log('init list top shifted', initialTopPosition)
-      } else {
-        console.error('No card height')
-      }
+    // Init list position
+    if (selectedTaskStateRef.current) {
+      console.log('init', selectedTaskStateRef.current.title)
+      setListTopPositionState(
+        yCenterTask(divRef, selectedTaskStateRef.current.id)
+      )
     }
 
-    // Init list rect dimensions
-    const listRect = getListBoundingRect(divRef)
-
-    const mainOffsetWidth = divRef.current?.offsetWidth
-    const mainOffsetHeight = divRef.current?.offsetHeight
-    const mainOffsetTop = divRef.current?.offsetTop
-    const mainOffsetLeft = divRef.current?.offsetLeft
-
-    initListTop(getCardBoundingRect(divRef, selectedTaskState.id)?.height)
-
     // Touch event handlers
-
     const handleTouchStart = (event: TouchEvent) => {
       event.preventDefault()
       setIsTouchMove(true)
-      console.log('handleTouchStart')
+
+      // Lets find cursor touch area normalized position
+      const touchY = event.touches[0].clientY
+
+      if (!tasks) {
+        console.log('No category tasks')
+        return
+      }
+
+      if (selectedTaskStateRef.current === null) {
+        setSelectedTaskState(tasks[0])
+      }
+
+      if (selectedTaskStateRef.current) {
+        console.log('handleTouchStart', selectedTaskStateRef.current.title)
+        setListTopPositionState(
+          yCenterTask(divRef, selectedTaskStateRef.current.id)
+        )
+      }
     }
 
     const handleTouchEnd = (event: TouchEvent) => {
       event.preventDefault()
       setIsTouchMove(false)
-
-      const cardRect = getCardBoundingRect(
-        divRef,
-        selectedTaskStateRef.current.id
-      )
-      const endCardHeight = cardRect?.height
-      const endCardTop = cardRect?.top
-
-      const endCardListTopPosition = getCardListTopPosition(
-        divRef,
-        selectedTaskStateRef.current.id
-      )
-
-      if (
-        endCardHeight !== undefined &&
-        endCardHeight !== null &&
-        endCardListTopPosition !== undefined &&
-        endCardListTopPosition !== null &&
-        endCardTop !== undefined &&
-        endCardTop !== null
-      ) {
-        const correctedListTopPosition =
-          -endCardListTopPosition + (touchAreaHeight - endCardHeight) / 2
-
-        const startCorrectedListTopPosition =
-          endCardTop < -endCardHeight / 2
-            ? (touchAreaHeight - endCardHeight) / 2
-            : correctedListTopPosition
-
-        setListTopPosition(startCorrectedListTopPosition)
-        console.log(
-          'handleTouchEnd',
-          startCorrectedListTopPosition,
-          selectedTaskStateRef.current.title,
-          endCardTop
+      if (selectedTaskStateRef.current) {
+        console.log('handleTouchEnd', selectedTaskStateRef.current.title)
+        setListTopPositionState(
+          yCenterTask(divRef, selectedTaskStateRef.current.id)
         )
       }
+
+      // TODO animate card return
+      // use timer and lerp
+      // from endCardListTopPosition to startCorrectedListTopPosition
+      // use sigmoid translation
     }
 
     const handleTouchMove = (event: TouchEvent) => {
@@ -205,79 +131,94 @@ export const TouchCarouselTasks = ({
         y: event.touches[0].clientY
       })
 
-      const listRect = getListBoundingRect(divRef)
-      const moveListHeight = listRect?.height
+      // Check if we have a list
+      if (tasks === null || tasks.length === 0) {
+        console.error('tasks', tasks?.length)
+        return
+      }
 
-      // Set
-      if (
-        mainOffsetLeft !== undefined &&
-        mainOffsetLeft !== null &&
-        mainOffsetWidth !== undefined &&
-        mainOffsetWidth !== null &&
-        mainOffsetTop !== undefined &&
-        mainOffsetTop !== null &&
-        mainOffsetHeight !== undefined &&
-        mainOffsetHeight !== null
-      ) {
-        // Logic for selecting card
-        const localRelativePosition = horizontal
-          ? !invert
-            ? (event.touches[0].clientX - mainOffsetLeft) / mainOffsetWidth
-            : 1 - (event.touches[0].clientX - mainOffsetLeft) / mainOffsetWidth
-          : !invert
-          ? 1 - (event.touches[0].clientY - mainOffsetTop) / mainOffsetHeight
-          : (event.touches[0].clientY - mainOffsetTop) / mainOffsetHeight
+      // Get touch area dimension
+      const touchAreaRect = divRef.current?.getBoundingClientRect()
+      // Get list dimensions
+      if (!listRef.current) {
+        return
+      }
+      const listRect = listRef.current.getBoundingClientRect()
 
-        setRelativePosition(localRelativePosition)
+      if (!touchAreaRect || !listRect) {
+        console.error('No touch area or list')
+        return
+      }
 
-        console.log('handleTouchMove', localRelativePosition)
+      // Transform touch area normalized movement into list movement
+      const touchX = event.touches[0].clientX
+      const touchY = event.touches[0].clientY
+      // Normalized touch position clamped into range from 0 to 1
+      const normalizedTouchPosition = horizontal
+        ? !invert
+          ? (touchX - touchAreaRect.left) / touchAreaRect.width
+          : 1 - (touchX - touchAreaRect.left) / touchAreaRect.width
+        : !invert
+        ? 1 - (touchY - touchAreaRect.top) / touchAreaRect.height
+        : (touchY - touchAreaRect.top) / touchAreaRect.height
+      const clampedTouchPosition =
+        normalizedTouchPosition >= 0 && normalizedTouchPosition <= 1
+          ? normalizedTouchPosition
+          : normalizedTouchPosition < 0
+          ? 0
+          : 1
 
-        // Set current card as selected
-        const currentTask =
-          tasks[
-            getRangeRelativeIndex(
-              getRangeRelativePosition(localRelativePosition, 0, 1),
-              tasks.length
-            )
-          ]
-        setSelectedTaskState(currentTask)
+      console.log('normalizedTouchPosition', clampedTouchPosition)
 
-        const cardRect = getCardBoundingRect(divRef, currentTask.id)
-        const moveCardHeight = cardRect?.height
+      if (!selectedTaskStateRef.current) {
+        return console.error('No task selected')
+      }
 
-        console.log(currentTask.title, moveListHeight, mainOffsetHeight)
+      const cardRect = listRef.current
+        ?.querySelector(`#taskCard${selectedTaskStateRef.current.id}`)
+        ?.getBoundingClientRect()
+      if (!cardRect) {
+        return console.error('No card rect')
+      }
 
-        // Card list scrolling logic
-        if (
-          moveCardHeight !== undefined &&
-          moveCardHeight !== null &&
-          moveListHeight !== undefined &&
-          moveListHeight !== null
-        ) {
-          const startListShift = (touchAreaHeight - moveCardHeight) / 2 // Center card
-          const touchDistanceFromStart =
-            event.touches[0].clientY - startListShift
+      const newListTopPosition =
+        touchAreaRect?.height / 2 -
+        clampedTouchPosition * listRect?.height +
+        ((2 * clampedTouchPosition - 1) * cardRect.height) / 2
 
-          // Calculate touch distance from start in the touch area from 0 to 1
-          const relTouchAreaDistance = touchDistanceFromStart / touchAreaHeight
-          const relClippedTouchAreaDistance =
-            relTouchAreaDistance < 0
-              ? 0
-              : relTouchAreaDistance > 1
-              ? 1
-              : relTouchAreaDistance
+      console.log(newListTopPosition)
 
-          // Transform touch area displacement as list displacement
-          const listShiftFactor = moveListHeight / touchAreaHeight
-          const pos =
-            relClippedTouchAreaDistance * touchAreaHeight * listShiftFactor
-          const endListShift = relClippedTouchAreaDistance * moveCardHeight // Correct end position
+      setListTopPositionState(newListTopPosition)
 
-          // Set new list top position
-          const newListTopPosition = -pos + startListShift + endListShift
-          setListTopPosition(newListTopPosition)
-          console.log('setListTopPosition', newListTopPosition)
+      const touchAreaCenterY = touchAreaRect?.height / 2 + touchAreaRect.y
+
+      // Get each closest card to touch area
+      const taskClosestToCenter = tasks.filter(task => {
+        const taskRect = listRef.current
+          ?.querySelector(`#taskCard${task.id}`)
+          ?.getBoundingClientRect()
+
+        if (!taskRect) {
+          return false
         }
+
+        const taskYCenter = taskRect?.top + taskRect?.height / 2
+        if (Math.abs(taskYCenter - touchAreaCenterY) < taskRect.height / 2) {
+          return true
+        } else {
+          return false
+        }
+      })
+
+      console.log(taskClosestToCenter[0], taskClosestToCenter.length)
+
+      if (taskClosestToCenter && taskClosestToCenter[0]) {
+        setSelectedTaskState(taskClosestToCenter[0])
+        console.log(
+          taskClosestToCenter[0].title,
+          touchAreaCenterY,
+          touchAreaRect.y
+        )
       }
     }
 
@@ -303,72 +244,30 @@ export const TouchCarouselTasks = ({
     }
   }, [])
 
-  const mainContainerSizeStyle = `min-h-[${touchAreaHeight}px] max-h-[${touchAreaHeight}px]`
-  const gradientHeight = `${Math.round(touchAreaHeight / 4)}`
-  const gradientContainerStyle = `absolute from-transparent to-white to-80% w-full z-10`
-
   return (
-    <div
-      ref={divRef}
-      className={`relative flex flex-col w-screen h-screen ${mainContainerSizeStyle} justify-center items-center overflow-hidden rounded-2xl select-none`}
+    <ul
+      ref={listRef}
+      id='taskList'
+      className={`absolute flex flex-col w-full h-fit gap-y-1 items-center select-none z-0 rounded-2xl p-1`}
+      style={{
+        top: `${listTopPositionState}px`
+      }}
     >
-      <div
-        className={`top-0 bg-gradient-to-t ${gradientContainerStyle}`}
-        style={{
-          height: `${gradientHeight}px`
-        }}
-      ></div>
-      <div
-        className={`bottom-0 bg-gradient-to-b ${gradientContainerStyle}`}
-        style={{
-          height: `${gradientHeight}px`
-        }}
-      ></div>
-      <ul
-        id='taskList'
-        className={`absolute flex flex-col w-full h-fit gap-y-1 items-center pl-4 pr-4 select-none z-1`}
-        style={{
-          top: `${listTopPosition}px`
-        }}
-      >
-        {isTouchMove && relativePosition !== null
-          ? tasks.map(task =>
-              // Touch moving
-              task.id === selectedTaskState.id ? (
-                // Selected card
-                <li
-                  id={`taskCard${task.id}`}
-                  key={task.id}
-                  className={`flex rounded-2xl ${'outline-2 outline-offset-0 outline-dashed outline-black w-11/12 opacity-100'} `}
-                >
-                  <TaskCard task={task} />
-                </li>
-              ) : (
-                // Non selected card
-                <li
-                  id={`taskCard${task.id}`}
-                  key={task.id}
-                  className={`flex rounded-2xl ${'w-10/12'} opacity-70`}
-                >
-                  <TaskCard task={task} />
-                </li>
-              )
-            )
-          : // Touc not moving
-            // Show only a single card
-            tasks.map(task => (
-              <li
-                id={`taskCard${task.id}`}
-                key={task.id}
-                className={`flex rounded-2xl w-full ${
-                  task.id !== selectedTaskState.id ? 'opacity-0' : ''
-                } `}
-              >
-                <TaskCard task={task} />
-              </li>
-            ))}
-      </ul>
-    </div>
+      {tasks.map(task => (
+        <li
+          id={`taskCard${task.id}`}
+          key={task.id}
+          className={`flex w-full rounded-2xl ${clsx({
+            'outline-2 outline-offset-0 outline-dashed outline-gray-200 opacity-100':
+              task.id === selectedTaskState?.id && isTouchMove,
+            'opacity-50': task.id !== selectedTaskState?.id && isTouchMove,
+            'opacity-0': task.id !== selectedTaskState?.id && !isTouchMove
+          })}`}
+        >
+          <TaskCard task={task} />
+        </li>
+      ))}
+    </ul>
   )
 }
 

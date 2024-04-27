@@ -1,23 +1,13 @@
 'use client'
 import { useFormState, useFormStatus } from 'react-dom'
-import { deleteTask, updateTask } from '@/app/lib/actions'
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { deleteTask } from '@/app/lib/actions'
+import { PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Task } from '@/app/lib/definitions'
-import {
-  FormEvent,
-  useRef,
-  useState,
-  useEffect,
-  Dispatch,
-  SetStateAction
-} from 'react'
 import { CreateButton, DeleteButton } from '../form-components/buttons'
-import { InitialState } from '@/app/_components/response-state'
 
 import { initialState } from '@/app/_components/response-state'
 import ResponseDurationMessage from '@/app/_components/response-duration'
-import { Struct } from 'next/dist/compiled/superstruct'
 
 export function CreateTask () {
   const { pending } = useFormStatus()
