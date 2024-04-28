@@ -56,7 +56,11 @@ export default async function Layout ({
         <div className='flex w-fit'>
           <Link
             href={`/task-card-carousel${
-              naviIdx === 0 ? '' : `/${naviList[naviIdx - 1]}`
+              naviIdx === 0
+                ? ''
+                : naviIdx === null
+                ? `/${naviList[naviList.length - 1]}`
+                : `/${naviList[naviIdx - 1]}`
             }`}
           >
             <LeftArrowTriangleButton
@@ -83,7 +87,11 @@ export default async function Layout ({
         <div className='flex w-fit'>
           <Link
             href={`/task-card-carousel${
-              naviIdx === naviList.length - 1 ? `` : `/${naviList[naviIdx + 1]}`
+              naviIdx === naviList.length - 1
+                ? ``
+                : naviIdx === null
+                ? `/${naviList[0]}`
+                : `/${naviList[naviIdx + 1]}`
             }`}
           >
             <RightArrowTriangleButton

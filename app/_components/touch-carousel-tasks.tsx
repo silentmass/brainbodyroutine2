@@ -120,7 +120,6 @@ export const TouchCarouselTasks = ({
   invert: boolean
 }) => {
   // Get touch area dimension
-  const parentDiv = divRef
 
   const listRef = useRef<HTMLUListElement>(null)
 
@@ -174,6 +173,8 @@ export const TouchCarouselTasks = ({
     }
     let listMass = 3000
     let forceFriction = -100 * listMass
+
+    const parentDiv = divRef
 
     const touchAreaRect = parentDiv.current?.getBoundingClientRect()
 
