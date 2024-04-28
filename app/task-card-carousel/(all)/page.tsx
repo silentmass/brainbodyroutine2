@@ -9,7 +9,7 @@ export default async function Page () {
       tasks={tasks}
       initialTask={tasks[0]}
       horizontal={false}
-      invert={true}
+      invert={false}
     />
   )
 }

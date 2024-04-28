@@ -14,7 +14,7 @@ export default async function Page ({ params }: { params: { id: string } }) {
       tasks={categoryTasks}
       initialTask={categoryTasks[0]}
       horizontal={false}
-      invert={true}
+      invert={false}
     />
   )
 }
