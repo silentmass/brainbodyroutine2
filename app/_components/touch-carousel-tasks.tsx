@@ -120,6 +120,7 @@ export const TouchCarouselTasks = ({
   invert: boolean
 }) => {
   // Get touch area dimension
+  const parentDiv = divRef.current
 
   const listRef = useRef<HTMLUListElement>(null)
 
@@ -174,7 +175,7 @@ export const TouchCarouselTasks = ({
     let listMass = 3000
     let forceFriction = -100 * listMass
 
-    const touchAreaRect = divRef.current?.getBoundingClientRect()
+    const touchAreaRect = parentDiv?.getBoundingClientRect()
 
     if (!touchAreaRect) {
       console.error('No touch area!')
@@ -288,15 +289,19 @@ export const TouchCarouselTasks = ({
         if (listTopPositionStateRef.current !== null) {
           const rollingEnd = listTopPositionStateRef.current + endRollingShift
 
-          const possibleEndPositions: number[] = tasks
-            .map(task => yCenterTask(divRef, task.id))
-            .filter(position => position !== null)
+          const possibleEndPositions = tasks.map(task =>
+            yCenterTask(divRef, task.id)
+          )
 
-          const distanceFromEndPositions = possibleEndPositions.map(position =>
+          const nonNullEndPositions: number[] = possibleEndPositions.filter(
+            position => position !== null
+          )
+
+          const distanceFromEndPositions = nonNullEndPositions.map(position =>
             Math.abs(rollingEnd - position)
           )
 
-          const filteredPosition = possibleEndPositions.filter(
+          const filteredPosition = nonNullEndPositions.filter(
             (position, idx) =>
               distanceFromEndPositions[idx] ===
               Math.min(...distanceFromEndPositions)
@@ -413,24 +418,24 @@ export const TouchCarouselTasks = ({
       selectTaskCard(tasks, listRef, touchAreaCenterY, setSelectedTaskState)
     }
 
-    if (divRef.current) {
-      divRef.current?.addEventListener('touchstart', handleTouchStart, {
+    if (parentDiv) {
+      parentDiv?.addEventListener('touchstart', handleTouchStart, {
         passive: false
       })
-      divRef.current?.addEventListener('touchmove', handleTouchMove, {
+      parentDiv?.addEventListener('touchmove', handleTouchMove, {
         passive: false
       })
-      divRef.current?.addEventListener('touchend', handleTouchEnd, {
+      parentDiv?.addEventListener('touchend', handleTouchEnd, {
         passive: false
       })
       // divRef?.current.addEventListener('tou')
     }
 
     return () => {
-      if (divRef.current) {
-        divRef.current?.removeEventListener('touchstart', handleTouchStart)
-        divRef.current?.removeEventListener('touchmove', handleTouchMove)
-        divRef.current?.removeEventListener('touchend', handleTouchEnd)
+      if (parentDiv) {
+        parentDiv?.removeEventListener('touchstart', handleTouchStart)
+        parentDiv?.removeEventListener('touchmove', handleTouchMove)
+        parentDiv?.removeEventListener('touchend', handleTouchEnd)
       }
     }
   }, [])
