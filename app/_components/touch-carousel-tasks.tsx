@@ -288,7 +288,7 @@ export const TouchCarouselTasks = ({
         if (listTopPositionStateRef.current !== null) {
           const rollingEnd = listTopPositionStateRef.current + endRollingShift
 
-          const possibleEndPositions = tasks
+          const possibleEndPositions: number[] = tasks
             .map(task => yCenterTask(divRef, task.id))
             .filter(position => position !== null)
 
