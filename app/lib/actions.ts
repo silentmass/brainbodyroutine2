@@ -4,6 +4,7 @@ import {revalidateTag } from "next/cache";
 import { title } from "process";
 import {z, ZodObject} from "zod";
 import { ListDescription } from "./definitions";
+import { APIHOST } from "@/app/lib/definitions";
 
 const TaskCategorySchema = z.object({
     title: z.string().min(1),
@@ -67,7 +68,7 @@ export const createTaskCategory = async (prevState: any, formData: FormData) => 
 
     try {
         const res = await fetch(
-            "http://localhost:3000/api/taskcategories",
+            `http://${APIHOST}/api/taskcategories`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -110,7 +111,7 @@ export const updateTaskCategory = async (id: string, prevState: any, formData: F
 
     try {
         const res = await fetch(
-            `http://localhost:3000/api/taskcategory/${id}/update`,
+            `http://${APIHOST}/api/taskcategory/${id}/update`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -140,7 +141,7 @@ export const updateTaskCategory = async (id: string, prevState: any, formData: F
 export const deleteTaskCategory = async (id: string, prevState:any, formData: FormData) => {
     try {
         const res = await fetch(
-            `http://localhost:3000/api/taskcategory/${id}/delete`,
+            `http://${APIHOST}/api/taskcategory/${id}/delete`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -190,7 +191,7 @@ export const createTask = async (prevState: any, formData:FormData) => {
     const data = validatedFields.data;
 
     try {
-        const res = await fetch("http://localhost:3000/api/tasks", {
+        const res = await fetch(`http://${APIHOST}/api/tasks`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             mode: "cors",
@@ -217,7 +218,7 @@ export const createTask = async (prevState: any, formData:FormData) => {
 export const deleteTask = async (id: string, prevState:any, formData:FormData) => {
     try {
         const res = await fetch(
-            `http://localhost:3000/api/tasks/${id}/delete`,
+            `http://${APIHOST}/api/tasks/${id}/delete`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -265,7 +266,7 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
     const data = validatedFields.data;
 
     try {
-        const res = await fetch(`http://localhost:3000/api/tasks/${id}/update`,
+        const res = await fetch(`http://${APIHOST}/api/tasks/${id}/update`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -308,7 +309,7 @@ export const createDescriptionList = async (taskId: string, prevState: any, form
 
     try {
         const res = await fetch(
-            `http://localhost:3000/api/tasks/${taskId}/descriptionlists`,
+            `http://${APIHOST}/api/tasks/${taskId}/descriptionlists`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -357,7 +358,7 @@ export const updateDescriptionList = async(id: string, descriptions: ListDescrip
 
     try {
         const res = await fetch(
-            `http://localhost:3000/api/descriptionlists/${id}/update`,
+            `http://${APIHOST}/api/descriptionlists/${id}/update`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -387,7 +388,7 @@ export const updateDescriptionList = async(id: string, descriptions: ListDescrip
 export const deleteDescriptionList = async (id:string, prevState:any, formData:FormData) => {
     try {
         const res = await fetch(
-            `http://localhost:3000/api/descriptionlists/${id}/delete`,
+            `http://${APIHOST}/api/descriptionlists/${id}/delete`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -433,7 +434,7 @@ export const createListDescription = async (listId: string, prevState: any, form
 
     try {
         const res = await fetch(
-            `http://localhost:3000/api/descriptionlists/${listId}/descriptions`,
+            `http://${APIHOST}/api/descriptionlists/${listId}/descriptions`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -477,7 +478,7 @@ export const updateListDescription = async (descriptionId: string, descriptionLi
 
     try {
         const res = await fetch(
-            `http://localhost:3000/api/descriptions/${data.id}/update`,
+            `http://${APIHOST}/api/descriptions/${data.id}/update`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -509,7 +510,7 @@ export const updateListDescription = async (descriptionId: string, descriptionLi
 export const deleteListDescription = async (id: string, prevState: any, formData:FormData) => {
     try {
         const res = await fetch(
-            `http://localhost:3000/api/descriptions/${id}/delete`,
+            `http://${APIHOST}/api/descriptions/${id}/delete`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},

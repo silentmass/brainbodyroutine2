@@ -445,7 +445,7 @@ export const TouchCarouselTasks = ({
         parentDiv.current?.removeEventListener('touchend', handleTouchEnd)
       }
     }
-  }, [])
+  }, [divRef, tasks])
 
   return (
     <ul

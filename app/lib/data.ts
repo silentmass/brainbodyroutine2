@@ -1,7 +1,10 @@
 // Task category operations
 
+import { APIHOST } from "./definitions";
+
+
 export const fetchTaskCategories = async () => {
-  const res = await fetch('http://localhost:3000/api/taskcategories', {
+  const res = await fetch(`http://${APIHOST}/api/taskcategories`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
     mode: 'cors',
@@ -17,7 +20,7 @@ export const fetchTaskCategories = async () => {
 };
 
 export const fetchTaskCategoryById = async (id: string) => {
-  const res = await fetch(`http://localhost:3000/api/taskcategory/${id}`, {
+  const res = await fetch(`http://${APIHOST}/api/taskcategory/${id}`, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     mode: "cors",
@@ -32,7 +35,7 @@ export const fetchTaskCategoryById = async (id: string) => {
 // Task operations
 
 export const fetchTasks = async () => {
-  const res = await fetch('http://localhost:3000/api/tasks/', {
+  const res = await fetch(`http://${APIHOST}/api/tasks/`, {
     method: "GET",
     headers: {"Content-Type": "application/json"},
     mode: "cors",
@@ -45,7 +48,7 @@ export const fetchTasks = async () => {
 };
 
 export const fetchTaskById = async (id: string) => {
-  const res = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+  const res = await fetch(`http://${APIHOST}/api/tasks/${id}`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       mode: "cors",
@@ -60,7 +63,7 @@ export const fetchTaskById = async (id: string) => {
 
 export const fetchTaskDescriptionLists = async (taskId: string) => {
   const res = await fetch(
-    `http://localhost:3000/api/taskdescriptionlists/${taskId}`,
+    `http://${APIHOST}/api/taskdescriptionlists/${taskId}`,
     {
       method: "GET",
       headers: {"Content-Type": "application/json"},
@@ -76,7 +79,7 @@ export const fetchTaskDescriptionLists = async (taskId: string) => {
 
 export const fetchTaskDescriptionListById = async (id: string) => {
   const res = await fetch(
-    `http://localhost:3000/api/descriptionlists/${id}`,
+    `http://${APIHOST}/api/descriptionlists/${id}`,
     {
       method: "GET",
       headers: {"Content-Type": "application/json"},
@@ -94,7 +97,7 @@ export const fetchTaskDescriptionListById = async (id: string) => {
 
 export const fetchListDescriptions = async (taskDescriptionListId: string) => {
   const res = await fetch(
-    `http://localhost:3000/api/descriptionlists/${taskDescriptionListId}/descriptions`,
+    `http://${APIHOST}/api/descriptionlists/${taskDescriptionListId}/descriptions`,
     {
       method: "GET",
       headers: {"Content-Type": "application/json"},
