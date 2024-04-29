@@ -60,7 +60,7 @@ export default async function Layout ({
               />
             )}
           </div>
-          <div className='w-full flex flex-col justify-center p-4'>
+          <div className='w-full flex flex-col items-center p-4'>
             {children}
           </div>
           <div className='flex w-full justify-center items-center'>
