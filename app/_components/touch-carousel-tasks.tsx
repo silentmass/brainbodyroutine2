@@ -1,6 +1,6 @@
 'use client'
-import { FormEvent, RefObject, useEffect, useRef, useState } from 'react'
-import { Task, TaskCategory } from '@/app/lib/definitions'
+import { RefObject, useEffect, useRef, useState } from 'react'
+import { Task } from '@/app/lib/definitions'
 import TaskCard from '@/app/ui/tasks/card'
 import clsx from 'clsx'
 
@@ -171,8 +171,6 @@ export const TouchCarouselTasks = ({
       velocity: { x: number; y: number }
       acceleration: { x: number; y: number }
     }
-    let listMass = 3000
-    let forceFriction = -100 * listMass
 
     const parentDiv = divRef
 
@@ -242,31 +240,9 @@ export const TouchCarouselTasks = ({
         return
       }
 
-      const distanceFromStart = touchCurrentPosition.y - touchStartPosition.y
-      const timeFromStart =
-        (touchCurrentPosition.time - touchStartPosition.time) / 1000
       const averageEndVelocity =
         (touchCurrentPosition.y - touchStartPosition.y) /
         ((touchCurrentPosition.time - touchStartPosition.time) / 1000)
-      const endMomentum = averageEndVelocity * listMass
-      const timeToStop = -endMomentum / forceFriction
-
-      // console.log(
-      //   'handleTouchEnd',
-      //   selectedTaskStateRef.current.title,
-      //   'acceleration',
-      //   touchCurrentPosition.acceleration.y,
-      //   'distanceFromStart',
-      //   distanceFromStart,
-      //   'timeFromStart',
-      //   timeFromStart,
-      //   'averageSpeed',
-      //   averageEndVelocity,
-      //   'endMomentum',
-      //   endMomentum,
-      //   'timeToStop',
-      //   timeToStop
-      // )
 
       const listRect = listRef.current?.getBoundingClientRect()
       if (listRect && tasks !== null) {
@@ -280,8 +256,6 @@ export const TouchCarouselTasks = ({
           'endRollingShift',
           endRollingShift
         )
-
-        // const endRollingShift = 0
 
         const animateRolling = (position: number) => {
           // Change selected task

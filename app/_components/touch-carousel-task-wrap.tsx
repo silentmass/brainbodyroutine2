@@ -1,7 +1,7 @@
 'use client'
 import { useRef } from 'react'
-import TouchCarouselTasks from './touch-carousel-tasks'
-import { Task, TaskCategory } from '../lib/definitions'
+import TouchCarouselTasks from '@/app/_components/touch-carousel-tasks'
+import { Task } from '@/app/lib/definitions'
 
 export default function TouchCarouselTasksWrapper ({
   tasks = null,
