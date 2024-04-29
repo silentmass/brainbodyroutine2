@@ -430,7 +430,7 @@ export const TouchCarouselTasks = ({
     <ul
       ref={listRef}
       id='taskList'
-      className={`absolute flex flex-col w-full h-fit gap-y-1 items-center select-none z-0 rounded-2xl p-1`}
+      className={`absolute flex flex-col w-full h-full gap-y-1 items-center select-none z-0 rounded-2xl p-1`}
       style={{
         top: `${listTopPositionState}px`
       }}

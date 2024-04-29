@@ -24,7 +24,7 @@ export default function TouchCarouselTasksWrapper ({
   return (
     <div
       ref={divRef}
-      className={`relative flex flex-col w-full h-[${touchAreaHeight}px] ${mainContainerSizeStyle} overflow-hidden rounded-2xl select-none`}
+      className={`relative flex flex-col w-full h-fit overflow-hidden rounded-2xl select-none`}
     >
       <div
         className={`top-0 bg-gradient-to-t ${gradientContainerStyle} z-1`}
@@ -45,7 +45,7 @@ export default function TouchCarouselTasksWrapper ({
         }}
       ></div>
       <div
-        className={`flex flex-col h-[${touchAreaHeight}px] ${mainContainerSizeStyle} border border-red-600`}
+        className={`relative flex flex-col ${mainContainerSizeStyle} border border-red-600`}
       >
         {tasks && tasks.length && initialTask !== null && (
           <TouchCarouselTasks
