@@ -1,4 +1,4 @@
-export const APIHOST = "localhost:3000"
+export const APIHOST = "127.0.0.1:3000"
 
 export interface TaskCategoryBase {
     title: string;
