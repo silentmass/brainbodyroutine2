@@ -24,7 +24,7 @@ export default function TouchCarouselTasksWrapper ({
   return (
     <div
       ref={divRef}
-      className={`relative flex flex-col w-full ${mainContainerSizeStyle} items-center overflow-hidden rounded-2xl select-none`}
+      className={`relative flex flex-col w-full h-screen ${mainContainerSizeStyle} items-center overflow-hidden rounded-2xl select-none`}
     >
       <div
         className={`top-0 bg-gradient-to-t ${gradientContainerStyle} z-1`}
