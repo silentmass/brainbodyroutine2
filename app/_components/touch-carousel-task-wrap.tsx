@@ -45,10 +45,10 @@ export default function TouchCarouselTasksWrapper ({
         }}
       ></div>
       <div
-        className={`absolute z-0`}
-        style={{
-          height: `${touchAreaHeight}px`
-        }}
+        className={`absolute w-full border border-blue-500 z-0 ${mainContainerSizeStyle}`}
+        // style={{
+        //   height: `${touchAreaHeight}px`
+        // }}
       ></div>
       {tasks && tasks.length && initialTask !== null && (
         <TouchCarouselTasks
