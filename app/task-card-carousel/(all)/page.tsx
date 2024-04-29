@@ -7,15 +7,17 @@ export default async function Page () {
   const tasks: Task[] = await fetchTasks()
   const task: Task | null = tasks && tasks.length ? tasks[0] : null
   return (
-    <Suspense fallback={<p>Loading tasks...</p>}>
-      {tasks && tasks.length && task !== null && (
-        <TouchCarouselTasksWrapper
-          tasks={tasks}
-          initialTask={task}
-          horizontal={false}
-          invert={false}
-        />
-      )}
-    </Suspense>
+    <div className='flex w-full h-full border'>
+      <Suspense fallback={<p>Loading tasks...</p>}>
+        {tasks && tasks.length && task !== null && (
+          <TouchCarouselTasksWrapper
+            tasks={tasks}
+            initialTask={task}
+            horizontal={false}
+            invert={false}
+          />
+        )}
+      </Suspense>
+    </div>
   )
 }
