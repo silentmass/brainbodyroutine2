@@ -45,7 +45,7 @@ export default function TouchCarouselTasksWrapper ({
         }}
       ></div>
       <div
-        className={`flex w-full border border-blue-500 z-0 bg-slate-600`}
+        className={`flex w-full rounded-2xl select-none`}
         style={{
           height: `${touchAreaHeight}px`
         }}
