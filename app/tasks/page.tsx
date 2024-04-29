@@ -1,22 +1,21 @@
 import { Suspense } from 'react'
 import { fetchTaskCategories, fetchTasks } from '@/app/lib/data'
 import CreateTaskForm from '@/app/ui/tasks/create-form'
-import TasksTable from '../ui/tasks/table'
+import TasksTable from '@/app/ui/tasks/table'
+import { Task, TaskCategory } from '@/app/lib/definitions'
 
 export default async function Page () {
-  const categories = await fetchTaskCategories()
-  const tasks = await fetchTasks()
+  const categories: TaskCategory[] = await fetchTaskCategories()
+  const tasks: Task[] = await fetchTasks()
   return (
     <div className='flex flex-col w-full justify-center items-center gap-y-2 pt-2 pb-2'>
-      <Suspense fallback={<p>Loading task categories...</p>}>
-        {categories ? (
+      <Suspense fallback={<p>Loading categories...</p>}>
+        {categories && categories.length && (
           <CreateTaskForm taskCategories={categories} />
-        ) : (
-          <>No task categories</>
         )}
       </Suspense>
       <Suspense fallback={<p>Loading tasks...</p>}>
-        {tasks ? <TasksTable tasks={tasks} /> : <>No tasks</>}
+        {tasks && tasks.length && <TasksTable tasks={tasks} />}
       </Suspense>
     </div>
   )
