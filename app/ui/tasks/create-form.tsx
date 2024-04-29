@@ -14,7 +14,7 @@ export default function CreateTaskForm ({
 }) {
   const [state, formAction] = useFormState(createTask, initialState)
 
-  return (
+  return taskCategories ? (
     <form
       name='createTaskForm'
       id='createTaskForm'
@@ -51,5 +51,7 @@ export default function CreateTaskForm ({
       {/* Form action state message floating above card */}
       <ResponseDurationMessage state={state} />
     </form>
+  ) : (
+    <>No categories</>
   )
 }
