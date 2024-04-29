@@ -2,7 +2,7 @@
   "name": "brainbodyroutine",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8000/",
+  "proxy": "http://127.0.0.1:8000/",
   "scripts": {
     "fastapi-dev": "pipenv install -r requirements.txt && python3 -m uvicorn api.main:app --reload",
     "next-dev": "next dev",
