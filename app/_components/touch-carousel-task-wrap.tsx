@@ -44,13 +44,15 @@ export default function TouchCarouselTasksWrapper ({
           height: `${gradientHeight}px`
         }}
       ></div>
-      <TouchCarouselTasks
-        divRef={divRef}
-        tasks={tasks}
-        initialTask={initialTask}
-        horizontal={horizontal}
-        invert={invert}
-      />
+      {tasks && tasks.length && initialTask && (
+        <TouchCarouselTasks
+          divRef={divRef}
+          tasks={tasks}
+          initialTask={initialTask}
+          horizontal={horizontal}
+          invert={invert}
+        />
+      )}
     </div>
   )
 }
