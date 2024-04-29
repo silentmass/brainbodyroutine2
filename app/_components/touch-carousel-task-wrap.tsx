@@ -45,7 +45,7 @@ export default function TouchCarouselTasksWrapper ({
         }}
       ></div>
       <div
-        className={`absolute w-full border border-blue-500 z-0 ${mainContainerSizeStyle}`}
+        className={`flex w-full border border-blue-500 z-0 ${mainContainerSizeStyle}`}
         // style={{
         //   height: `${touchAreaHeight}px`
         // }}
