@@ -25,6 +25,15 @@ export default function CreateTaskCategoryForm () {
             className={`card-create`}
           />
         </label>
+        <label className={`card-create flex flex-col w-full`}>
+          <h2 className='card-create'>Description</h2>
+          <input
+            type='text'
+            id='taskCategoryDescription'
+            name='taskCategoryDescription'
+            className={`card-create`}
+          />
+        </label>
         <div className='flex w-full justify-center'>
           <CreateButton className='card-create' ariaLabel='Create category'>
             Create
