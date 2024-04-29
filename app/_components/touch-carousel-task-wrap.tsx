@@ -4,13 +4,13 @@ import TouchCarouselTasks from './touch-carousel-tasks'
 import { Task, TaskCategory } from '../lib/definitions'
 
 export default function TouchCarouselTasksWrapper ({
-  tasks,
-  initialTask,
-  horizontal,
-  invert
+  tasks = null,
+  initialTask = null,
+  horizontal = false,
+  invert = true
 }: {
-  tasks: Task[]
-  initialTask: Task
+  tasks: Task[] | null
+  initialTask: Task | null
   horizontal: boolean
   invert: boolean
 }) {
@@ -44,7 +44,7 @@ export default function TouchCarouselTasksWrapper ({
           height: `${gradientHeight}px`
         }}
       ></div>
-      {tasks && tasks.length && initialTask && (
+      {tasks && tasks.length && initialTask !== null && (
         <TouchCarouselTasks
           divRef={divRef}
           tasks={tasks}

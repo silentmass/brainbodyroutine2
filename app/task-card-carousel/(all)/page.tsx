@@ -5,12 +5,13 @@ import { Suspense } from 'react'
 
 export default async function Page () {
   const tasks: Task[] = await fetchTasks()
+  const task: Task | null = tasks && tasks.length ? tasks[0] : null
   return (
     <Suspense fallback={<p>Loading tasks...</p>}>
-      {tasks && tasks.length && (
+      {tasks && tasks.length && task !== null && (
         <TouchCarouselTasksWrapper
           tasks={tasks}
-          initialTask={tasks[0]}
+          initialTask={task}
           horizontal={false}
           invert={false}
         />

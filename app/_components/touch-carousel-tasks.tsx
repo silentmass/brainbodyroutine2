@@ -107,15 +107,15 @@ function yCenterTask (ref: RefObject<HTMLDivElement>, taskID: number) {
 }
 
 export const TouchCarouselTasks = ({
-  divRef,
-  tasks,
-  initialTask,
-  horizontal,
-  invert
+  divRef = null,
+  tasks = null,
+  initialTask = null,
+  horizontal = false,
+  invert = true
 }: {
-  divRef: RefObject<HTMLDivElement>
-  tasks: Task[]
-  initialTask: Task
+  divRef: RefObject<HTMLDivElement> | null
+  tasks: Task[] | null
+  initialTask: Task | null
   horizontal: boolean
   invert: boolean
 }) => {
@@ -176,6 +176,11 @@ export const TouchCarouselTasks = ({
 
     const parentDiv = divRef
 
+    if (parentDiv === null) {
+      console.error('Missin parent div ref')
+      return
+    }
+
     const touchAreaRect = parentDiv.current?.getBoundingClientRect()
 
     if (!touchAreaRect) {
@@ -186,7 +191,7 @@ export const TouchCarouselTasks = ({
     const touchAreaCenterY = touchAreaRect?.height / 2 + touchAreaRect?.y
 
     // Init list position to show selected task
-    if (selectedTaskStateRef.current) {
+    if (selectedTaskStateRef.current && parentDiv !== null) {
       const startPosition = 0
       const endPosition = yCenterTask(
         parentDiv,
@@ -264,7 +269,7 @@ export const TouchCarouselTasks = ({
       // )
 
       const listRect = listRef.current?.getBoundingClientRect()
-      if (listRect) {
+      if (listRect && tasks !== null) {
         const endRollingShift =
           Math.abs(averageEndVelocity) > 2000
             ? (listRect.height * averageEndVelocity) / 3000
@@ -456,20 +461,21 @@ export const TouchCarouselTasks = ({
         top: `${listTopPositionState}px`
       }}
     >
-      {tasks.map(task => (
-        <li
-          id={`taskCard${task.id}`}
-          key={task.id}
-          className={`flex w-full rounded-2xl ${clsx({
-            'outline-2 outline-offset-0 outline-dashed outline-gray-200 opacity-100':
-              task.id === selectedTaskState?.id && isTouchMove,
-            'opacity-50': task.id !== selectedTaskState?.id && isTouchMove
-            // 'opacity-0': task.id !== selectedTaskState?.id && !isTouchMove
-          })}`}
-        >
-          <TaskCard task={task} />
-        </li>
-      ))}
+      {tasks !== null &&
+        tasks.map(task => (
+          <li
+            id={`taskCard${task.id}`}
+            key={task.id}
+            className={`flex w-full rounded-2xl ${clsx({
+              'outline-2 outline-offset-0 outline-dashed outline-gray-200 opacity-100':
+                task.id === selectedTaskState?.id && isTouchMove,
+              'opacity-50': task.id !== selectedTaskState?.id && isTouchMove
+              // 'opacity-0': task.id !== selectedTaskState?.id && !isTouchMove
+            })}`}
+          >
+            <TaskCard task={task} />
+          </li>
+        ))}
     </ul>
   )
 }
