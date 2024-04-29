@@ -7,6 +7,7 @@ import {
 } from '@/app/_components/buttons'
 import { TaskCategory } from '@/app/lib/definitions'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 export default async function Layout ({
   children
@@ -19,55 +20,76 @@ export default async function Layout ({
   const arrowShortSideLength = 5
 
   const naviList = [...taskCategories.map(category => category.id)]
-  const naviIdx = null
 
   return (
     <div className='flex flex-col w-full'>
       <ul className='flex w-full justify-between p-4'>
         <li key='all'>ALL</li>
-        {taskCategories.map(category => (
-          <li key={category.id} className='opacity-30'>
-            {category.title}
-          </li>
-        ))}
+        <Suspense fallback={<p>Loading categories...</p>}>
+          {taskCategories ? (
+            taskCategories.map(category => (
+              <li key={category.id} className='opacity-30'>
+                {category.title}
+              </li>
+            ))
+          ) : (
+            <>No categories</>
+          )}
+        </Suspense>
       </ul>
       <div className='flex w-full items-center p-4'>
         <div className='flex w-fit'>
-          <Link
-            href={`/task-card-carousel${
-              naviList.length ? `/${naviList[naviList.length - 1]}` : ''
-            }`}
-          >
-            <LeftArrowTriangleButton
-              className={`w-${arrowShortSideLength} ${arrowStyle}`}
-            />
-          </Link>
+          {naviList ? (
+            <Link
+              href={`/task-card-carousel${
+                naviList.length ? `/${naviList[naviList.length - 1]}` : ''
+              }`}
+            >
+              <LeftArrowTriangleButton
+                className={`w-${arrowShortSideLength} ${arrowStyle}`}
+              />
+            </Link>
+          ) : (
+            <></>
+          )}
         </div>
         <div className='flex w-full flex-col'>
           <div className='flex w-full justify-center items-center'>
-            <TopArrowTriangleButton
-              className={`h-${arrowShortSideLength} ${arrowStyle}`}
-            />
+            {naviList ? (
+              <TopArrowTriangleButton
+                className={`h-${arrowShortSideLength} ${arrowStyle}`}
+              />
+            ) : (
+              <></>
+            )}
           </div>
           <div className='w-full flex flex-col justify-center p-4'>
             {children}
           </div>
           <div className='flex w-full justify-center items-center'>
-            <DownArrowTriangleButton
-              className={`h-${arrowShortSideLength} ${arrowStyle}`}
-            />
+            {naviList ? (
+              <DownArrowTriangleButton
+                className={`h-${arrowShortSideLength} ${arrowStyle}`}
+              />
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         <div className='flex w-fit'>
-          <Link
-            href={`/task-card-carousel${
-              naviList.length > 0 ? `/${naviList[0]}` : ''
-            }`}
-          >
-            <RightArrowTriangleButton
-              className={`w-${arrowShortSideLength} ${arrowStyle}`}
-            />
-          </Link>
+          {naviList ? (
+            <Link
+              href={`/task-card-carousel${
+                naviList.length > 0 ? `/${naviList[0]}` : ''
+              }`}
+            >
+              <RightArrowTriangleButton
+                className={`w-${arrowShortSideLength} ${arrowStyle}`}
+              />
+            </Link>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>

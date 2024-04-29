@@ -8,6 +8,7 @@ import {
 import { TaskCategory } from '@/app/lib/definitions'
 import Link from 'next/link'
 import clsx from 'clsx'
+import { Suspense } from 'react'
 
 export default async function Layout ({
   children,
@@ -40,64 +41,86 @@ export default async function Layout ({
         <li key='all' className='opacity-30'>
           ALL
         </li>
-        {taskCategories.map(category => (
-          <li
-            key={category.id}
-            className={`${clsx({
-              '': category.id === categoryID,
-              'opacity-30': category.id !== categoryID
-            })}`}
-          >
-            {category.title}
-          </li>
-        ))}
+        <Suspense fallback={<p>Loading categories...</p>}>
+          {taskCategories ? (
+            taskCategories.map(category => (
+              <li
+                key={category.id}
+                className={`${clsx({
+                  '': category.id === categoryID,
+                  'opacity-30': category.id !== categoryID
+                })}`}
+              >
+                {category.title}
+              </li>
+            ))
+          ) : (
+            <></>
+          )}
+        </Suspense>
       </ul>
       <div className='flex w-full items-center p-4'>
         <div className='flex w-fit'>
-          <Link
-            href={`/task-card-carousel${
-              naviIdx === 0
-                ? ''
-                : naviIdx === null
-                ? `/${naviList[naviList.length - 1]}`
-                : `/${naviList[naviIdx - 1]}`
-            }`}
-          >
-            <LeftArrowTriangleButton
-              className={`w-${arrowShortSideLength} ${arrowStyle}`}
-            />
-          </Link>
+          {naviList ? (
+            <Link
+              href={`/task-card-carousel${
+                naviIdx === 0
+                  ? ''
+                  : naviIdx === null
+                  ? `/${naviList[naviList.length - 1]}`
+                  : `/${naviList[naviIdx - 1]}`
+              }`}
+            >
+              <LeftArrowTriangleButton
+                className={`w-${arrowShortSideLength} ${arrowStyle}`}
+              />
+            </Link>
+          ) : (
+            <></>
+          )}
         </div>
         <div className='flex w-full flex-col'>
           <div className='flex w-full justify-center items-center'>
-            <TopArrowTriangleButton
-              className={`h-${arrowShortSideLength} ${arrowStyle}`}
-            />
+            {naviList ? (
+              <TopArrowTriangleButton
+                className={`h-${arrowShortSideLength} ${arrowStyle}`}
+              />
+            ) : (
+              <></>
+            )}
           </div>
           <div className='w-full flex flex-col justify-center p-4'>
             {children}
           </div>
           <div className='flex w-full justify-center items-center'>
-            <DownArrowTriangleButton
-              className={`h-${arrowShortSideLength} ${arrowStyle}`}
-            />
+            {naviList ? (
+              <DownArrowTriangleButton
+                className={`h-${arrowShortSideLength} ${arrowStyle}`}
+              />
+            ) : (
+              <></>
+            )}
           </div>
         </div>
 
         <div className='flex w-fit'>
-          <Link
-            href={`/task-card-carousel${
-              naviIdx === naviList.length - 1
-                ? ``
-                : naviIdx === null
-                ? `/${naviList[0]}`
-                : `/${naviList[naviIdx + 1]}`
-            }`}
-          >
-            <RightArrowTriangleButton
-              className={`w-${arrowShortSideLength} ${arrowStyle}`}
-            />
-          </Link>
+          {naviList ? (
+            <Link
+              href={`/task-card-carousel${
+                naviIdx === naviList.length - 1
+                  ? ``
+                  : naviIdx === null
+                  ? `/${naviList[0]}`
+                  : `/${naviList[naviIdx + 1]}`
+              }`}
+            >
+              <RightArrowTriangleButton
+                className={`w-${arrowShortSideLength} ${arrowStyle}`}
+              />
+            </Link>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>
