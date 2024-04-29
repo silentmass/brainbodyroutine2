@@ -8,10 +8,14 @@ export const metadata: Metadata = {
 }
 export default async function Page ({ params }: { params: { id: string } }) {
   const id = params.id
-  const taskCategory = await fetchTaskCategoryById(id)
+  const category = await fetchTaskCategoryById(id)
   return (
-    <Suspense fallback={<p>Loading task categories...</p>}>
-      <EditTaskCategoryForm taskCategory={taskCategory} />
+    <Suspense fallback={<p>Loading task category...</p>}>
+      {category ? (
+        <EditTaskCategoryForm taskCategory={category} />
+      ) : (
+        <>No category</>
+      )}
     </Suspense>
   )
 }

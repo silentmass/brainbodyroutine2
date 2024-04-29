@@ -1,8 +1,7 @@
 'use'
 import TaskCategoriesTopNavi from '@/app/_components/categories-links'
-import TasksSideNavi from '@/app/_components/tasks-links'
-import { fetchTaskCategories, fetchTasks } from '@/app/lib/data'
-import { Task } from '@/app/lib/definitions'
+import { fetchTaskCategories } from '@/app/lib/data'
+import { TaskCategory } from '@/app/lib/definitions'
 import { Suspense } from 'react'
 
 export default async function Layout ({
@@ -12,13 +11,15 @@ export default async function Layout ({
   children: React.ReactNode
   params: { categoryid: string }
 }) {
-  const categories = await fetchTaskCategories()
-  const id = params.categoryid
+  const id = params.categoryid !== '' ? params.categoryid : null
+
+  const categories: TaskCategory[] = await fetchTaskCategories()
+
   return (
     <div className='flex flex-col w-full gap-2 pb-2'>
       <div className='sticky top-[42px] z-10 pb-2 '>
         <Suspense fallback={<p>Loading categories...</p>}>
-          {categories ? (
+          {categories && id !== null ? (
             <TaskCategoriesTopNavi
               categories={categories}
               activeID={parseInt(id)}

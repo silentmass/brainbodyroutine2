@@ -9,16 +9,20 @@ export const metadata: Metadata = {
 }
 
 export default async function Page () {
-  const taskCategories = await fetchTaskCategories()
+  const categories = await fetchTaskCategories()
 
   return (
     <>
       <CreateTaskCategoryForm />
       <Suspense fallback={<p>Loading task categories...</p>}>
-        <TaskCategoriesTable
-          categories={taskCategories}
-          className='flex flex-col w-full gap-y-1'
-        />
+        {categories ? (
+          <TaskCategoriesTable
+            categories={categories}
+            className='flex flex-col w-full gap-y-1'
+          />
+        ) : (
+          <>No categories</>
+        )}
       </Suspense>
     </>
   )
