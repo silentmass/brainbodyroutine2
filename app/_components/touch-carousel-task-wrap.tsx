@@ -45,18 +45,20 @@ export default function TouchCarouselTasksWrapper ({
         }}
       ></div>
       <div
-        className={`relative flex flex-col ${mainContainerSizeStyle} border border-red-600`}
-      >
-        {tasks && tasks.length && initialTask !== null && (
-          <TouchCarouselTasks
-            divRef={divRef}
-            tasks={tasks}
-            initialTask={initialTask}
-            horizontal={horizontal}
-            invert={invert}
-          />
-        )}
-      </div>
+        className={`absolute z-0`}
+        style={{
+          height: `${touchAreaHeight}px`
+        }}
+      ></div>
+      {tasks && tasks.length && initialTask !== null && (
+        <TouchCarouselTasks
+          divRef={divRef}
+          tasks={tasks}
+          initialTask={initialTask}
+          horizontal={horizontal}
+          invert={invert}
+        />
+      )}
     </div>
   )
 }
