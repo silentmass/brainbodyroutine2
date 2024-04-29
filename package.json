@@ -6,7 +6,7 @@
   "scripts": {
     "fastapi-dev": "pipenv install -r requirements.txt && python3 -m uvicorn api.main:app --reload",
     "next-dev": "next dev",
-    "dev": "concurrently \"npm run next-dev\"",
+    "dev": "npm run next-dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
