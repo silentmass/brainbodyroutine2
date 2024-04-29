@@ -68,7 +68,7 @@ export const createTaskCategory = async (prevState: any, formData: FormData) => 
 
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/taskcategories`,
+            `https://${APIHOST}/api/taskcategories`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -111,7 +111,7 @@ export const updateTaskCategory = async (id: string, prevState: any, formData: F
 
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/taskcategory/${id}/update`,
+            `https://${APIHOST}/api/taskcategory/${id}/update`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -141,7 +141,7 @@ export const updateTaskCategory = async (id: string, prevState: any, formData: F
 export const deleteTaskCategory = async (id: string, prevState:any, formData: FormData) => {
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/taskcategory/${id}/delete`,
+            `https://${APIHOST}/api/taskcategory/${id}/delete`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -191,7 +191,7 @@ export const createTask = async (prevState: any, formData:FormData) => {
     const data = validatedFields.data;
 
     try {
-        const res = await fetch(`http://${APIHOST}/api/tasks`, {
+        const res = await fetch(`https://${APIHOST}/api/tasks`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             mode: "cors",
@@ -218,7 +218,7 @@ export const createTask = async (prevState: any, formData:FormData) => {
 export const deleteTask = async (id: string, prevState:any, formData:FormData) => {
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/tasks/${id}/delete`,
+            `https://${APIHOST}/api/tasks/${id}/delete`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -266,7 +266,7 @@ export const updateTask = async (id: string, prevState: any, formData: FormData)
     const data = validatedFields.data;
 
     try {
-        const res = await fetch(`http://${APIHOST}/api/tasks/${id}/update`,
+        const res = await fetch(`https://${APIHOST}/api/tasks/${id}/update`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -309,7 +309,7 @@ export const createDescriptionList = async (taskId: string, prevState: any, form
 
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/tasks/${taskId}/descriptionlists`,
+            `https://${APIHOST}/api/tasks/${taskId}/descriptionlists`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -358,7 +358,7 @@ export const updateDescriptionList = async(id: string, descriptions: ListDescrip
 
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/descriptionlists/${id}/update`,
+            `https://${APIHOST}/api/descriptionlists/${id}/update`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -388,7 +388,7 @@ export const updateDescriptionList = async(id: string, descriptions: ListDescrip
 export const deleteDescriptionList = async (id:string, prevState:any, formData:FormData) => {
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/descriptionlists/${id}/delete`,
+            `https://${APIHOST}/api/descriptionlists/${id}/delete`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -434,7 +434,7 @@ export const createListDescription = async (listId: string, prevState: any, form
 
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/descriptionlists/${listId}/descriptions`,
+            `https://${APIHOST}/api/descriptionlists/${listId}/descriptions`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -478,7 +478,7 @@ export const updateListDescription = async (descriptionId: string, descriptionLi
 
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/descriptions/${data.id}/update`,
+            `https://${APIHOST}/api/descriptions/${data.id}/update`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -510,7 +510,7 @@ export const updateListDescription = async (descriptionId: string, descriptionLi
 export const deleteListDescription = async (id: string, prevState: any, formData:FormData) => {
     try {
         const res = await fetch(
-            `http://${APIHOST}/api/descriptions/${id}/delete`,
+            `https://${APIHOST}/api/descriptions/${id}/delete`,
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
