@@ -9,10 +9,14 @@ export default async function Page () {
   return (
     <div className='flex flex-col w-full justify-center items-center gap-y-2 pt-2 pb-2'>
       <Suspense fallback={<p>Loading task categories...</p>}>
-        <CreateTaskForm taskCategories={taskCategories} />
+        {taskCategories ? (
+          <CreateTaskForm taskCategories={taskCategories} />
+        ) : (
+          <>No task categories</>
+        )}
       </Suspense>
       <Suspense fallback={<p>Loading tasks...</p>}>
-        <TasksTable tasks={tasks} />
+        {tasks ? <TasksTable tasks={tasks} /> : <>No tasks</>}
       </Suspense>
     </div>
   )

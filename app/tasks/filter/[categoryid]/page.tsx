@@ -14,11 +14,15 @@ export default async function Page ({
   return (
     <div className='flex w-full'>
       <Suspense fallback={<p>Loading tasks...</p>}>
-        <TasksTable
-          tasks={tasks.filter(
-            (task: Task) => task.task_category_id === parseInt(categoryID)
-          )}
-        />
+        {tasks ? (
+          <TasksTable
+            tasks={tasks.filter(
+              (task: Task) => task.task_category_id === parseInt(categoryID)
+            )}
+          />
+        ) : (
+          <>No task</>
+        )}
       </Suspense>
     </div>
   )
