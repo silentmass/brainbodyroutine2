@@ -1,0 +1,8 @@
+{
+    "builds": [
+      {"src": "../brainbodyroutine-backend/api/main.py", "use": "@now/python"}
+    ],
+    "routes": [
+      {"src": "../(.*)", "dest": "brainbodyroutine-backend/api/main.py"}
+    ]
+  }
