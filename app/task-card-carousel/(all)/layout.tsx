@@ -53,7 +53,7 @@ export default async function Layout ({
           )}
         </div>
         <div className='flex w-full flex-col'>
-          <div className='flex w-full justify-center items-center'>
+          <div className='flex h-fit w-full justify-center items-center'>
             {naviList && naviList.length && (
               <TopArrowTriangleButton
                 className={`h-${arrowShortSideLength} ${arrowStyle}`}
@@ -63,7 +63,7 @@ export default async function Layout ({
           <div className='w-full flex flex-col items-center p-4'>
             {children}
           </div>
-          <div className='flex w-full justify-center items-center'>
+          <div className='flex h-fit w-full justify-center items-center'>
             {naviList && naviList.length && (
               <DownArrowTriangleButton
                 className={`h-${arrowShortSideLength} ${arrowStyle}`}
