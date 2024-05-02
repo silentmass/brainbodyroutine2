@@ -29,6 +29,13 @@
 - [x] Check description update
 - [x] Change categories visuals
 - [x] Check revalidations
+- [ ] Add support for dark mode
+- [ ] Check gradients masks above carousel for both modes
+- [ ] Make swiping more sensitive
+- [ ] Add lateral swipe to change category
+- [ ] Add touch tapping on task cards
+- [ ] Remove task swithcer sidenavi in edit mode
+- [ ] Make development and production separate
 - [ ] Add order column in tasks, descriptionlist, and descriptions
 - [ ] Check how navigation works when is open
   - [ ] Horizontal > Change task category

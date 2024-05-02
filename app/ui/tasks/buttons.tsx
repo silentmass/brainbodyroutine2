@@ -177,13 +177,13 @@ export function SetTaskActive ({
           <stop offset='1' stopColor='#F9FAFB' />
         </linearGradient>
         <clipPath id='clip0_102_1221'>
-          <rect width='28' height='38' fill='white' />
+          <rect width='28' height='38' fill='transparent' />
         </clipPath>
         <clipPath id='clip1_102_1221'>
           <rect
             width='28'
             height='12'
-            fill='white'
+            fill='transparent'
             transform='translate(0 26)'
           />
         </clipPath>
@@ -284,13 +284,13 @@ export function SetTaskActive ({
           <stop offset='1' stopColor='#F9FAFB' />
         </linearGradient>
         <clipPath id='clip0_102_1221'>
-          <rect width='28' height='38' fill='white' />
+          <rect width='28' height='38' fill='transparent' />
         </clipPath>
         <clipPath id='clip1_102_1221'>
           <rect
             width='28'
             height='12'
-            fill='white'
+            fill='transparent'
             transform='translate(0 26)'
           />
         </clipPath>

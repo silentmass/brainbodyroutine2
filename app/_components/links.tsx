@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import clsx from 'clsx'
+import { LogOutForm } from '@/app/ui/login/logout-form'
 
 export function Links ({ className }: { className: string }) {
   const pathname = usePathname()
@@ -45,6 +46,10 @@ export function Links ({ className }: { className: string }) {
             >
               Settings
             </Link>
+          </li>
+          <Link href={'/login'}>Log In</Link>
+          <li>
+            <LogOutForm />
           </li>
         </ul>
       </nav>
