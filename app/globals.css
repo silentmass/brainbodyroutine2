@@ -32,9 +32,8 @@
   }
 }
 
-.icon {
-  background-color: transparent;
-}
+
+
 
 circle.checked,
 circle.unchecked,
@@ -157,13 +156,26 @@ li.card {
   color: black;
 }
 
+
 .icon {
   color: #d4d4d4;
+  background-color: transparent;
 }
 .icon:hover {
   color: #a3a3a3;
 }
 .icon:active {
+  color: #0a0a0a;
+}
+
+.icon-topnavi {
+  color: #a3a3a3;
+  background-color: transparent;
+}
+.icon-topnavi:hover {
+  color: #525252;
+}
+.icon-topnavi:active {
   color: #0a0a0a;
 }
 

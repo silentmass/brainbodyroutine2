@@ -4,14 +4,21 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { LogOutForm } from '@/app/ui/login/logout-form'
+import { useSession } from 'next-auth/react'
+import { CreateButton } from '../ui/form-components/buttons'
+import {
+  Cog6ToothIcon,
+  ArrowRightEndOnRectangleIcon
+} from '@heroicons/react/24/outline'
 
 export function Links ({ className }: { className: string }) {
   const pathname = usePathname()
+  const { data: session, status } = useSession()
 
   return (
     <div className={`${className}`}>
       <nav>
-        <ul className='topnavi flex gap-5'>
+        <ul className='topnavi flex gap-5 items-center'>
           <li>
             <Link
               className={`link ${clsx({
@@ -44,12 +51,25 @@ export function Links ({ className }: { className: string }) {
               })}`}
               href={'/task-categories'}
             >
-              Settings
+              <Cog6ToothIcon className='icon-topnavi w-5' />
             </Link>
           </li>
-          <Link href={'/login'}>Log In</Link>
           <li>
-            <LogOutForm />
+            {status === 'unauthenticated' ? (
+              <Link
+                className={`link ${clsx({
+                  active: pathname && /^\/login/.test(pathname),
+                  '': pathname !== '/login'
+                })}`}
+                href={'/login'}
+              >
+                <ArrowRightEndOnRectangleIcon className='icon-topnavi w-5' />
+              </Link>
+            ) : status === 'authenticated' ? (
+              <LogOutForm />
+            ) : (
+              <>{status}</>
+            )}
           </li>
         </ul>
       </nav>

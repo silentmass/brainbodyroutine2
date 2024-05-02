@@ -9,13 +9,13 @@ export const authConfig = {
             const isLoggedIn = !!auth?.user;
             const isOnTaskCategories = nextUrl.pathname.startsWith('/task-categories');
             const isOnTasks = nextUrl.pathname.startsWith('/tasks')
-            if (isOnTaskCategories) {
-                if(isLoggedIn) return true;
-                return false;
-            } else if (isLoggedIn) {
-                // return Response.redirect(new URL('/', nextUrl));
-                return true
-            }
+            // if (isOnTaskCategories) {
+            //     if(isLoggedIn) return true;
+            //     return false;
+            // } else if (isLoggedIn) {
+            //     // return Response.redirect(new URL('/', nextUrl));
+            //     return true
+            // }
             return true
         },
     },

@@ -3,157 +3,16 @@ import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 import {
   ListDescription,
-  User,
-  UserInDB,
-  UserNextAuth
+  ListDescriptionSchema,
+  ListDescriptionWithIdSchema,
+  TaskCategorySchema,
+  TaskCategoryWithIdSchema,
+  TaskDescriptionListSchema,
+  TaskDescriptionListWithIdSchema,
+  TaskSchema,
+  TaskWithIdSchema
 } from '@/app/lib/definitions'
-import { signIn, signOut } from '@/auth'
-import { AuthError } from 'next-auth'
 import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
-import { deleteSession } from './session'
-
-const TaskCategorySchema = z.object({
-  title: z.string().min(1),
-  description: z.string().nullable()
-})
-
-const TaskCategoryWithIdSchema = z.object({
-  id: z.number().min(1),
-  title: z.string().min(1),
-  description: z.string().nullable()
-})
-
-const TaskSchema = z.object({
-  title: z.string().min(1),
-  is_active: z.boolean(),
-  task_category_id: z.number().min(1)
-})
-
-const TaskWithIdSchema = z.object({
-  id: z.number().min(1),
-  title: z.string().min(1),
-  is_active: z.boolean(),
-  task_category_id: z.number().min(1)
-})
-
-const ListDescriptionSchema = z.object({
-  description: z.string().min(1),
-  description_list_id: z.number().min(1)
-})
-
-const ListDescriptionWithIdSchema = z.object({
-  id: z.number().min(1),
-  description: z.string().min(1),
-  description_list_id: z.number().min(1)
-})
-
-const TaskDescriptionListSchema = z.object({
-  title: z.string().min(1),
-  task_id: z.number().min(1)
-})
-
-const TaskDescriptionListWithIdSchema = z.object({
-  id: z.number().min(1),
-  title: z.string().min(1),
-  task_id: z.number().min(1)
-})
-
-const UserSchema = z.object({
-  username: z.string(),
-  password: z.string()
-})
-
-export async function fetchUser () {
-  const accessToken = cookies().get('access_token')?.value
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/users/me/`, {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${accessToken}`
-      },
-      mode: 'cors'
-    })
-    console.log(res)
-    return res.json()
-  } catch (error) {
-    console.error('Failed to fetch user:', error)
-    throw new Error('Failed to fetch user.')
-  }
-}
-
-export async function getUser (
-  username: string,
-  password: string
-): Promise<User | undefined> {
-  const params = new URLSearchParams()
-  params.append('username', username)
-  params.append('password', password)
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/user`, {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      mode: 'cors',
-      body: params
-    })
-    return response.json()
-  } catch (error) {
-    console.error('Failed to fetch user:', error)
-    throw new Error('Failed to fetch user.')
-  }
-}
-
-export async function getToken (username: string, password: string) {
-  try {
-    const params = new URLSearchParams()
-    params.append('username', username)
-    params.append('password', password)
-
-    const token = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/token`, {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      mode: 'cors',
-      body: params
-    })
-    return token.json()
-  } catch (error) {
-    console.error('Failed to fetch token:', error)
-    throw new Error('Failed to fetch token.')
-  }
-}
-
-export async function authenticate (prevState: any, formData: FormData) {
-  try {
-    const user = await signIn('credentials', formData)
-
-    // This never gets executed
-    console.log('authenticate', user)
-
-    return { ...prevState, message: `We got token` }
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case 'CredentialsSignin':
-          return { ...prevState, error: 'Invalid credentials.' }
-        default:
-          return { ...prevState, error: 'Something went wrong.' }
-      }
-    }
-    throw error
-  }
-}
-
-export const signOutAction = async () => {
-  deleteSession()
-  await signOut()
-}
 
 export const createTaskCategory = async (
   prevState: any,
@@ -303,8 +162,6 @@ export const createTask = async (prevState: any, formData: FormData) => {
   // Assume `cookies().get()` returns an object { token: "your_token_here" }
   const accessToken = cookies().get('access_token')
   if (!accessToken?.value) return
-
-  console.log('createTask', 'accessToken', accessToken, accessToken.value)
 
   const validatedFields = TaskSchema.safeParse({
     title: formData.get('taskTitle'),

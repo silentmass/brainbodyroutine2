@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 // export const APIHOST = "127.0.0.1:3000"
 export type UserCreate = {
   username: string
@@ -96,3 +98,54 @@ export interface TagBase {
 export interface Tag extends TagBase {
   id: number
 }
+
+export const TaskCategorySchema = z.object({
+  title: z.string().min(1),
+  description: z.string().nullable()
+})
+
+export const TaskCategoryWithIdSchema = z.object({
+  id: z.number().min(1),
+  title: z.string().min(1),
+  description: z.string().nullable()
+})
+
+export const TaskSchema = z.object({
+  title: z.string().min(1),
+  is_active: z.boolean(),
+  task_category_id: z.number().min(1)
+})
+
+export const TaskWithIdSchema = z.object({
+  id: z.number().min(1),
+  title: z.string().min(1),
+  is_active: z.boolean(),
+  task_category_id: z.number().min(1)
+})
+
+export const ListDescriptionSchema = z.object({
+  description: z.string().min(1),
+  description_list_id: z.number().min(1)
+})
+
+export const ListDescriptionWithIdSchema = z.object({
+  id: z.number().min(1),
+  description: z.string().min(1),
+  description_list_id: z.number().min(1)
+})
+
+export const TaskDescriptionListSchema = z.object({
+  title: z.string().min(1),
+  task_id: z.number().min(1)
+})
+
+export const TaskDescriptionListWithIdSchema = z.object({
+  id: z.number().min(1),
+  title: z.string().min(1),
+  task_id: z.number().min(1)
+})
+
+export const UserSchema = z.object({
+  username: z.string(),
+  password: z.string()
+})

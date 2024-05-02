@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Links } from './_components/links'
 import { SessionProvider } from 'next-auth/react'
+import AuthProvider from './context/AuthProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,10 +20,14 @@ export default function RootLayout ({
   return (
     <html lang='en'>
       <body className={`${inter.className} bg-white`}>
-        <main className='flex flex-col items-center'>
-          <Links className='topnavi flex flex-col w-full gap-2 pt-1 pb-1 pl-8 pr-8 justify-center items-center sticky top-0 max-w-2xl z-10 ' />
-          <div className='flex w-full justify-center max-w-2xl'>{children}</div>
-        </main>
+        <AuthProvider>
+          <main className='flex h-full flex-col items-center'>
+            <Links className='topnavi flex flex-col w-full gap-2 pt-1 pb-1 pl-8 pr-8 justify-center items-center sticky top-0 max-w-2xl z-10 ' />
+            <div className='flex w-full h-fit justify-center max-w-2xl'>
+              {children}
+            </div>
+          </main>
+        </AuthProvider>
       </body>
     </html>
   )
