@@ -1,7 +1,7 @@
 'use client'
 
-import { deleteDescriptionList } from '@/app/lib/actions'
-import { useFormState, useFormStatus } from 'react-dom'
+import { deleteDescriptionList } from '@/app/lib/actions/descriptionlists'
+import { useFormState } from 'react-dom'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { initialState } from '@/app/_components/response-state'
 

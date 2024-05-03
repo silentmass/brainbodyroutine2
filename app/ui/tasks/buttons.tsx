@@ -1,6 +1,6 @@
 'use client'
 import { useFormState, useFormStatus } from 'react-dom'
-import { deleteTask } from '@/app/lib/actions'
+import { deleteTask } from '@/app/lib/actions/tasks'
 import { PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Task } from '@/app/lib/definitions'

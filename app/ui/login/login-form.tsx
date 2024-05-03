@@ -1,11 +1,10 @@
 'use client'
 
 import { useFormState } from 'react-dom'
-import { authenticate } from '@/app/lib/auth'
+import { authenticate } from '@/app/lib/actions/auth'
 import { initialState } from '@/app/_components/response-state'
 import { CreateButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
-import { auth } from '@/auth'
 
 export default function LoginForm () {
   const [state, dispatch] = useFormState(authenticate, initialState)

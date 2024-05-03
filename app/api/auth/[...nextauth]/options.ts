@@ -1,9 +1,10 @@
-import { getToken, getUser } from '@/app/lib/auth'
+import { getToken } from '@/app/lib/actions/auth'
 import type { NextAuthConfig } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { z } from 'zod'
 import bcrypt from 'bcrypt'
 import { cookies } from 'next/headers'
+import { getUser } from '@/app/lib/actions/users'
 
 export const options: NextAuthConfig = {
   providers: [

@@ -1,5 +1,5 @@
 'use client'
-import { updateListDescription } from '@/app/lib/actions'
+import { updateListDescription } from '@/app/lib/actions/descriptions'
 import { ListDescription } from '@/app/lib/definitions'
 import { CreateButton } from '@/app/ui/form-components/buttons'
 import { useFormState } from 'react-dom'

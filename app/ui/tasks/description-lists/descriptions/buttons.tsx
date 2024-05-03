@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from 'react-dom'
-import { deleteListDescription } from '@/app/lib/actions'
+import { deleteListDescription } from '@/app/lib/actions/descriptions'
 import { initialState } from '@/app/_components/response-state'
 import { DeleteButton } from '@/app/ui/form-components/buttons'
 

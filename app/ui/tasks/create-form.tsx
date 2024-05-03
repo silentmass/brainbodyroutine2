@@ -1,7 +1,7 @@
 'use client'
 import { CreateTask } from '@/app/ui/tasks/buttons'
 import { TaskCategory } from '@/app/lib/definitions'
-import { createTask } from '@/app/lib/actions'
+import { createTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 import TaskCategoriesSelect from '../form-components/task-categories-select'
 import ResponseDurationMessage from '@/app/_components/response-duration'

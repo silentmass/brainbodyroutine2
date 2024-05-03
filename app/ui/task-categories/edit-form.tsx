@@ -1,6 +1,6 @@
 'use client'
 import { useFormState } from 'react-dom'
-import { updateTaskCategory } from '@/app/lib/actions'
+import { updateTaskCategory } from '@/app/lib/actions/taskcategories'
 import { TaskCategory } from '@/app/lib/definitions'
 import Link from 'next/link'
 import { useEffect } from 'react'

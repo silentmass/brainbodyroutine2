@@ -1,5 +1,4 @@
-import { signOutAction } from '@/app/lib/auth'
-import { CreateButton } from '@/app/ui/form-components/buttons'
+import { signOutAction } from '@/app/lib/actions/auth'
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 
 export const LogOutForm = () => {

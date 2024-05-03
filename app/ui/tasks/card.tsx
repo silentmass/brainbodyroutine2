@@ -1,23 +1,12 @@
 'use client'
 import { Task } from '@/app/lib/definitions'
 import { DeleteTask, SetTaskActive, UpdateTask } from './buttons'
-import Image from 'next/image'
-import clsx from 'clsx'
-import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import {
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
-import FormActionStateMessage from '@/app/ui/form-components/form-action-message'
+import { FormEvent, useRef, useState } from 'react'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
-import { updateTask } from '@/app/lib/actions'
+import { updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 
 const TaskCard = ({ task }: { task: Task }) => {

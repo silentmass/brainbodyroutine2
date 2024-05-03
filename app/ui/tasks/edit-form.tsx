@@ -1,6 +1,6 @@
 'use client'
 import { Task, TaskCategory, TaskDescriptionList } from '@/app/lib/definitions'
-import { updateTask } from '@/app/lib/actions'
+import { updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'

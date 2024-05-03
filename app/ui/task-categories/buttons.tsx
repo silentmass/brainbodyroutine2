@@ -1,7 +1,6 @@
 'use client'
 import { useFormState, useFormStatus } from 'react-dom'
-import { deleteTaskCategory } from '@/app/lib/actions'
-import { TrashIcon } from '@heroicons/react/24/outline'
+import { deleteTaskCategory } from '@/app/lib/actions/taskcategories'
 import { initialState } from '@/app/_components/response-state'
 import { DeleteButton } from '../form-components/buttons'
 

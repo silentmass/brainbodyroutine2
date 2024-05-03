@@ -1,32 +1,7 @@
 'use server'
 import { AuthError } from 'next-auth'
-import { User } from '@/app/lib/definitions'
-import { signIn, signOut } from '../api/auth/[...nextauth]/route'
+import { signIn, signOut } from '../../api/auth/[...nextauth]/route'
 import { deleteSession } from '@/app/lib/session'
-
-export async function getUser (
-  username: string,
-  password: string
-): Promise<User | undefined> {
-  const params = new URLSearchParams()
-  params.append('username', username)
-  params.append('password', password)
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/user`, {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      mode: 'cors',
-      body: params
-    })
-    return response.json()
-  } catch (error) {
-    console.error('Failed to fetch user:', error)
-    throw new Error('Failed to fetch user.')
-  }
-}
 
 export async function getToken (username: string, password: string) {
   try {
@@ -34,15 +9,18 @@ export async function getToken (username: string, password: string) {
     params.append('username', username)
     params.append('password', password)
 
-    const token = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/token`, {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      mode: 'cors',
-      body: params
-    })
+    const token = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_AUTH}/token`,
+      {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        mode: 'cors',
+        body: params
+      }
+    )
     return token.json()
   } catch (error) {
     console.error('Failed to fetch token:', error)
