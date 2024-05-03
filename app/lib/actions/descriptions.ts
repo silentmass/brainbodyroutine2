@@ -5,13 +5,24 @@ import { revalidateTag } from 'next/cache'
 import {
   ListDescriptionSchema,
   ListDescriptionWithIdSchema
-} from '../definitions'
+} from '@/app/lib/definitions'
+import { cookies } from 'next/headers'
 
 export const createListDescription = async (
   listId: string,
   prevState: any,
   formData: FormData
 ) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. Description not created.'
+    }
+
   const validatedFields = ListDescriptionSchema.safeParse({
     description: formData.get('description'),
     description_list_id: parseInt(listId),
@@ -32,7 +43,10 @@ export const createListDescription = async (
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${listId}/descriptions`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
         mode: 'cors',
         body: JSON.stringify(data)
       }
@@ -66,6 +80,16 @@ export const updateListDescription = async (
   prevState: any,
   formData: FormData
 ) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. Description not updated.'
+    }
+
   const validatedFields = ListDescriptionWithIdSchema.safeParse({
     id: parseInt(descriptionId),
     description: formData.get('description'),
@@ -84,7 +108,10 @@ export const updateListDescription = async (
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONS}/${data.id}/update`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
         mode: 'cors',
         body: JSON.stringify(data)
       }
@@ -118,12 +145,25 @@ export const deleteListDescription = async (
   prevState: any,
   formData: FormData
 ) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. Description not deleted.'
+    }
+
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONS}/${id}/delete`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
         mode: 'cors'
       }
     )

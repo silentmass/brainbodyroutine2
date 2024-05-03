@@ -6,6 +6,15 @@ import { TaskSchema, TaskWithIdSchema } from '../definitions'
 import { cookies } from 'next/headers'
 
 export const createTask = async (prevState: any, formData: FormData) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. No task created.'
+    }
+
   const isActiveValue = formData.get('taskIsActive')
   const isActive =
     isActiveValue === 'on' || isActiveValue === 'true' ? true : false
@@ -16,10 +25,6 @@ export const createTask = async (prevState: any, formData: FormData) => {
     taskCategoryIdValue !== ''
       ? parseInt(taskCategoryIdValue)
       : null
-
-  // Assume `cookies().get()` returns an object { token: "your_token_here" }
-  const accessToken = cookies().get('access_token')
-  if (!accessToken?.value) return
 
   const validatedFields = TaskSchema.safeParse({
     title: formData.get('taskTitle'),
@@ -41,7 +46,6 @@ export const createTask = async (prevState: any, formData: FormData) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Authorization: `Bearer HELLLO`
           Authorization: `Bearer ${accessToken.value}`
         },
         mode: 'cors',
@@ -71,12 +75,25 @@ export const deleteTask = async (
   prevState: any,
   formData: FormData
 ) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. No task deleted.'
+    }
+
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/${id}/delete`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
+
         mode: 'cors'
       }
     )
@@ -103,6 +120,15 @@ export const updateTask = async (
   prevState: any,
   formData: FormData
 ) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. No task updated.'
+    }
+
   const isActive = formData.get('taskIsActive')
   const taskCategoryIdValue = formData.get('taskCategoryId')
   const task_category_id =
@@ -132,7 +158,10 @@ export const updateTask = async (
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/${id}/update`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
         mode: 'cors',
         body: JSON.stringify(data)
       }

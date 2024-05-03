@@ -1,11 +1,22 @@
 'use server'
 import { revalidateTag } from 'next/cache'
 import { TaskCategorySchema, TaskCategoryWithIdSchema } from '../definitions'
+import { cookies } from 'next/headers'
 
 export const createTaskCategory = async (
   prevState: any,
   formData: FormData
 ) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. Category not created.'
+    }
+
   const validatedFields = TaskCategorySchema.safeParse({
     title: formData.get('taskCategoryTitle'),
     description: formData.get('taskCategoryDescription')
@@ -22,7 +33,10 @@ export const createTaskCategory = async (
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKCATEGORIES}`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
         mode: 'cors',
         body: JSON.stringify(data)
       }
@@ -55,6 +69,16 @@ export const updateTaskCategory = async (
   prevState: any,
   formData: FormData
 ) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. Category not updated.'
+    }
+
   const validatedFields = TaskCategoryWithIdSchema.safeParse({
     id: parseInt(id),
     title: formData.get('taskCategoryTitle'),
@@ -72,7 +96,10 @@ export const updateTaskCategory = async (
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKCATEGORIES}/${id}/update`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
         mode: 'cors',
         body: JSON.stringify(data)
       }
@@ -105,12 +132,25 @@ export const deleteTaskCategory = async (
   prevState: any,
   formData: FormData
 ) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. Category not deleted.'
+    }
+
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKCATEGORIES}/${id}/delete`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
         mode: 'cors'
       }
     )

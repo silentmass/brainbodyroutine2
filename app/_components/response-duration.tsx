@@ -34,7 +34,11 @@ export default function ResponseDurationMessage ({
         setShowStateMessage(false)
       },
       1000,
-      state.message
+      state
+        ? state.message !== ''
+          ? state.message
+          : state.errors
+        : 'Something went wrong'
     )
   }, [state])
   return (

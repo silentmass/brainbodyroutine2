@@ -92,7 +92,7 @@ export function SetTaskActive ({
           cx='14'
           cy='14'
           r='11.5'
-          fill='#F3F4F6'
+          fill='transparent'
           stroke='#374151'
           className={`unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
         />
@@ -101,7 +101,7 @@ export function SetTaskActive ({
           <path
             opacity='0.1'
             d='M23 30.5C23 29.5631 22.1801 28.5641 20.5035 27.7699C18.8649 26.9937 16.5662 26.5 14 26.5C11.4338 26.5 9.13506 26.9937 7.49653 27.7699C5.81986 28.5641 5 29.5631 5 30.5C5 31.4369 5.81986 32.4359 7.49653 33.2301C9.13506 34.0063 11.4338 34.5 14 34.5C16.5662 34.5 18.8649 34.0063 20.5035 33.2301C22.1801 32.4359 23 31.4369 23 30.5Z'
-            fill='#F3F4F6'
+            fill='transparent'
             stroke='#374151'
             className={`unchecked ${mouseOverStyle} ${mouseActiveStyle}`}
           />
@@ -173,8 +173,8 @@ export function SetTaskActive ({
           y2='12'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#F9FAFB' stopOpacity='0' />
-          <stop offset='1' stopColor='#F9FAFB' />
+          <stop stopColor='transparent' stopOpacity='0' />
+          <stop offset='1' stopColor='transparent' />
         </linearGradient>
         <clipPath id='clip0_102_1221'>
           <rect width='28' height='38' fill='transparent' />
@@ -202,7 +202,7 @@ export function SetTaskActive ({
           cx='14'
           cy='14'
           r='11.5'
-          fill='#F3F4F6'
+          fill='transparent'
           stroke='#374151'
           className={`checked ${mouseOverStyle} ${mouseActiveStyle}`}
         />
@@ -210,7 +210,7 @@ export function SetTaskActive ({
           <path
             opacity='0.1'
             d='M23 30.5C23 29.5631 22.1801 28.5641 20.5035 27.7699C18.8649 26.9937 16.5662 26.5 14 26.5C11.4338 26.5 9.13506 26.9937 7.49653 27.7699C5.81986 28.5641 5 29.5631 5 30.5C5 31.4369 5.81986 32.4359 7.49653 33.2301C9.13506 34.0063 11.4338 34.5 14 34.5C16.5662 34.5 18.8649 34.0063 20.5035 33.2301C22.1801 32.4359 23 31.4369 23 30.5Z'
-            fill='#F3F4F6'
+            fill='transparent'
             stroke='#374151'
             className={`checked ${mouseOverStyle} ${mouseActiveStyle}`}
           />
@@ -280,8 +280,8 @@ export function SetTaskActive ({
           y2='12'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#F9FAFB' stopOpacity='0' />
-          <stop offset='1' stopColor='#F9FAFB' />
+          <stop stopColor='transparent' stopOpacity='0' />
+          <stop offset='1' stopColor='transparent' />
         </linearGradient>
         <clipPath id='clip0_102_1221'>
           <rect width='28' height='38' fill='transparent' />

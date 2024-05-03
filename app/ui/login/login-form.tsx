@@ -5,9 +5,18 @@ import { authenticate } from '@/app/lib/actions/auth'
 import { initialState } from '@/app/_components/response-state'
 import { CreateButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function LoginForm () {
   const [state, dispatch] = useFormState(authenticate, initialState)
+
+  const router = useRouter()
+  useEffect(() => {
+    if (state.redirectTo) {
+      router.push(state.redirectTo)
+    }
+  }, [state, router])
 
   return (
     <form
@@ -55,7 +64,7 @@ export default function LoginForm () {
             Login
           </CreateButton>
         </div>
-        {state.message}
+        {/* {state.message} */}
       </div>
       {/* Form action state message floating above card requires relative parent */}
       <ResponseDurationMessage state={state} />

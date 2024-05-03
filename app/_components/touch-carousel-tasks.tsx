@@ -15,8 +15,8 @@ async function animateListMovement (
   setPositionStateFun: (position: number) => void
 ) {
   return new Promise(resolve => {
-    const dt = 1 / 60
-    const velocityPxPerSec = 500
+    const dt = 1 / 120
+    const velocityPxPerSec = 1300
     const distance = endPosition - startPosition
     const duration = Math.abs(distance) / velocityPxPerSec
     const step = dt * (distance / duration)
@@ -24,29 +24,23 @@ async function animateListMovement (
     let position = startPosition
     let startTime = performance.now() / 1000
     let currentTime = 0
+    let relativePosition = 0
+    let dampeningFactor = 1
 
     timer = setInterval(() => {
       currentTime = performance.now() / 1000
       const totalTime = currentTime - startTime
-      if (
-        (endPosition - (position + step) < 0 && step < 0) ||
-        (endPosition - (position + step) > 0 && step > 0)
-      ) {
-        position = position + step
+      const inside = relativePosition >= 0 && relativePosition <= 1
+      if (inside) {
+        // Include sigmoid factor here
+
+        relativePosition = (position + step - startPosition) / distance
+        dampeningFactor = (1 - relativePosition ** 4) ** 2
+        position = position + step + dampeningFactor
         setPositionStateFun(position)
-      } else if (
-        (endPosition - position > step &&
-          endPosition - position <= 0 &&
-          step < 0) ||
-        (endPosition - position < step &&
-          endPosition - position >= 0 &&
-          step > 0)
-      ) {
+      } else {
         position = endPosition
         setPositionStateFun(position)
-        clearInterval(timer)
-        resolve(true)
-      } else {
         clearInterval(timer)
         resolve(true)
       }
@@ -246,15 +240,24 @@ export const TouchCarouselTasks = ({
 
       const listRect = listRef.current?.getBoundingClientRect()
       if (listRect && tasks !== null) {
+        const direction = averageEndVelocity < 0 ? -1 : 1
+        const velocityFactor =
+          1 - (1 - Math.abs(averageEndVelocity / 6000) ** 2) ** 2
         const endRollingShift =
-          Math.abs(averageEndVelocity) > 2000
-            ? (listRect.height * averageEndVelocity) / 3000
-            : 0
+          Math.abs(averageEndVelocity * velocityFactor) * direction
+        // const endRollingShift =
+        //   Math.abs(averageEndVelocity * (averageEndVelocity / 3000) ** 2 * 1) *
+        //   direction
+
         console.log(
           'averageEndVelocity',
           averageEndVelocity,
           'endRollingShift',
-          endRollingShift
+          endRollingShift,
+          'touchCurrentPosition.y',
+          touchCurrentPosition.y,
+          'listTopPositionStateRef.current',
+          listTopPositionStateRef.current
         )
 
         const animateRolling = (position: number) => {
@@ -284,7 +287,7 @@ export const TouchCarouselTasks = ({
             if (position !== null) {
               return Math.abs(rollingEnd - position)
             } else {
-              return 99999
+              return 999999
             }
           })
 
@@ -299,6 +302,14 @@ export const TouchCarouselTasks = ({
             listTopPositionStateRef.current !== undefined &&
             listTopPositionStateRef.current !== null
           ) {
+            console.log(
+              'possibleEndPositions',
+              possibleEndPositions,
+              'filteredPosition',
+              filteredPosition,
+              'distanceFromEndPositions',
+              distanceFromEndPositions
+            )
             animateListMovement(
               listTopPositionStateRef.current,
               filteredPosition,
