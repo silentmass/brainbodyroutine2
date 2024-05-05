@@ -1,5 +1,19 @@
 import LoginForm from '@/app/ui/login/login-form'
+import { auth } from '../api/auth/[...nextauth]/route'
+import { LogOutForm } from '../ui/login/logout-form'
 
-export default function LoginPage () {
-  return <LoginForm />
+export default async function LoginPage () {
+  const session = await auth()
+  return (
+    <div className='flex gap-5 w-full h-full items-center justify-center'>
+      {session !== null ? (
+        <>
+          <h1>Logged in</h1>
+          <LogOutForm />
+        </>
+      ) : (
+        <LoginForm />
+      )}
+    </div>
+  )
 }

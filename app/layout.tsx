@@ -19,16 +19,18 @@ export default function RootLayout ({
 }>) {
   return (
     <html lang='en'>
-      <body className={`${inter.className} bg-white`}>
-        <AuthProvider>
-          <main className='flex h-full flex-col items-center'>
-            <Links className='topnavi flex flex-col w-full gap-2 pt-1 pb-1 pl-8 pr-8 justify-center items-center sticky top-0 max-w-2xl z-10 ' />
-            <div className='flex w-full h-fit justify-center max-w-2xl'>
+      <AuthProvider>
+        <body className={`flex flex-col items-center h-full `}>
+          <main className='flex flex-col w-full max-w-2xl h-full '>
+            <div className='flex flex-col items-center justify-center w-full h-30 sticky top-0 z-30'>
+              <Links className='topnavi h-full flex flex-col w-full gap-2 pt-1 pb-1 pl-8 pr-8 justify-center items-center  z-10 ' />
+            </div>
+            <div className='flex flex-col w-full h-full justify-center max-w-2xl items-center'>
               {children}
             </div>
           </main>
-        </AuthProvider>
-      </body>
+        </body>
+      </AuthProvider>
     </html>
   )
 }

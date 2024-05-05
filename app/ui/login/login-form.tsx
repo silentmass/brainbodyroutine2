@@ -7,16 +7,20 @@ import { CreateButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 export default function LoginForm () {
   const [state, dispatch] = useFormState(authenticate, initialState)
+  const { update: updateSession, data: session, status } = useSession()
 
-  const router = useRouter()
-  useEffect(() => {
-    if (state.redirectTo) {
-      router.push(state.redirectTo)
-    }
-  }, [state, router])
+  // const router = useRouter()
+  // useEffect(() => {
+  //   if (state.redirectTo !== '' && state.redirectTo !== null) {
+  //     // router.push(state.redirectTo)
+  //     window.location.reload()
+  //     console.log('router')
+  //   }
+  // }, [state])
 
   return (
     <form
@@ -25,7 +29,13 @@ export default function LoginForm () {
       action={dispatch}
     >
       <div className='flex flex-col gap-y-4 w-full'>
-        <h1>Please log in to continue</h1>
+        {status === 'unauthenticated' ? (
+          <h1>Please log in to continue</h1>
+        ) : status === 'authenticated' ? (
+          <h1>Logged in</h1>
+        ) : (
+          <h1>Loading</h1>
+        )}
         <div className=''>
           <label
             className={`card-create flex flex-col w-full`}

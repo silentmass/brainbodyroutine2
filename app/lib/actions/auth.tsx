@@ -2,6 +2,8 @@
 import { AuthError } from 'next-auth'
 import { signIn, signOut } from '../../api/auth/[...nextauth]/route'
 import { deleteSession } from '@/app/lib/session'
+import { auth } from '../../api/auth/[...nextauth]/route'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 export async function getToken (username: string, password: string) {
@@ -30,23 +32,47 @@ export async function getToken (username: string, password: string) {
 }
 
 export async function authenticate (prevState: any, formData: FormData) {
+  const username = formData.get('username')
+  const password = formData.get('password')
   try {
+    // signIn will authenticate user and fetch and set access_token
+    // When redirect is true, it will redirect to /login page and update session object
+    // There are several callback functions attached
     const message = await signIn('credentials', {
-      username: formData.get('username'),
-      password: formData.get('password'),
-      redirect: false
-    }).then(
-      value => {
-        return { ...prevState, message: `We signed in ${value}` }
-      },
-      value => {
-        return { ...prevState, message: `Failed to sign in ${value}` }
-      }
-    )
+      username: username,
+      password: password,
+      redirect: true
+    })
+    // .then(
+    //   async value => {
+    //     console.log(value)
 
-    // This never gets executed
+    //     // try {
+    //     //   const token = await getToken(username, password)
+
+    //     //   if (!token) return null
+
+    //     //   cookies().set('access_token', token.access_token, {
+    //     //     httpOnly: true,
+    //     //     secure: true,
+    //     //     sameSite: 'lax',
+    //     //     path: '/'
+    //     //   })
+    //     // } catch (error) {
+    //     //   console.error('Failed to fetch token:', error)
+    //     //   throw new Error('Failed to fetch token.')
+    //     // }
+
+    //     return { ...prevState, message: `We signed in ${value}` }
+    //   },
+    //   value => {
+    //     return { ...prevState, message: `Failed to sign in ${value}` }
+    //   }
+    // )
+
+    // This never gets executed redirect is true
     // Maybe use signIn callback function
-    return { ...message, redirectTo: '/login' }
+    // return { ...message, redirectTo: '/login' }
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
