@@ -4,6 +4,9 @@ import CreateTaskCategoryForm from '@/app/ui/task-categories/create-form'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 export const metadata: Metadata = {
   title: 'Task categories'
 }

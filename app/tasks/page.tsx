@@ -4,6 +4,9 @@ import CreateTaskForm from '@/app/ui/tasks/create-form'
 import TasksTable from '@/app/ui/tasks/table'
 import { Task, TaskCategory } from '@/app/lib/definitions'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 export default async function Page () {
   const categories: TaskCategory[] = await fetchTaskCategories()
   const tasks: Task[] = await fetchTasks()

@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: 'Create task'
 }
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 export default async function Page () {
   const categories: TaskCategory[] = await fetchTaskCategories()
   return (
