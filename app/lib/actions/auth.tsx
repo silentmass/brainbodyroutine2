@@ -1,10 +1,7 @@
 'use server'
 import { AuthError } from 'next-auth'
-import { signIn, signOut } from '../../api/auth/[...nextauth]/route'
+import { GET, POST } from '../../api/auth/[...nextauth]/route'
 import { deleteSession } from '@/app/lib/session'
-import { auth } from '../../api/auth/[...nextauth]/route'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 export async function getToken (username: string, password: string) {
   try {
@@ -38,7 +35,7 @@ export async function authenticate (prevState: any, formData: FormData) {
     // signIn will authenticate user and fetch and set access_token
     // When redirect is true, it will redirect to /login page and update session object
     // There are several callback functions attached
-    const message = await signIn('credentials', {
+    const message = await POST.signIn('credentials', {
       username: username,
       password: password,
       redirect: true
@@ -88,5 +85,5 @@ export async function authenticate (prevState: any, formData: FormData) {
 
 export const signOutAction = async () => {
   deleteSession()
-  await signOut()
+  await POST.signOut()
 }
