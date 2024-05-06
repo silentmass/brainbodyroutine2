@@ -5,6 +5,7 @@ import { z } from 'zod'
 import bcrypt from 'bcrypt'
 import { cookies } from 'next/headers'
 import { getUser } from '@/app/lib/actions/users'
+import { revalidateTag } from 'next/cache'
 
 export const options: NextAuthConfig = {
   providers: [
@@ -67,6 +68,7 @@ export const options: NextAuthConfig = {
       console.log(
         '############################# Hello from signIn callback #############################'
       )
+
       return true
     },
     async jwt ({ token, user, session }) {
@@ -76,6 +78,14 @@ export const options: NextAuthConfig = {
       //   token.accessToken = account.access_token
       //   token.id = profile?.id
       // }
+      revalidateTag('taskcategories')
+      revalidateTag('taskcategory')
+      revalidateTag('tasks')
+      revalidateTag('task')
+      revalidateTag('task')
+      revalidateTag('descriptionlists')
+      revalidateTag('descriptionlist')
+      revalidateTag('descriptions')
       return token
     },
     async session ({ session, token, user }) {
