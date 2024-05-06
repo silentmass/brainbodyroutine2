@@ -16,11 +16,6 @@ export function Links ({ className }: { className: string }) {
   const pathname = usePathname()
   const { update: updateSession, data: session, status } = useSession()
 
-  useEffect(() => {
-    console.log('Session status changed:', status)
-    // Optionally force a re-render or perform other actions when status changes
-  }, [status]) // Depend on status to re-run this effect
-
   return (
     <div className={`${className}`}>
       <nav>
