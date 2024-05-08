@@ -4,8 +4,8 @@ import CreateTaskForm from '@/app/ui/tasks/create-form'
 import TasksTable from '@/app/ui/tasks/table'
 import { Task, TaskCategory } from '@/app/lib/definitions'
 
-export const dynamic = 'force-dynamic'
-export const fetchCache = 'force-no-store'
+// export const dynamic = 'force-dynamic'
+// export const fetchCache = 'force-no-store'
 
 export default async function Page () {
   const categories: TaskCategory[] = await fetchTaskCategories()
@@ -18,7 +18,9 @@ export default async function Page () {
         )}
       </Suspense>
       <Suspense fallback={<p>Loading tasks...</p>}>
-        {tasks && tasks.length && <TasksTable tasks={tasks} />}
+        {tasks && tasks.length && (
+          <TasksTable tasks={tasks} showTaskLink={true} />
+        )}
       </Suspense>
     </div>
   )

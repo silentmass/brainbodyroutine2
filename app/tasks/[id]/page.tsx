@@ -1,32 +1,31 @@
-import { fetchTasks } from '@/app/lib/data'
+import TouchCarouselTasksWrapper from '@/app/_components/touch-carousel-task-wrap'
+import { fetchTaskById, fetchTasks } from '@/app/lib/data'
 import { Task } from '@/app/lib/definitions'
 import { TaskCardView } from '@/app/ui/tasks/card'
 import { DescriptionListsView } from '@/app/ui/tasks/description-lists/card-list'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 
 export default async function Page ({ params }: { params: { id: string } }) {
   const taskId = params.id
 
+  const task = await fetchTaskById(taskId)
   const tasks: Task[] = await fetchTasks()
-  const task = tasks
-    ? tasks.filter(task => task.id === parseInt(taskId))[0]
-    : null
+  const categoryTasks = [
+    ...tasks.filter(entry => entry.task_category_id === task.task_category_id)
+  ]
 
   return (
-    <div className='flex flex-col w-full justify-center pb-2 gap-y-2'>
-      <Suspense fallback={<p>Loading task...</p>}>
-        {task ? (
-          <>
-            <TaskCardView task={task} />
-            <DescriptionListsView
-              lists={task?.description_lists}
-              className='flex flex-col'
-            />
-          </>
-        ) : (
-          <>No task</>
-        )}
-      </Suspense>
-    </div>
+    <Suspense fallback={<p>Loading tasks...</p>}>
+      {categoryTasks ? (
+        <TouchCarouselTasksWrapper
+          tasks={categoryTasks}
+          horizontal={false}
+          invert={false}
+          selectedTask={task}
+        />
+      ) : (
+        <>No tasks</>
+      )}
+    </Suspense>
   )
 }

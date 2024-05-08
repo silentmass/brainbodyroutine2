@@ -19,7 +19,7 @@ export default function CreateTaskForm ({
       name='createTaskForm'
       id='createTaskForm'
       action={formAction}
-      className='card-create relative flex flex-col p-4 w-full rounded-2xl'
+      className='relative flex flex-col p-6 gap-6 w-full rounded-2xl bg-gray-100 dark:bg-gray-900'
     >
       <input
         type='hidden'
@@ -28,24 +28,34 @@ export default function CreateTaskForm ({
         className={``}
         defaultValue={`true`}
       />
-      <label className={`card-create w-full p-2 gap-2`}>
-        <h2 className='card-create'>Task Title</h2>
-        <input
-          type='text'
-          name='taskTitle'
-          id='taskTitle'
-          required
-          className={`card-create`}
-        />
-      </label>
-      <label className={`card-create flex pl-2 pr-2 pb-2 gap-4`}>
-        <h2 className='card-create'>Category</h2>
-        <TaskCategoriesSelect
-          categories={taskCategories}
-          defaultCategoryId={taskCategories[0].id}
-        />
-      </label>
-      <div className='flex w-full justify-center pb-2'>
+      <div className='flex flex-col gap-4'>
+        <div className='flex w-full'>
+          <label className={`w-1/3`}>
+            <h2 className=''>Title</h2>
+          </label>
+          <input
+            type='text'
+            name='taskTitle'
+            id='taskTitle'
+            required
+            className={`flex w-full bg-transparent border-b`}
+          />
+        </div>
+        <div className='flex w-full'>
+          <label className={`w-1/3`}>
+            <h2 className=''>Category</h2>
+          </label>
+          <div className='flex w-full'>
+            <TaskCategoriesSelect
+              categories={taskCategories}
+              defaultCategoryId={taskCategories[0].id}
+              className={`w-fit bg-transparent border-b`}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className='flex w-full justify-center'>
         <CreateTask />
       </div>
       {/* Form action state message floating above card */}

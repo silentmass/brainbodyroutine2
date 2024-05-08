@@ -138,12 +138,20 @@ export const updateTask = async (
       ? parseInt(taskCategoryIdValue)
       : null
   const title = formData.get('taskTitle')
+  const sortOrderValue = formData.get('sortOrder')
+  const sortOrder =
+    sortOrderValue !== `null` &&
+    typeof sortOrderValue === 'string' &&
+    sortOrderValue !== ''
+      ? parseInt(sortOrderValue)
+      : null
 
   const validatedFields = TaskWithIdSchema.safeParse({
     id: parseInt(id),
     title: title,
     task_category_id: task_category_id,
-    is_active: isActive === 'on' || isActive === 'true' ? true : false
+    is_active: isActive === 'on' || isActive === 'true' ? true : false,
+    sort_order: sortOrder
   })
 
   if (!validatedFields.success) {

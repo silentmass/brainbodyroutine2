@@ -29,6 +29,10 @@
 - [x] Check description update
 - [x] Change categories visuals
 - [x] Check revalidations
+- [ ] Fix the check button
+- [ ] Add buttons to move tasks
+- [ ] Change preview task layout to use carousel
+- [ ] Remove button side buttons from carousel and check that category navi works and touch taps are registered
 - [ ] Add support for dark mode
 - [ ] Check gradients masks above carousel for both modes
 - [ ] Make swiping more sensitive

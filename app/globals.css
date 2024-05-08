@@ -16,7 +16,7 @@
   }
 }
 
-/* body {
+body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -24,16 +24,25 @@
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-} */
+}
+
+.hide-scrollbar {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
-
-
-
 
 circle.checked,
 circle.unchecked,
@@ -43,7 +52,7 @@ path.unchecked {
 }
 
 circle.unchecked {
-  fill: #f3f4f6; /* Changes the fill color on hover */
+  fill: transparent; /* Changes the fill color on hover */
   stroke: #d1d5db; /* Changes the stroke color on hover */
 }
 
@@ -148,14 +157,15 @@ path.unchecked.mark.check-over.check-active {
   }
 }
 
-.card {
-  background-color: #fafafa;
+@media (prefers-color-schem: dark) {
+  :card {
+    background-color: #fafafa;
+  }
 }
 
 li.card {
   color: black;
 }
-
 
 .icon {
   color: #d4d4d4;

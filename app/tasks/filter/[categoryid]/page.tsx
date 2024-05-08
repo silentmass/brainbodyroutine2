@@ -1,3 +1,4 @@
+import TouchCarouselTasksWrapper from '@/app/_components/touch-carousel-task-wrap'
 import { fetchTaskCategoryById, fetchTasks } from '@/app/lib/data'
 import { Task } from '@/app/lib/definitions'
 import TasksTable from '@/app/ui/tasks/table'
@@ -9,19 +10,33 @@ export default async function Page ({
   params: { categoryid: string }
 }) {
   const categoryID = params.categoryid
-  const tasks = await fetchTasks()
+  const tasks: Task[] = await fetchTasks()
+
+  const categoryTasks =
+    tasks !== null
+      ? [
+          ...tasks.filter(
+            entry => entry.task_category_id === parseInt(categoryID)
+          )
+        ]
+      : []
+
+  const task = tasks ? tasks[0] : null
+
+  console.log('task', task)
 
   return (
-    <div className='flex w-full'>
+    <div className='flex w-full justify-center'>
       <Suspense fallback={<p>Loading tasks...</p>}>
-        {tasks ? (
-          <TasksTable
-            tasks={tasks.filter(
-              (task: Task) => task.task_category_id === parseInt(categoryID)
-            )}
+        {categoryTasks.length ? (
+          <TouchCarouselTasksWrapper
+            tasks={categoryTasks}
+            horizontal={false}
+            invert={false}
+            selectedTask={task}
           />
         ) : (
-          <>No task</>
+          <>No tasks</>
         )}
       </Suspense>
     </div>

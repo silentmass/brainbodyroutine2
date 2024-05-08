@@ -54,6 +54,8 @@ export interface TaskBase {
   title: string
   is_active: boolean
   task_category_id: number
+  sort_order: number | null
+  user_id: number | null
   tags: Tag[] | null
   description_lists: TaskDescriptionList[] | null
 }
@@ -120,7 +122,8 @@ export const TaskWithIdSchema = z.object({
   id: z.number().min(1),
   title: z.string().min(1),
   is_active: z.boolean(),
-  task_category_id: z.number().min(1)
+  task_category_id: z.number().min(1),
+  sort_order: z.number().nullable()
 })
 
 export const ListDescriptionSchema = z.object({

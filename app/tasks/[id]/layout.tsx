@@ -16,6 +16,8 @@ export default async function Layout ({
 
   const taskID = params.id !== '' ? params.id : null
 
+  console.log(taskID)
+
   const task: Task = taskID !== null ? await fetchTaskById(taskID) : null
 
   const categoryID: number | null = task ? task.task_category_id : null
@@ -42,19 +44,6 @@ export default async function Layout ({
         </Suspense>
       </div>
       <div className='flex w-full gap-4 pb-4'>
-        <div className='sticky top-[82px] flex flex-col h-fit items-center justify-center pt-5 pb-5 pl-4 pr-4 text-xl gap-5 font-extrabold rounded-tr-2xl rounded-br-2xl from-neutral-500 to-neutral-100 bg-gradient-to-b '>
-          <Suspense fallback={<p>Loading tasks...</p>}>
-            {categoryTasks && taskID !== null ? (
-              <TasksSideNavi
-                tasks={categoryTasks}
-                activeID={parseInt(taskID)}
-                className=''
-              />
-            ) : (
-              <>No tasks</>
-            )}
-          </Suspense>
-        </div>
         <div className='flex flex-col w-full h-fit'>{children}</div>
       </div>
     </div>

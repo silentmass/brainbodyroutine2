@@ -1,13 +1,14 @@
 'use client'
 import { useFormState, useFormStatus } from 'react-dom'
 import { deleteTask } from '@/app/lib/actions/tasks'
-import { PencilIcon } from '@heroicons/react/24/outline'
+import { CheckIcon, PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Task } from '@/app/lib/definitions'
 import { CreateButton, DeleteButton } from '../form-components/buttons'
 
 import { initialState } from '@/app/_components/response-state'
 import ResponseDurationMessage from '@/app/_components/response-duration'
+import { FormEvent, RefObject } from 'react'
 
 export function CreateTask () {
   const { pending } = useFormStatus()
@@ -60,6 +61,66 @@ export function EditTask ({
     <CreateButton className={className} ariaLabel={ariaLabel}>
       {children}
     </CreateButton>
+  )
+}
+
+export const SetTaskActiveForm = ({
+  task,
+  isActive,
+  isActiveOnClick,
+  formAction,
+  formRef
+}: {
+  task: Task
+  isActive: boolean
+  isActiveOnClick: (event: FormEvent<HTMLButtonElement>) => void
+  formAction: (payload: FormData) => void
+  formRef: RefObject<HTMLFormElement>
+}) => {
+  return (
+    <form
+      name='editTaskForm'
+      id='editTaskForm'
+      action={formAction}
+      ref={formRef}
+      className='flex'
+    >
+      {/* Task marked */}
+      <input
+        type='hidden'
+        name='taskIsActive'
+        id='taskIsActive'
+        value={`${!isActive}`}
+      />
+      <button
+        type='submit'
+        className='flex justify-center items-center w-8 h-8 rounded-full border border-gray-400'
+        value={`${!isActive}`}
+        onClick={isActiveOnClick}
+      >
+        {!isActive ? <CheckIcon className='w-full h-full' /> : <></>}
+      </button>
+      {/* Task title */}
+      <input
+        type='hidden'
+        name='taskTitle'
+        id='taskTitle'
+        defaultValue={task.title}
+      />
+      {/* Task category */}
+      <input
+        type='hidden'
+        name='taskCategoryId'
+        id='taskCategoryId'
+        defaultValue={task.task_category_id}
+      />
+      <input
+        type='hidden'
+        name='sortOrder'
+        id='sortOrder'
+        defaultValue={`${task.sort_order}`}
+      />
+    </form>
   )
 }
 

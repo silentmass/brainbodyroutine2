@@ -2,17 +2,19 @@ import { TaskCategory } from '@/app/lib/definitions'
 
 export default function TaskCategoriesSelect ({
   categories,
-  defaultCategoryId
+  defaultCategoryId,
+  className = `bg-transparent border-b`
 }: {
   categories: TaskCategory[]
   defaultCategoryId: number
+  className: string
 }) {
   return (
     <select
       name='taskCategoryId'
       id='taskCategoryId'
       defaultValue={defaultCategoryId}
-      className={`bg-transparent border-b`}
+      className={className}
     >
       {categories.map(category => (
         <option key={`${category.id}`} value={category.id}>
