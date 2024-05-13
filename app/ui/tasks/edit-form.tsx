@@ -40,43 +40,53 @@ export default function EditTaskForm ({
       <form
         name='editTaskForm'
         action={formAction}
-        className='relative card-create flex flex-col gap-y-4 w-full rounded-2xl p-5'
+        className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-6'
       >
         {/* Task title */}
-        <label className={`card-create flex w-full gap-2`}>
-          <h2 className='card-create'>Title</h2>
+        <div className='flex gap-6 w-full items-center'>
+          <label className={``}>
+            <h2 className=''>Title</h2>
+          </label>
           <input
             type='text'
             name='taskTitle'
             id='taskTitle'
             required
-            className={`card-create`}
+            className={`w-full`}
             defaultValue={task.title}
           />
-        </label>
+        </div>
+
         {/* Task category */}
-        <label className={`card-create flex gap-4`}>
-          <h2 className='card-create'>Category</h2>
+        <div className='flex gap-6 w-full items-center'>
+          <label className={``}>
+            <h2 className=''>Category</h2>
+          </label>
           <TaskCategoriesSelect
             categories={taskCategories}
             defaultCategoryId={task.task_category_id}
+            className=''
           />
-        </label>
+        </div>
+
         {/* Task is active */}
-        <label className={`card-create flex gap-4 items-center`}>
-          <h2 className='card-create'>Is active</h2>
-          <div className='flex w-4 h-4'>
+        <div className='flex gap-6 w-full items-center'>
+          <label className={``}>
+            <h2 className=''>Is active</h2>
+          </label>
+          <div className='flex items-center h-fit'>
             <IsTaskActive isActiveValue={isActive} />
           </div>
-        </label>
+        </div>
+
         {/* Task controls */}
         <div className='flex w-full justify-center items-center gap-4'>
-          <Link href={`/tasks`} className={`rounded-2xl`}>
-            <CreateButton className='card-create' ariaLabel='Cancel'>
+          <Link href={`/tasks/filter`} className={`rounded-2xl`}>
+            <CreateButton className='' ariaLabel='Cancel'>
               Cancel
             </CreateButton>
           </Link>
-          <EditTask className={`card-create`} ariaLabel='Edit task'>
+          <EditTask className={``} ariaLabel='Edit task'>
             Edit task
           </EditTask>
         </div>
@@ -86,9 +96,9 @@ export default function EditTaskForm ({
 
       {/* Task description lists */}
 
-      <div className='flex flex-col gap-y-2 w-full'>
-        <div className='flex justify-between items-center w-full pl-5'>
-          <h2 className='card-create'>
+      <div className='flex flex-col gap-y-2 w-full p-6'>
+        <div className='flex justify-between items-center w-full'>
+          <h2 className=''>
             {clsx({
               Lists: isList,
               'No lists': !isList
@@ -98,7 +108,7 @@ export default function EditTaskForm ({
             href={`/tasks/${task.id}/description-lists/create`}
             className={``}
           >
-            <CreateButton className='card-create-dim' ariaLabel='Create list'>
+            <CreateButton className='' ariaLabel='Create list'>
               Create List
             </CreateButton>
           </Link>

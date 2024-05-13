@@ -19,7 +19,7 @@ export default function CreateTaskForm ({
       name='createTaskForm'
       id='createTaskForm'
       action={formAction}
-      className='relative flex flex-col p-6 gap-6 w-full rounded-2xl bg-gray-100 dark:bg-gray-900'
+      className=' relative flex flex-col p-6 gap-6 w-full rounded-2xl'
     >
       <input
         type='hidden'
@@ -38,7 +38,7 @@ export default function CreateTaskForm ({
             name='taskTitle'
             id='taskTitle'
             required
-            className={`flex w-full bg-transparent border-b`}
+            className={` flex w-full border-b`}
           />
         </div>
         <div className='flex w-full'>

@@ -28,28 +28,28 @@ export const UpdateDescriptionListForm = ({
       name='updateDescriptionListForm'
       id='updateDescriptionListForm'
       action={formAction}
-      className='relative card-create flex flex-col gap-y-4 w-full rounded-2xl p-5'
+      className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-5'
     >
       <input type='hidden' name='taskId' id='taskId' value={list.task_id} />
-      <label className={`card-create flex flex-col w-full gap-2`}>
-        <h2 className='card-create'>List Title</h2>
+      <label className={`flex flex-col w-full gap-2`}>
+        <h2 className=''>List Title</h2>
         <input
           type='text'
           name='title'
           id='title'
           required
-          className={`card-create`}
+          className={``}
           defaultValue={list.title}
         />
       </label>
       {/* Controls */}
       <div className='flex w-full justify-center items-center gap-4'>
         <Link href={`/tasks/${list.task_id}/edit`} className={``}>
-          <CreateButton className='card-create' ariaLabel='Cancel'>
+          <CreateButton className='' ariaLabel='Cancel'>
             Cancel
           </CreateButton>
         </Link>
-        <CreateButton className='card-create' ariaLabel='Update list'>
+        <CreateButton className='' ariaLabel='Update list'>
           Update list
         </CreateButton>
       </div>

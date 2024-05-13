@@ -1,4 +1,4 @@
-import TouchCarouselTasksWrapper from '@/app/_components/touch-carousel-task-wrap'
+import TouchCarouselTasksWrapper from '@/app/_components/old/touch-carousel-task-wrap'
 import { fetchTasks } from '@/app/lib/data'
 import { Task } from '@/app/lib/definitions'
 import { Suspense } from 'react'

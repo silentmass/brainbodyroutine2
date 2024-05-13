@@ -37,7 +37,7 @@ export function Links ({ className }: { className: string }) {
                 active: pathname && /^\/tasks$|^\/tasks\//.test(pathname),
                 '': pathname !== '/tasks'
               })}`}
-              href={'/tasks'}
+              href={'/tasks/filter'}
             >
               Tasks
             </Link>
@@ -74,7 +74,7 @@ export function Links ({ className }: { className: string }) {
           </li>
         </ul>
       </nav>
-      <div className='flex w-full bg-gray-50 h-[2px]'></div>
+      <div className='flex w-full bg-accent-2 h-[2px]'></div>
     </div>
   )
 }

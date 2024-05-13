@@ -25,7 +25,7 @@ export default function LoginForm () {
   return (
     <form
       name='signinForm'
-      className='relative card-create flex flex-col gap-y-4 w-full rounded-2xl p-5'
+      className='relative flex flex-col gap-y-4 w-full rounded-2xl p-5'
       action={dispatch}
     >
       <div className='flex flex-col gap-y-4 w-full'>
@@ -37,14 +37,11 @@ export default function LoginForm () {
           <h1>Loading</h1>
         )}
         <div className=''>
-          <label
-            className={`card-create flex flex-col w-full`}
-            htmlFor='username'
-          >
-            <h2 className='card-create'>Username</h2>
+          <label className={`flex flex-col w-full`} htmlFor='username'>
+            <h2 className=''>Username</h2>
           </label>
           <input
-            className='peer card-create'
+            className='peer '
             id='username'
             type='text'
             name='username'
@@ -53,14 +50,11 @@ export default function LoginForm () {
           />
         </div>
         <div>
-          <label
-            className={`card-create flex flex-col w-full`}
-            htmlFor='password'
-          >
-            <h2 className='card-create'>Password</h2>
+          <label className={`flex flex-col w-full`} htmlFor='password'>
+            <h2 className=''>Password</h2>
           </label>
           <input
-            className='peer card-create'
+            className='peer '
             id='password'
             type='password'
             name='password'
@@ -70,7 +64,7 @@ export default function LoginForm () {
           />
         </div>
         <div className='flex w-full justify-center'>
-          <CreateButton className='card-create' ariaLabel='Create category'>
+          <CreateButton className='' ariaLabel='Create category'>
             Login
           </CreateButton>
         </div>

@@ -15,7 +15,7 @@ export function CreateTask () {
 
   return (
     <button
-      className='card-create flex w-fit items-center justify-center p-2 rounded-2xl'
+      className='formActionButton flex w-fit items-center justify-center p-2 rounded-2xl'
       type='submit'
       aria-disabled={pending}
       aria-label='Create'
@@ -93,13 +93,19 @@ export const SetTaskActiveForm = ({
         value={`${!isActive}`}
       />
       <button
+        id='isActiveButton'
         type='submit'
-        className='flex justify-center items-center w-8 h-8 rounded-full border border-gray-400'
+        className='flex justify-center items-center w-8 h-8 rounded-full border z-10 border-accent-5'
         value={`${!isActive}`}
         onClick={isActiveOnClick}
       >
-        {!isActive ? <CheckIcon className='w-full h-full' /> : <></>}
+        {!isActive ? (
+          <CheckIcon className='w-full h-full z-10 stroke-accent-5' />
+        ) : (
+          <></>
+        )}
       </button>
+
       {/* Task title */}
       <input
         type='hidden'

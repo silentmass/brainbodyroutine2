@@ -45,7 +45,7 @@ export default function ResponseDurationMessage ({
     <div
       className={`absolute top-0 left-0 flex w-full items-center justify-center rounded-2xl ${clsx(
         {
-          'bg-neutral-200/30': showStateMessage,
+          'bg-accent-4/30': showStateMessage,
           'hidden bg-transparent': !showStateMessage
         }
       )}`}

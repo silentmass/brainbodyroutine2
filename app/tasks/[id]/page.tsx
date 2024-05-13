@@ -1,9 +1,7 @@
-import TouchCarouselTasksWrapper from '@/app/_components/touch-carousel-task-wrap'
+import TouchCarouselTasksWrapper from '@/app/_components/old/touch-carousel-task-wrap'
 import { fetchTaskById, fetchTasks } from '@/app/lib/data'
 import { Task } from '@/app/lib/definitions'
-import { TaskCardView } from '@/app/ui/tasks/card'
-import { DescriptionListsView } from '@/app/ui/tasks/description-lists/card-list'
-import { Suspense, useState } from 'react'
+import { Suspense } from 'react'
 
 export default async function Page ({ params }: { params: { id: string } }) {
   const taskId = params.id

@@ -18,7 +18,7 @@ export function DeleteListDescription ({ id }: { id: string }) {
       name='deleteListDescriptionForm'
       id='deleteListDescriptionForm'
       action={formAction}
-      className='flex h-full'
+      className='flex h-full w-full justify-center items-center'
     >
       <DeleteButton ariaDisabled={pending} />
     </form>

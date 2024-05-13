@@ -2,28 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --color-bkg: 255 255 255;
+    --color-content: 0 0 0;
+    --color-accent1: 249 250 251;
+    --color-accent2: 243 244 246;
+    --color-accent3: 229 231 235;
+    --color-accent4: 209 213 219;
+    --color-accent5: 156 163 175;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bkg: 0 0 0;
+      --color-content: 255 255 255;
+      --color-accent1: 3 7 18;
+      --color-accent2: 17 24 39;
+      --color-accent3: 31 41 55;
+      --color-accent4: 55 65 81;
+      --color-accent5: 75 85 99;
+    }
+  }
+  :root[data-theme='dark'] {
+    --color-bkg: 0 0 0;
+    --color-content: 255 255 255;
+    --color-accent1: 3 7 18;
+    --color-accent2: 17 24 39;
+    --color-accent3: 31 41 55;
+    --color-accent4: 55 65 81;
+    --color-accent5: 75 85 99;
+  }
+  :root[data-theme='light'] {
+    --color-bkg: 255 255 255;
+    --color-content: 0 0 0;
+    --color-accent1: 249 250 251;
+    --color-accent2: 243 244 246;
+    --color-accent3: 229 231 235;
+    --color-accent4: 209 213 219;
+    --color-accent5: 156 163 175;
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: rgb(var(--color-bkg));
+  color: rgb(var(--color-content));
 }
 
 .hide-scrollbar {
@@ -33,10 +55,9 @@ body {
   }
 
   /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
-
 
 @layer utilities {
   .text-balance {
@@ -44,200 +65,130 @@ body {
   }
 }
 
-circle.checked,
-circle.unchecked,
-path.checked,
-path.unchecked {
-  cursor: pointer;
-}
-
-circle.unchecked {
-  fill: transparent; /* Changes the fill color on hover */
-  stroke: #d1d5db; /* Changes the stroke color on hover */
-}
-
-circle.unchecked.check-over {
-  fill: #e5e7eb; /* Changes the fill color on hover */
-  stroke: #9ca3af; /* Changes the stroke color on hover */
-}
-
-circle.unchecked.check-over.check-active {
-  fill: #6b7280; /* Changes the fill color on hover */
-  stroke: #374151; /* Changes the stroke color on hover */
-}
-
-circle.checked {
-  fill: transparent; /* Changes the fill color on hover */
-  stroke: #374151; /* Changes the stroke color on hover */
-}
-circle.checked.check-over {
-  fill: #ebe5ea; /* Changes the fill color on hover */
-  stroke: #9ca3af; /* Changes the stroke color on hover */
-}
-
-circle.checked.check-over.check-active {
-  fill: #6b7280; /* Changes the fill color on hover */
-  stroke: #374151; /* Changes the stroke color on hover */
-}
-
-path.unchecked.mark {
-  stroke: transparent;
-}
-path.unchecked.mark.check-over {
-  stroke: #d1d5db;
-}
-
-path.unchecked.mark.check-over.check-active {
-  stroke: #374151;
-}
-
 .link {
-  color: #a3a3a3;
-  font-weight: bold;
+  color: rgb(var(--color-accent3));
+}
+
+.link:hover {
+  color: rgb(var(--color-accent4));
+}
+
+.link:active {
+  color: rgb(var(--color-accent5));
 }
 
 .link.active {
-  color: #525252;
+  color: rgb(var(--color-accent5));
   border: solid;
   border-top-width: 0;
   border-left-width: 0;
   border-right-width: 0;
   border-bottom-width: 1px;
+  font-weight: bold;
 }
 
-@media (prefers-color-scheme: dark) {
-  .link.active {
-    border-color: white;
-  }
+.card {
+  background-color: rgb(var(--color-accent1));
+  border: rgb(var(--color-accent2));
+  border-width: 1px;
+  border-style: solid;
 }
 
-@media (prefers-color-scheme: light) {
-  .link.active {
-    border-color: #525252;
-  }
+form {
+  color: rgb(var(--color-content));
+  background-color: rgb(var(--color-accent1));
+  width: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  div.formField,
-  form.formField,
-  label.formField {
-    color: white;
-    background-color: #0f172a;
-    width: 100%;
-  }
+input[type='checkbox'] {
+  background-color: transparent;
+  color: rgb(var(--color-content));
+  accent-color: rgb(var(--color-accent3));
+  width: 15px;
+  height: 15px;
+}
+input:hover[type='checkbox'] {
+  outline: 1px;
+  outline-offset: 2px;
+  outline-width: 2px;
+  outline-color: rgb(var(--color-accent3));
+  outline-style: solid;
+}
+input:active[type='checkbox'] {
+  outline: 1px;
+  outline-offset: 2px;
+  outline-width: 2px;
+  outline-color: rgb(var(--color-accent4));
+  outline-style: solid;
 }
 
-@media (prefers-color-scheme: dark) {
-  input.formField {
-    color: white;
-    background-color: transparent;
-    border-top-width: 0;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-bottom-width: 1px;
-    border-color: white;
-    width: 100%;
-  }
+input[type='text'] {
+  color: rgb(var(--color-content));
+  background-color: transparent;
+  border-top-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+  border-bottom-width: 1px;
+  border-color: rgb(var(--color-accent3));
+  width: 100%;
 }
-@media (prefers-color-scheme: dark) {
-  select.formField {
-    color: white;
-    background-color: transparent;
-    border-top-width: 0;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-bottom-width: 1px;
-    border-color: white;
-  }
+select {
+  background-color: transparent;
 }
 
-@media (prefers-color-scheme: dark) {
-  input.formField[type='checkbox'] {
-    color: transparent;
-  }
+textarea {
+  background-color: transparent;
+  border: rgb(var(--color-accent2));
+  border-width: 1px;
+  border-style: solid;
 }
 
-@media (prefers-color-schem: dark) {
-  :card {
-    background-color: #fafafa;
-  }
-}
 
-li.card {
-  color: black;
-}
 
 .icon {
-  color: #d4d4d4;
+  color: rgb(var(--color-accent3));
   background-color: transparent;
 }
 .icon:hover {
-  color: #a3a3a3;
+  color: rgb(var(--color-accent4));
 }
 .icon:active {
-  color: #0a0a0a;
+  color: rgb(var(--color-accent5));
 }
 
 .icon-topnavi {
-  color: #a3a3a3;
+  color: rgb(var(--color-accent3));
   background-color: transparent;
 }
 .icon-topnavi:hover {
-  color: #525252;
+  color: rgb(var(--color-accent4));
 }
 .icon-topnavi:active {
-  color: #0a0a0a;
+  color: rgb(var(--color-accent5));
 }
 
 .topnavi {
-  background-color: #d4d4d4;
+  background-color: rgb(var(--color-accent1));
   opacity: 0.9;
 }
 
 ul.topnavi {
-  color: #525252;
+  color: rgb(var(--color-accent5));
 }
 
-.card-create {
-  background-color: #f5f5f5;
-  color: #525252;
-}
-
-button.card-create {
-  background-color: #525252;
-  color: white;
+button.formActionButton {
+  background-color: rgb(var(--color-accent3));
   box-shadow: inset 0 4px 6.8em rgba(0, 0, 0, 0.25);
 }
-button.card-create:hover {
-  background-color: #404040;
-  color: white;
+button.formActionButton:hover {
+  background-color: rgb(var(--color-accent4));
 }
-button.card-create:active {
-  background-color: #0a0a0a;
-  color: white;
-}
-button.card-create-dim {
-  background-color: #fafafa;
-  color: #a3a3a3;
-  box-shadow: inset 0 4px 6.8em rgba(149, 149, 149, 0.25);
-}
-button.card-create-dim:hover {
-  background-color: #f5f5f5;
-}
-button.card-create-dim:active {
-  background-color: #737373;
-  color: white;
+button.formActionButton:active {
+  background-color: rgb(var(--color-accent5));
 }
 
-h2.card-create {
+h2 {
   font-weight: 600;
-  color: #525252;
+  color: rgb(var(--color-accent5));
   background-color: transparent;
-}
-
-input.card-create {
-  background-color: transparent;
-  width: 100%;
-  border-color: #d4d4d4;
-  border-bottom-width: 1px;
 }

@@ -185,7 +185,7 @@ export const updateTask = async (
     } catch (revalidateErr) {
       console.error(`Failed to update task revalidate: `, revalidateErr)
     }
-    return { ...prevState, message: `Task updated`, redirectTo: '/tasks' }
+    return { ...prevState, message: `Task updated` }
   } catch (err) {
     console.error(`Failed to fetch update task ${title}`, err)
     return {

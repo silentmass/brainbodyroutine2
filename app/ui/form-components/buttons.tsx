@@ -16,7 +16,7 @@ export const CreateButton = ({
 
   return (
     <button
-      className={`${className} flex w-fit items-center justify-center p-2 rounded-2xl`}
+      className={`${className} formActionButton flex w-fit items-center justify-center p-2 rounded-2xl`}
       type='submit'
       aria-disabled={pending}
       aria-label={ariaLabel}

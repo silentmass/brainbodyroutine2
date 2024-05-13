@@ -35,26 +35,29 @@ export default function CreateTaskDescriptionListForm ({
       name='createTaskDescriptionListForm'
       id='createTaskDescriptionListForm'
       action={formAction}
-      className='relative card-create flex flex-col gap-y-4 w-full rounded-2xl p-5'
+      className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-5'
     >
-      <label className={`card-create`}>
-        <h2 className='card-create'>List Title</h2>
+      <div className='flex flex-col w-full gap-2'>
+        <label className={``}>
+          <h2 className=''>List Title</h2>
+        </label>
         <input
           type='text'
           name='taskDescriptionListTitle'
           id='taskDescriptionListTitle'
           required
-          className={`card-create`}
+          className={``}
         />
-      </label>
+      </div>
+
       {/* Form controls */}
       <div className='flex w-full justify-center items-center gap-4'>
         <Link href={`/tasks/${task.id}/edit`} className={`rounded-2xl`}>
-          <CreateButton className='card-create' ariaLabel='Cancel'>
+          <CreateButton className='' ariaLabel='Cancel'>
             Cancel
           </CreateButton>
         </Link>
-        <CreateButton className='card-create' ariaLabel='Create list'>
+        <CreateButton className='' ariaLabel='Create list'>
           Create
         </CreateButton>
       </div>

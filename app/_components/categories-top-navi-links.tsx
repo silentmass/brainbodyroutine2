@@ -4,16 +4,27 @@ import Link from 'next/link'
 
 export const TaskCategoriesTopNavi = ({
   categories,
-  activeID,
-  className
+  activeID = null,
+  className = ''
 }: {
   categories: TaskCategory[] | null
-  activeID: number
+  activeID: number | null
   className: string
 }) => {
   return categories ? (
     <nav>
       <ul className={`${className}`}>
+        <li key='all'>
+          <Link
+            href={'/tasks/filter'}
+            className={`link ${clsx({
+              active: activeID === null,
+              '': activeID !== null
+            })}`}
+          >
+            ALL
+          </Link>
+        </li>
         {categories.map((category: TaskCategory) => (
           <li key={category.id} className={`flex item-center justify-center`}>
             <Link

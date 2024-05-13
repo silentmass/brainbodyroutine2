@@ -33,27 +33,27 @@ export default function EditTaskCategoryForm ({
     <form
       name='editTaskCategoryForm'
       action={formAction}
-      className='relative card-create flex flex-col gap-y-4 w-full rounded-2xl p-5'
+      className='relative flex flex-col gap-y-4 w-full rounded-2xl p-5'
     >
       <div className='flex flex-col gap-y-4 w-full'>
-        <label className={`card-create flex flex-col w-full`}>
-          <h2 className='card-create'>Title</h2>
+        <label className={`flex flex-col w-full`}>
+          <h2 className=''>Title</h2>
           <input
             type='text'
             id='taskCategoryTitle'
             name='taskCategoryTitle'
             required
-            className={`card-create`}
+            className={``}
             defaultValue={taskCategory.title}
           />
         </label>
-        <label className={`card-create flex flex-col w-full`}>
-          <h2 className='card-create'>Description</h2>
+        <label className={`flex flex-col w-full`}>
+          <h2 className=''>Description</h2>
           <input
             type='text'
             id='taskCategoryDescription'
             name='taskCategoryDescription'
-            className={`card-create`}
+            className={``}
             defaultValue={
               taskCategory.description ? taskCategory.description : ''
             }
@@ -63,11 +63,11 @@ export default function EditTaskCategoryForm ({
         {/* Controls */}
         <div className='flex w-full justify-center items-center gap-4'>
           <Link href={`/task-categories`} className={``}>
-            <CreateButton className='card-create' ariaLabel='Cancel'>
+            <CreateButton className='' ariaLabel='Cancel'>
               Cancel
             </CreateButton>
           </Link>
-          <CreateButton className='card-create' ariaLabel='Update category'>
+          <CreateButton className='' ariaLabel='Update category'>
             Update
           </CreateButton>
         </div>

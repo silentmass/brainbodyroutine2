@@ -5,6 +5,7 @@ import { CreateButton } from '@/app/ui/form-components/buttons'
 import { useFormState } from 'react-dom'
 import { initialState } from '@/app/_components/response-state'
 import ResponseDurationMessage from '@/app/_components/response-duration'
+import { DeleteListDescription } from './buttons'
 
 export default function EditListDescriptionForm ({
   description
@@ -28,24 +29,25 @@ export default function EditListDescriptionForm ({
       action={formAction}
       className='relative flex flex-col w-full rounded-2xl'
     >
-      <div className='flex w-full p-5'>
-        <div className={`flex w-full h-full items-end gap-4`}>
-          <label className={`flex flex-col w-full`}>
-            <h2 className='card-create'>Description</h2>
+      <div className='flex w-full p-6'>
+        <div className={`flex w-full items-end gap-4`}>
+          <div className='flex flex-col w-full gap-2'>
+            <label className={``}>
+              <h2 className=''>Description</h2>
+            </label>
             <textarea
               name='description'
               id='description'
               defaultValue={description.description}
               required
-              className='flex w-full p-2 bg-transparent border border-neutral-300 rounded-2xl'
+              className='flex w-full p-2 rounded-2xl'
             ></textarea>
-          </label>
-          <CreateButton
-            className={'card-create'}
-            ariaLabel='Update description'
-          >
-            Update
-          </CreateButton>
+          </div>
+          <div className='flex h-full flex-col justify-end items-center gap-6'>
+            <CreateButton className={''} ariaLabel='Update description'>
+              Update
+            </CreateButton>
+          </div>
         </div>
       </div>
       {/* Form action state message floating above card. Requires relative parent. */}

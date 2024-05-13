@@ -27,19 +27,22 @@ export default function CreateListDescriptionForm ({
       name='createListDescriptionForm'
       id='createListDescriptionForm'
       action={formAction}
-      className='relative card-create flex flex-col gap-y-4 w-full rounded-2xl p-5'
+      className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-6'
     >
       <div className='flex flex-col gap-y-4 w-full'>
-        <label className={`flex flex-col w-full`}>
-          <h2 className='card-create'>Description</h2>
+        <div className='flex flex-col w-full gap-2'>
+          <label className={`flex flex-col w-full`}>
+            <h2 className=''>Description</h2>
+          </label>
           <textarea
             name='description'
             id='description'
-            className='flex w-full p-2 bg-transparent border border-neutral-300 rounded-2xl'
+            className='flex w-full p-2 rounded-2xl'
           ></textarea>
-        </label>
+        </div>
+
         <div className='flex w-full justify-center'>
-          <CreateButton className='card-create' ariaLabel='Create description'>
+          <CreateButton className='' ariaLabel='Create description'>
             Create
           </CreateButton>
         </div>

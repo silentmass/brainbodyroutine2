@@ -1,5 +1,4 @@
-'use'
-import TaskCategoriesTopNavi from '@/app/_components/categories-links'
+import TaskCategoriesTopNavi from '@/app/_components/categories-top-navi-links'
 import { fetchTaskCategories } from '@/app/lib/data'
 import { TaskCategory } from '@/app/lib/definitions'
 import { Suspense } from 'react'
@@ -11,7 +10,7 @@ export default async function Layout ({
   children: React.ReactNode
   params: { categoryid: string }
 }) {
-  const id = params.categoryid !== '' ? params.categoryid : null
+  const id = params.categoryid !== '' ? parseInt(params.categoryid) : null
 
   const categories: TaskCategory[] = await fetchTaskCategories()
 
@@ -22,7 +21,7 @@ export default async function Layout ({
           {categories && id !== null ? (
             <TaskCategoriesTopNavi
               categories={categories}
-              activeID={parseInt(id)}
+              activeID={id}
               className='topnavi flex flex-row w-full gap-x-5 pl-2 pr-2 pb-2 justify-center rounded-br-2xl rounded-bl-2xl'
             />
           ) : (

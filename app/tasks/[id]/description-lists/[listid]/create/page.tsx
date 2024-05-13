@@ -21,12 +21,12 @@ export default async function Page ({
     listId !== null ? await fetchTaskDescriptionListById(listId) : null
 
   return (
-    <div className='flex flex-col gap-y-1 bg-slate-950 w-full'>
-      <div className={`formField p-5`}>{task ? task.title : <></>}</div>
-      <div className={`formField p-5`}>
+    <div className='flex flex-col gap-y-1 w-full'>
+      <div className={` p-5`}>{task ? task.title : <></>}</div>
+      <div className={` p-5`}>
         {descriptionList ? descriptionList.title : <></>}
       </div>
-      <div className={`formField`}>
+      <div className={``}>
         <Suspense fallback={<p>Loading list...</p>}>
           {descriptionList ? (
             <CreateListDescriptionForm
