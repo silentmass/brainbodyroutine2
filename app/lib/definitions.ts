@@ -152,3 +152,11 @@ export const UserSchema = z.object({
   username: z.string(),
   password: z.string()
 })
+
+export const UserRegisterSchema = z.object({
+  username: z.string().min(1),
+  email: z.coerce.string().email().nullable(),
+  full_name: z.string().nullable(),
+  disabled: z.boolean().nullable(),
+  password: z.string().min(1)
+})

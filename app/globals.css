@@ -94,6 +94,17 @@ body {
   border-style: solid;
 }
 
+.card-nulluser {
+  background-color: rgb(var(--color-accent1));
+  border: rgb(var(--color-accent5));
+  border-left-width: 10px;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+  /* border-width: 1px; */
+  border-style: solid;
+}
+
 input[type='checkbox'] {
   background-color: transparent;
   color: rgb(var(--color-content));

@@ -25,9 +25,14 @@ export default function TasksTable ({
                 <button onClick={handleViewModeClick} value={task.id}>
                   <ChevronRightIcon className='icon w-10' />
                 </button>
-                <Link href={`/tasks/${task.id}/edit`}>
-                  <PencilIcon className='icon w-5' />
-                </Link>
+
+                {task.user_id === null ? (
+                  <button>Copy</button>
+                ) : (
+                  <Link href={`/tasks/${task.id}/edit`}>
+                    <PencilIcon className='icon w-5' />
+                  </Link>
+                )}
               </div>
             ) : (
               <></>

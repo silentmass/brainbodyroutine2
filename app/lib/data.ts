@@ -1,3 +1,5 @@
+import { cookies } from 'next/headers'
+
 // Task category operations
 export const fetchTaskCategories = async () => {
   const res = await fetch(
@@ -35,6 +37,34 @@ export const fetchTaskCategoryById = async (id: string) => {
 }
 
 // Task operations
+
+export const fetchUserTasks = async (prevState: any) => {
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. No user tasks fetched.'
+    }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/user-tasks`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken.value}`
+      },
+      mode: 'cors',
+      next: { tags: ['usertasks'] }
+    }
+  )
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch users tasks.')
+  }
+
+  return res.json()
+}
 
 export const fetchTasks = async () => {
   const res = await fetch(

@@ -13,6 +13,7 @@ import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
 import { updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
+import clsx from 'clsx'
 
 const TaskCard = ({
   children,
@@ -38,7 +39,11 @@ const TaskCard = ({
   }, [state])
 
   return (
-    <div className='card relative flex h-fit  w-full p-6 items-center rounded-2xl'>
+    <div
+      className={`relative flex h-fit w-full p-6 items-center rounded-2xl ${clsx(
+        { 'card-nulluser': task.user_id === null, card: task.user_id !== null }
+      )}`}
+    >
       <div className=' flex flex-wrap w-full items-center h-full gap-6 justify-between'>
         {/* Open task */}
         <div className=' flex items-center w-1/3 z-10 h-full rounded-2xl justify-center'>
