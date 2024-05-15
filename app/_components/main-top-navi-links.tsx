@@ -16,11 +16,11 @@ import { useEffect } from 'react'
 
 export function Links ({
   isDarkTheme,
-  handleDataThemeClick,
+  formAction,
   className
 }: {
   isDarkTheme: boolean
-  handleDataThemeClick: () => void
+  formAction: (payload: FormData) => void
   className: string
 }) {
   const pathname = usePathname()
@@ -83,13 +83,21 @@ export function Links ({
             )}
           </li>
           <li>
-            <button onClick={handleDataThemeClick} className='h-full flex'>
-              {isDarkTheme ? (
-                <SunIcon className='icon-topnavi w-5' />
-              ) : (
-                <MoonIcon className='icon-topnavi w-5' />
-              )}
-            </button>
+            <form action={formAction}>
+              <input
+                type='hidden'
+                id='isDarkTheme'
+                name='isDarkTheme'
+                value={`${isDarkTheme}` === 'true' ? 'false' : 'true'}
+              />
+              <button type='submit' className='h-full flex'>
+                {`${isDarkTheme}` === 'true' ? (
+                  <SunIcon className='icon-topnavi w-5' />
+                ) : (
+                  <MoonIcon className='icon-topnavi w-5' />
+                )}
+              </button>
+            </form>
           </li>
         </ul>
       </nav>

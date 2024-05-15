@@ -45,11 +45,15 @@ export default function TaskViewSwitcher ({
   }, [selectedCategory])
 
   function handleViewModeClick (event: FormEvent<HTMLButtonElement>) {
-    const taskID = parseInt(event.currentTarget.value)
     console.log('handleViewTaskClick', event.currentTarget.value)
-    const task = tasks.filter(task => task.id === taskID)[0]
-    setSelectedTask(task)
-    setViewMode('single')
+    if (event.currentTarget.value !== 'null') {
+      const taskID = parseInt(event.currentTarget.value)
+      const task = tasks.filter(task => task.id === taskID)[0]
+      setSelectedTask(task)
+      setViewMode('single')
+    } else {
+      setViewMode(null)
+    }
   }
 
   function handleCategoryClick (event: FormEvent<HTMLButtonElement>) {
@@ -164,7 +168,7 @@ export default function TaskViewSwitcher ({
       </div>
 
       {/* Task list or carousel */}
-      <div className='flex flex-col w-full overflow-auto h-full'>
+      <div className='flex flex-col w-full overflow-auto h-full gap-y-6 p-6'>
         {viewMode === 'single' ? (
           categoryTasks && categoryTasks.length ? (
             <TaskCarouselWrapper

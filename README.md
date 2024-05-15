@@ -1,46 +1,16 @@
 # TODO
 
-- [x] Add edit task category button
-- [x] Add edit task category server action
-- [x] Add edit task category form
-- [x] Add redirect from edit task category form
-- [x] Add task category description
-- [x] Add create task form
-- [x] Create main navi
-- [x] Add fetch tasks
-- [x] Add create task server actions
-- [x] Delete task button
-- [x] Delete task server actions
-- [x] Update task button
-- [x] Update task server action
-- [x] Add create task API endpoints
-- [x] Add create description list API endpoint
-- [x] Add create description API endpoint
-  - [x] Fetch list descriptions
-  - [x] Fetch description list
-  - [x] Get description by id
-  - [x] Create description
-  - [x] Delete description
-- [x] Add delete description API endpoint
-- [x] Add delete description list API endpoint
-- [x] Handle deletion chain: task -> description list -> descriptions
-- [x] Fix description list update fetch
-- [x] Check description list update
-- [x] Check description update
-- [x] Change categories visuals
-- [x] Check revalidations
-- [ ] Carousel doesn't change task every time
-- [ ] List height and selected task shoul be updated when changing category
-- [ ] Fix the check button
+- [x] Fix task view mode button when switching back from single view!!!!!
+- [x] Save dark/light mode in cookie
+- [ ] Add user registration
+- [ ] Add delete user
+- [ ] Add button to duplicate general task
+- [ ] Refresh session token and alarm when token is expired
+- [ ] Code review and clean code with CGPT
+  - [ ] Unify and simplify variable naming
+  - [ ] Refactor into smaller components
 - [ ] Add buttons to move tasks
-- [ ] Change preview task layout to use carousel
-- [ ] Remove button side buttons from carousel and check that category navi works and touch taps are registered
-- [ ] Add support for dark mode
-- [ ] Check gradients masks above carousel for both modes
-- [ ] Make swiping more sensitive
 - [ ] Add lateral swipe to change category
-- [ ] Add touch tapping on task cards
-- [ ] Remove task swithcer sidenavi in edit mode
 - [ ] Make development and production separate
 - [ ] Add order column in tasks, descriptionlist, and descriptions
 - [ ] Check how navigation works when is open

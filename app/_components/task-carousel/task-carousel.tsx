@@ -267,7 +267,7 @@ export const TaskCarousel = ({
       {/* Top gradient fade */}
       <div
         id='touchAreaTopGradient'
-        className={`flex sticky bg-gradient-to-t ${gradientContainerStyle} rounded-t-2xl ${clsx(
+        className={`flex sticky bg-gradient-to-t ${gradientContainerStyle} rounded-t-2xl select-none ${clsx(
           {
             'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-2xl hover:border-accent-4':
               selectedTask && tasks && selectedTask.id !== tasks[0].id,
@@ -315,7 +315,7 @@ export const TaskCarousel = ({
       {/* Bottom gradient fade */}
       <div
         id='touchAreaBottomGradient'
-        className={`flex sticky bg-gradient-to-b ${gradientContainerStyle} ${clsx(
+        className={`flex sticky bg-gradient-to-b ${gradientContainerStyle} select-none ${clsx(
           {
             'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-2xl hover:border-accent-4':
               selectedTask &&

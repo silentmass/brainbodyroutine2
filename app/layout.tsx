@@ -4,7 +4,10 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Links } from './_components/main-top-navi-links'
 import AuthProvider from './context/AuthProvider'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { cookies } from 'next/headers'
+import { useFormState } from 'react-dom'
+import { fetchDataTheme, handleDataThemeClick } from './lib/actions/data-theme'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,14 +21,29 @@ export default function RootLayout ({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [isDarkTheme, setIsDarkTheme] = useState(false)
+  const [state, formAction] = useFormState(handleDataThemeClick, {
+    isDarkTheme: false
+  })
+  const [isDarkTheme, setIsDarkTheme] = useState(state.isDarkTheme)
 
-  function handleDataThemeClick () {
-    setIsDarkTheme(previousState => !previousState)
-  }
+  useEffect(() => {
+    if (state.isDarkTheme !== null) {
+      setIsDarkTheme(`${state.isDarkTheme}` === 'true' ? true : false)
+    }
+  }, [state])
+
+  useEffect(() => {
+    async function fetchTheme () {
+      const cookie = await fetchDataTheme()
+      if (cookie !== undefined) {
+        setIsDarkTheme(`${cookie.value}` === 'true' ? true : false)
+      }
+    }
+    fetchTheme()
+  }, [])
 
   return (
-    <html lang='en' data-theme={isDarkTheme ? 'dark' : 'light'}>
+    <html lang='en' data-theme={`${isDarkTheme}` === 'true' ? 'dark' : 'light'}>
       <AuthProvider>
         <body className={`flex flex-col items-center`}>
           <main className='flex flex-col w-full max-w-2xl h-screen '>
@@ -34,7 +52,7 @@ export default function RootLayout ({
                 <Links
                   className='topnavi h-full flex flex-col w-full gap-5 pt-3 pb-3 pl-8 pr-8 justify-center items-center'
                   isDarkTheme={isDarkTheme}
-                  handleDataThemeClick={handleDataThemeClick}
+                  formAction={formAction}
                 />
               </div>
             </div>
