@@ -6,10 +6,12 @@ import {
   useCallback,
   useEffect
 } from 'react'
-import { Task } from '@/app/lib/definitions'
+import { Task, TaskCategory } from '@/app/lib/definitions'
 import {
+  changeTask,
   getClosestTaskCardPosition,
   getRollingDistance,
+  getTaskCardRect,
   selectTaskCard
 } from './task-carousel-utils'
 import { animateListMovement } from './task-carousel-animation'
@@ -17,8 +19,9 @@ import { animateListMovement } from './task-carousel-animation'
 export default function useTouchHandler (
   touchAreaRef: RefObject<HTMLDivElement>,
   listRef: RefObject<HTMLUListElement>,
-  tasks: Task[],
-  selectedTaskRef: MutableRefObject<Task>,
+  selectedCategoryRef: RefObject<TaskCategory | null>,
+  selectedTaskRef: RefObject<Task | null>,
+  tasksRef: RefObject<Task[] | null>,
   listTopPositionRef: MutableRefObject<number | null>,
   setIsTouchMoveFun: Dispatch<SetStateAction<boolean>>,
   handleTaskChangeFun: Dispatch<SetStateAction<Task | null>>,
@@ -74,6 +77,14 @@ export default function useTouchHandler (
     const touchDuration = performance.now() - touchTimer
     console.log('handleTouchEnd', touchDuration)
 
+    if (!selectedTaskRef.current) {
+      console.log('No selected task')
+      return
+    }
+
+    const cardRect = getTaskCardRect(touchAreaRef, selectedTaskRef.current.id)
+    const listRect = listRef.current?.getBoundingClientRect()
+
     // Tap
 
     if (touchDuration < 120) {
@@ -114,22 +125,18 @@ export default function useTouchHandler (
 
       console.log(elementUnderClick)
 
-      const cardRect = selectedTaskRef.current
-        ? listRef.current
-            ?.querySelector(`#taskCard${selectedTaskRef.current.id}`)
-            ?.getBoundingClientRect()
-        : null
+      if (!cardRect || !listRect) {
+        return
+      }
 
       if (elementUnderClick && elementUnderClick?.id === 'listButtonUp') {
         console.log('Up click')
 
         // Move list up
 
-        const listRect = listRef.current?.getBoundingClientRect()
-
         if (
           listRect &&
-          tasks !== null &&
+          tasksRef.current !== null &&
           listTopPositionRef.current !== null &&
           cardRect &&
           listRef !== null
@@ -138,13 +145,12 @@ export default function useTouchHandler (
             // Change selected task
 
             setListTopPositionFun(position)
-            const currentTask = selectTaskCard(
-              tasks,
-              listRef,
-              touchAreaCenterY,
+            changeTask(
+              touchAreaRef,
+              selectedTaskRef,
+              tasksRef,
               handleTaskChangeFun
             )
-            currentTask !== null && handleTaskChangeFun(currentTask)
           }
 
           const listTopPositionAfterEndRolling =
@@ -152,7 +158,7 @@ export default function useTouchHandler (
 
           // Get closest card position to  after rolling end position
           const closestCardPosition = getClosestTaskCardPosition(
-            tasks,
+            tasksRef.current,
             listTopPositionAfterEndRolling,
             touchAreaRef
           )
@@ -183,25 +189,21 @@ export default function useTouchHandler (
 
         // Animate end rolling
 
-        const listRect = listRef.current?.getBoundingClientRect()
-
         if (
           listRect &&
-          tasks !== null &&
+          tasksRef.current !== null &&
           listTopPositionRef.current !== null &&
           cardRect
         ) {
           const animateRolling = (position: number) => {
             // Change selected task
-
             setListTopPositionFun(position)
-            const currentTask = selectTaskCard(
-              tasks,
-              listRef,
-              touchAreaCenterY,
+            changeTask(
+              touchAreaRef,
+              selectedTaskRef,
+              tasksRef,
               handleTaskChangeFun
             )
-            currentTask !== null && handleTaskChangeFun(currentTask)
           }
 
           const listTopPositionAfterEndRolling =
@@ -209,7 +211,7 @@ export default function useTouchHandler (
 
           // Get closest card position to  after rolling end position
           const closestCardPosition = getClosestTaskCardPosition(
-            tasks,
+            tasksRef.current,
             listTopPositionAfterEndRolling,
             touchAreaRef
           )
@@ -233,6 +235,9 @@ export default function useTouchHandler (
       }
     }
 
+    // Scroll end continues
+    // ############################
+
     event.preventDefault()
 
     const averageEndVelocity =
@@ -249,26 +254,18 @@ export default function useTouchHandler (
     }
 
     if (!selectedTaskRef.current) {
-      console.error('No tasks selected')
+      console.error('No tasksRef.current selected')
       return
     }
 
     // Animate end rolling
 
-    const listRect = listRef.current?.getBoundingClientRect()
-
-    if (listRect && tasks !== null) {
+    if (listRect && tasksRef.current !== null) {
       const animateRolling = (position: number) => {
         // Change selected task
 
         setListTopPositionFun(position)
-        const currentTask = selectTaskCard(
-          tasks,
-          listRef,
-          touchAreaCenterY,
-          handleTaskChangeFun
-        )
-        currentTask !== null && handleTaskChangeFun(currentTask)
+        changeTask(touchAreaRef, selectedTaskRef, tasksRef, handleTaskChangeFun)
       }
 
       const listTopPositionAfterEndRolling =
@@ -276,7 +273,7 @@ export default function useTouchHandler (
 
       // Get closest card position to  after rolling end position
       const closestCardPosition = getClosestTaskCardPosition(
-        tasks,
+        tasksRef.current,
         listTopPositionAfterEndRolling,
         touchAreaRef
       )
@@ -324,8 +321,8 @@ export default function useTouchHandler (
     }
 
     // Check if we have a list
-    if (!tasks) {
-      console.log('No tasks')
+    if (!tasksRef.current) {
+      console.log('No tasksRef.current')
       return
     }
 
@@ -355,9 +352,10 @@ export default function useTouchHandler (
 
     if (
       (newListTopPosition > listTopPositionRef.current &&
-        tasks[0].id !== selectedTaskRef.current.id) ||
+        tasksRef.current[0].id !== selectedTaskRef.current.id) ||
       (newListTopPosition < listTopPositionRef.current &&
-        tasks[tasks.length - 1].id !== selectedTaskRef.current.id)
+        tasksRef.current[tasksRef.current.length - 1].id !==
+          selectedTaskRef.current.id)
     ) {
       setListTopPositionFun(newListTopPosition)
     }
@@ -384,14 +382,7 @@ export default function useTouchHandler (
       }
     }
 
-    // Change selected task
-    const currentTask = selectTaskCard(
-      tasks,
-      listRef,
-      touchAreaCenterY,
-      handleTaskChangeFun
-    )
-    currentTask !== null && handleTaskChangeFun(currentTask)
+    changeTask(touchAreaRef, selectedTaskRef, tasksRef, handleTaskChangeFun)
   }, [])
 
   useEffect(() => {

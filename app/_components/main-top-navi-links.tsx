@@ -8,11 +8,21 @@ import { useSession } from 'next-auth/react'
 import { CreateButton } from '../ui/form-components/buttons'
 import {
   Cog6ToothIcon,
-  ArrowRightEndOnRectangleIcon
+  ArrowRightEndOnRectangleIcon,
+  MoonIcon,
+  SunIcon
 } from '@heroicons/react/24/outline'
 import { useEffect } from 'react'
 
-export function Links ({ className }: { className: string }) {
+export function Links ({
+  isDarkTheme,
+  handleDataThemeClick,
+  className
+}: {
+  isDarkTheme: boolean
+  handleDataThemeClick: () => void
+  className: string
+}) {
   const pathname = usePathname()
   const { update: updateSession, data: session, status } = useSession()
 
@@ -72,9 +82,18 @@ export function Links ({ className }: { className: string }) {
               <>{status}</>
             )}
           </li>
+          <li>
+            <button onClick={handleDataThemeClick} className='h-full flex'>
+              {isDarkTheme ? (
+                <SunIcon className='icon-topnavi w-5' />
+              ) : (
+                <MoonIcon className='icon-topnavi w-5' />
+              )}
+            </button>
+          </li>
         </ul>
       </nav>
-      <div className='flex w-full bg-accent-2 h-[2px]'></div>
+      <div className='flex w-full bg-accent-1 h-[1px]'></div>
     </div>
   )
 }

@@ -10,7 +10,7 @@ import {
   useRef,
   useState
 } from 'react'
-import { Task } from '@/app/lib/definitions'
+import { Task, TaskCategory } from '@/app/lib/definitions'
 import TaskCard from '@/app/ui/tasks/card'
 import clsx from 'clsx'
 import useTouchHandler from './task-carousel-touch-handlers'
@@ -26,12 +26,14 @@ export const TaskCarousel = ({
   tasks,
   selectedTask,
   handleTaskChange,
+  selectedCategory,
   horizontal = false,
   invert = true
 }: {
   tasks: Task[]
   selectedTask: Task
   handleTaskChange: Dispatch<SetStateAction<Task | null>>
+  selectedCategory: TaskCategory | null
   horizontal: boolean
   invert: boolean
 }) => {
@@ -50,7 +52,9 @@ export const TaskCarousel = ({
   const [isTouchMove, setIsTouchMove] = useState(false)
 
   // Changed during touch move
+  const selectedCategoryRef = useRef(selectedCategory)
   const selectedTaskRef = useRef(selectedTask)
+  const tasksRef = useRef(tasks)
 
   // Task list dimension and position states
   const [listBoundingRectState, setListBoundingRectState] =
@@ -79,8 +83,9 @@ export const TaskCarousel = ({
     useMouseHandler(
       touchAreaRef,
       listRef,
-      tasks,
+      selectedCategoryRef,
       selectedTaskRef,
+      tasksRef,
       setIsTouchMove,
       handleTaskChange
     )
@@ -88,8 +93,9 @@ export const TaskCarousel = ({
   const { handleTouchStart, handleTouchMove, handleTouchEnd } = useTouchHandler(
     touchAreaRef,
     listRef,
-    tasks,
+    selectedCategoryRef,
     selectedTaskRef,
+    tasksRef,
     listTopPositionStateRef,
     setIsTouchMove,
     handleTaskChange,
@@ -105,8 +111,16 @@ export const TaskCarousel = ({
   }, [listBoundingRectState])
 
   useEffect(() => {
+    selectedCategoryRef.current = selectedCategory
+  }, [selectedCategory])
+
+  useEffect(() => {
     selectedTaskRef.current = selectedTask
   }, [selectedTask])
+
+  useEffect(() => {
+    tasksRef.current = tasks
+  }, [tasks])
 
   useEffect(() => {
     listPaddingRef.current = listPaddingState
@@ -136,23 +150,20 @@ export const TaskCarousel = ({
     )
 
     console.group('Init')
+    console.log('category', selectedCategory)
+    console.log(
+      'task',
+      selectedTaskRef.current !== null
+        ? selectedTaskRef.current.title
+        : selectedTaskRef.current
+    )
+    console.log(
+      'tasks',
+      tasks.map(task => task.title)
+    )
     console.log('listVerticalPadding', listPaddingRef.current)
     console.log('listScrollHeight', listRef.current?.scrollHeight)
     console.groupEnd()
-
-    const yCenterDistancesFromTouchAreaYCenter = tasks.map(entry => {
-      if (entry.id) {
-        const rect = touchAreaRef?.current
-          ?.querySelector(`#taskCard${entry.id}`)
-          ?.getBoundingClientRect()
-
-        if (rect && touchAreaRef?.current) {
-          const y = rect.y - touchAreaRef?.current.offsetTop
-          const yCenter = listPaddingRef.current.top + y + rect.height / 2
-          return yCenter - touchAreaRef?.current.offsetHeight / 2
-        }
-      }
-    })
 
     // Init list position to show selected task
     // Move list for mobile and scroll on desktop and mouse
@@ -189,8 +200,6 @@ export const TaskCarousel = ({
       initCounter += 1
       console.groupEnd()
 
-      // scrollToSelectedTask()
-
       selectedTaskYCenter !== null &&
         touchAreaRef.current.scrollTo({
           top: -selectedTaskYCenter + listPaddingRef.current.top,
@@ -203,7 +212,6 @@ export const TaskCarousel = ({
     })
     touchAreaRef?.current?.addEventListener('scrollend', handleScrollEnd)
     touchAreaRef?.current?.addEventListener('mousemove', handleMouseMove)
-    touchAreaRef?.current?.addEventListener('click', handleMouseClick)
     touchAreaRef?.current?.addEventListener('touchstart', handleTouchStart, {
       passive: false
     })
@@ -216,7 +224,6 @@ export const TaskCarousel = ({
     return () => {
       touchAreaRef?.current?.removeEventListener('scrollend', handleScrollEnd)
       touchAreaRef?.current?.removeEventListener('mousemove', handleMouseMove)
-      touchAreaRef?.current?.removeEventListener('click', handleMouseClick)
       touchAreaRef?.current?.removeEventListener('touchstart', handleTouchStart)
       touchAreaRef?.current?.removeEventListener('touchmove', handleTouchMove)
       touchAreaRef?.current?.removeEventListener('touchend', handleTouchEnd)
@@ -243,6 +250,13 @@ export const TaskCarousel = ({
     console.groupEnd()
   }
 
+  const selectedTaskIdx =
+    tasks && tasks.length && selectedTask
+      ? tasks
+          .map((task, idx) => (task.id === selectedTask.id ? idx : NaN))
+          .filter(idx => !isNaN(idx))[0]
+      : null
+
   return (
     <div
       id='touchArea'
@@ -255,7 +269,7 @@ export const TaskCarousel = ({
         id='touchAreaTopGradient'
         className={`flex sticky bg-gradient-to-t ${gradientContainerStyle} rounded-t-2xl ${clsx(
           {
-            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-2xl':
+            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-2xl hover:border-accent-4':
               selectedTask && tasks && selectedTask.id !== tasks[0].id,
             '': selectedTask && tasks && selectedTask.id === tasks[0].id
           }
@@ -268,12 +282,20 @@ export const TaskCarousel = ({
         <button
           id='listButtonUp'
           name='listButtonUp'
+          onClick={handleMouseClick}
           className={`flex w-full h-full justify-center items-center rounded-t-2xl ${clsx(
             {
-              '': selectedTask.id !== tasks[0].id,
-              hidden: selectedTask.id === tasks[0].id
+              '': selectedTask && selectedTask.id !== tasks[0].id,
+              hidden: selectedTask && selectedTask.id === tasks[0].id
             }
           )}`}
+          value={
+            selectedTaskIdx !== null &&
+            selectedTaskIdx >= 0 &&
+            tasks[selectedTaskIdx - 1]
+              ? tasks[selectedTaskIdx - 1].id
+              : 'null'
+          }
         >
           <ChevronUpIcon id='listIconUp' className={`h-5 stroke-accent-3`} />
         </button>
@@ -289,12 +311,13 @@ export const TaskCarousel = ({
       >
         <div className='flex h-[1px] w-full bg-content'></div>
       </div> */}
+
       {/* Bottom gradient fade */}
       <div
         id='touchAreaBottomGradient'
         className={`flex sticky bg-gradient-to-b ${gradientContainerStyle} ${clsx(
           {
-            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-2xl':
+            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-2xl hover:border-accent-4':
               selectedTask &&
               tasks &&
               selectedTask.id !== tasks[tasks.length - 1].id,
@@ -312,6 +335,7 @@ export const TaskCarousel = ({
         <button
           id='listButtonDown'
           name='listButtonDown'
+          onClick={handleMouseClick}
           className={`flex w-full h-full justify-center items-center rounded-b-2xl ${clsx(
             {
               '':
@@ -324,6 +348,13 @@ export const TaskCarousel = ({
                 selectedTask.id === tasks[tasks.length - 1].id
             }
           )}`}
+          value={
+            selectedTaskIdx !== null &&
+            selectedTaskIdx <= tasks.length - 1 &&
+            tasks[selectedTaskIdx + 1]
+              ? tasks[selectedTaskIdx + 1].id
+              : 'null'
+          }
         >
           <ChevronDownIcon
             id='listIconDown'

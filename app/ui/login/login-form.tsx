@@ -28,7 +28,7 @@ export default function LoginForm () {
       className='relative flex flex-col gap-y-4 w-full rounded-2xl p-5'
       action={dispatch}
     >
-      <div className='flex flex-col gap-y-4 w-full'>
+      <div className='flex flex-col gap-y-4 w-full items-center'>
         {status === 'unauthenticated' ? (
           <h1>Please log in to continue</h1>
         ) : status === 'authenticated' ? (
@@ -36,12 +36,12 @@ export default function LoginForm () {
         ) : (
           <h1>Loading</h1>
         )}
-        <div className=''>
-          <label className={`flex flex-col w-full`} htmlFor='username'>
+        <div className='flex flex-col gap-2'>
+          <label className={`flex flex-col`} htmlFor='username'>
             <h2 className=''>Username</h2>
           </label>
           <input
-            className='peer '
+            className='peer'
             id='username'
             type='text'
             name='username'
@@ -49,12 +49,12 @@ export default function LoginForm () {
             required
           />
         </div>
-        <div>
-          <label className={`flex flex-col w-full`} htmlFor='password'>
+        <div className='flex flex-col gap-2'>
+          <label className={`flex flex-col`} htmlFor='password'>
             <h2 className=''>Password</h2>
           </label>
           <input
-            className='peer '
+            className='peer'
             id='password'
             type='password'
             name='password'
@@ -63,7 +63,7 @@ export default function LoginForm () {
             minLength={6}
           />
         </div>
-        <div className='flex w-full justify-center'>
+        <div className='flex justify-center'>
           <CreateButton className='' ariaLabel='Create category'>
             Login
           </CreateButton>

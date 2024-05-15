@@ -27,13 +27,18 @@ export default function RootLayout ({
   return (
     <html lang='en' data-theme={isDarkTheme ? 'dark' : 'light'}>
       <AuthProvider>
-        <body className={`flex flex-col items-center h-full `}>
-          <main className='flex flex-col w-full max-w-2xl h-full '>
-            <div className='topnavi flex flex-col items-center justify-center w-full h-30 sticky top-0 z-30'>
-              <button onClick={handleDataThemeClick}>Change theme</button>
-              <Links className='topnavi h-full flex flex-col w-full gap-2 pt-1 pb-1 pl-8 pr-8 justify-center items-center' />
+        <body className={`flex flex-col items-center`}>
+          <main className='flex flex-col w-full max-w-2xl h-screen '>
+            <div className='topnavi flex items-center justify-center w-full h-30 sticky top-0 z-30'>
+              <div className='flex w-full'>
+                <Links
+                  className='topnavi h-full flex flex-col w-full gap-5 pt-3 pb-3 pl-8 pr-8 justify-center items-center'
+                  isDarkTheme={isDarkTheme}
+                  handleDataThemeClick={handleDataThemeClick}
+                />
+              </div>
             </div>
-            <div className='flex flex-col w-full h-full justify-center max-w-2xl items-center'>
+            <div className='flex flex-col w-full max-w-2xl items-center h-full overflow-auto'>
               {children}
             </div>
           </main>

@@ -1,5 +1,19 @@
-import { RefObject } from 'react'
+import { Dispatch, RefObject, SetStateAction } from 'react'
 import { Task } from '@/app/lib/definitions'
+
+export const getTaskCard = (
+  touchAreaRef: RefObject<HTMLDivElement | HTMLUListElement>,
+  id: number
+) => {
+  return touchAreaRef.current?.querySelector(`#taskCard${id}`)
+}
+
+export const getTaskCardRect = (
+  touchAreaRef: RefObject<HTMLDivElement | HTMLUListElement>,
+  id: number
+) => {
+  return getTaskCard(touchAreaRef, id)?.getBoundingClientRect()
+}
 
 export function getTouchAreaRect (touchAreaRef: RefObject<HTMLDivElement>) {
   return touchAreaRef?.current?.getBoundingClientRect()
@@ -25,9 +39,7 @@ export function yCenterTask (
 
   const listRect = getListRect(touchAreaRef)
 
-  const cardRect = touchElement
-    ?.querySelector(`#taskCard${taskID}`)
-    ?.getBoundingClientRect()
+  const cardRect = getTaskCardRect(touchAreaRef, taskID)
 
   if (touchRect && cardRect && listRect) {
     const cardYCenter = cardRect.y + cardRect.height / 2
@@ -38,23 +50,21 @@ export function yCenterTask (
 
 export function selectTaskCard (
   tasks: Task[],
-  listRef: RefObject<HTMLUListElement>,
+  listRef: RefObject<HTMLDivElement | HTMLUListElement>,
   touchAreaCenterY: number,
   setSelectedTaskStateFun: (task: Task) => void
 ) {
   // Get each closest card to touch area
   const taskClosestToTouchAreaCenter = tasks.filter(task => {
-    const taskRect = listRef.current
-      ?.querySelector(`#taskCard${task.id}`)
-      ?.getBoundingClientRect()
+    const cardRect = getTaskCardRect(listRef, task.id)
 
-    if (!taskRect) {
+    if (!cardRect) {
       return false
     }
 
     if (
-      Math.abs(taskRect?.top + taskRect?.height / 2 - touchAreaCenterY) <
-      taskRect.height / 2
+      Math.abs(cardRect?.top + cardRect?.height / 2 - touchAreaCenterY) <
+      cardRect.height / 2
     ) {
       return true
     } else {
@@ -104,11 +114,7 @@ export function getCardYCenterDistanceFromTouchAreaYCenter (
   taskID: number
 ) {
   const touchRect = getTouchAreaRect(touchAreaRef)
-  const touchElement = touchAreaRef?.current
-
-  const cardRect = touchElement
-    ?.querySelector(`#taskCard${taskID}`)
-    ?.getBoundingClientRect()
+  const cardRect = getTaskCardRect(touchAreaRef, taskID)
 
   if (!cardRect) {
     console.error(
@@ -138,11 +144,8 @@ export function yCenterTaskScroll (
   taskID: number
 ) {
   const touchRect = getTouchAreaRect(touchAreaRef)
-  const touchElement = touchAreaRef?.current
 
-  const cardRect = touchElement
-    ?.querySelector(`#taskCard${taskID}`)
-    ?.getBoundingClientRect()
+  const cardRect = getTaskCardRect(touchAreaRef, taskID)
 
   if (touchRect && cardRect) {
     const cardDistanceFromTouchAreaTop = cardRect.y - touchRect.y
@@ -159,21 +162,11 @@ export function getListVerticalPadding (
   tasks: Task[]
 ) {
   const touchRect = getTouchAreaRect(touchAreaRef)
-  const touchElement = touchAreaRef?.current
-
-  const cardRectFirst = touchElement
-    ?.querySelector(`#taskCard${tasks[0].id}`)
-    ?.getBoundingClientRect()
-
-  const cardRectLast = touchElement
-    ?.querySelector(`#taskCard${tasks[tasks.length - 1].id}`)
-    ?.getBoundingClientRect()
-
-  const listRef = touchElement?.querySelector(`#taskList`)
+  const cardRectFirst = getTaskCardRect(touchAreaRef, tasks[0].id)
+  const cardRectLast = getTaskCardRect(touchAreaRef, tasks[tasks.length - 1].id)
 
   if (cardRectFirst && cardRectLast && touchRect) {
     const topPadding = (touchRect?.height - cardRectFirst?.height) / 2
-
     const bottomPadding = (touchRect?.height - cardRectLast?.height) / 2
 
     return {
@@ -184,6 +177,59 @@ export function getListVerticalPadding (
     return {
       top: 0,
       bottom: 0
+    }
+  }
+}
+
+export function changeTask (
+  touchAreaRef: RefObject<HTMLDivElement>,
+  selectedTaskRef: RefObject<Task | null>,
+  tasksRef: RefObject<Task[] | null>,
+  handleTaskChangeFun: Dispatch<SetStateAction<Task | null>>
+) {
+  if (tasksRef.current === null) {
+    console.log('No tasks')
+    return
+  }
+
+  const yCenterDistances = tasksRef.current
+    .map(task => {
+      if (touchAreaRef.current) {
+        const cardRect = getTaskCardRect(touchAreaRef, task.id)
+        const touchRect = getTouchAreaRect(touchAreaRef)
+
+        if (cardRect && touchRect) {
+          return (
+            cardRect.y +
+            cardRect.height / 2 -
+            touchRect.y -
+            touchRect.height / 2
+          )
+        }
+      }
+      return NaN
+    })
+    .filter(distance => !isNaN(distance))
+
+  const absDistances = yCenterDistances.map(distance => Math.abs(distance))
+
+  const minAbsDistance = Math.min(...absDistances)
+
+  const nMinDistance = absDistances.filter(
+    distance => distance === minAbsDistance
+  ).length
+
+  if (nMinDistance === 2) {
+    console.log("Midway between task cards. Don't change task")
+    return
+  } else if (selectedTaskRef.current !== null) {
+    const minDistanceIdx = absDistances
+      .map((distance, idx) => (distance === minAbsDistance ? idx : false))
+      .filter(idx => idx !== false)[0]
+
+    if (minDistanceIdx !== undefined) {
+      selectedTaskRef.current.id !== tasksRef.current[minDistanceIdx].id &&
+        handleTaskChangeFun(tasksRef.current[minDistanceIdx])
     }
   }
 }

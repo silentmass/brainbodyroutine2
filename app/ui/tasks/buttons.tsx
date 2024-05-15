@@ -95,7 +95,7 @@ export const SetTaskActiveForm = ({
       <button
         id='isActiveButton'
         type='submit'
-        className='flex justify-center items-center w-8 h-8 rounded-full border z-10 border-accent-5'
+        className='flex justify-center items-center w-8 h-8 rounded-full border z-30 border-accent-5'
         value={`${!isActive}`}
         onClick={isActiveOnClick}
       >

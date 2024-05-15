@@ -29,6 +29,8 @@
 - [x] Check description update
 - [x] Change categories visuals
 - [x] Check revalidations
+- [ ] Carousel doesn't change task every time
+- [ ] List height and selected task shoul be updated when changing category
 - [ ] Fix the check button
 - [ ] Add buttons to move tasks
 - [ ] Change preview task layout to use carousel

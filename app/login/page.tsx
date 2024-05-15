@@ -7,7 +7,7 @@ export default async function LoginPage () {
   // const session = await auth()
   const session = await auth()
   return (
-    <div className='flex gap-5 w-full h-full items-center justify-center'>
+    <div className='flex flex-col gap-5 w-full h-full items-center justify-center'>
       {session !== null ? (
         <>
           <h1>Logged in</h1>

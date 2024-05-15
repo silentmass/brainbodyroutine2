@@ -7,20 +7,22 @@ import { FormEvent } from 'react'
 export default function TasksTable ({
   tasks,
   showTaskLink = true,
-  onViewTaskClick
+  handleViewModeClick,
+  className = ''
 }: {
   tasks: Task[]
   showTaskLink: boolean
-  onViewTaskClick: (event: FormEvent<HTMLButtonElement>) => void
+  handleViewModeClick: (event: FormEvent<HTMLButtonElement>) => void
+  className: string
 }) {
-  return (
-    <div className='flex flex-col gap-y-1 w-full'>
-      {tasks ? (
-        tasks.map((task: Task) => (
-          <TaskCard key={task.id} task={task}>
+  return tasks ? (
+    <ul className={`${className}`}>
+      {tasks.map((task: Task) => (
+        <li key={`${task.id}`}>
+          <TaskCard task={task}>
             {showTaskLink ? (
               <div className='flex items-center gap-6'>
-                <button onClick={onViewTaskClick} value={task.id}>
+                <button onClick={handleViewModeClick} value={task.id}>
                   <ChevronRightIcon className='icon w-10' />
                 </button>
                 <Link href={`/tasks/${task.id}/edit`}>
@@ -31,10 +33,10 @@ export default function TasksTable ({
               <></>
             )}
           </TaskCard>
-        ))
-      ) : (
-        <>No tasks</>
-      )}
-    </div>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <>No tasks</>
   )
 }

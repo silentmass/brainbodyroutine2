@@ -19,7 +19,7 @@ export default function CreateTaskForm ({
       name='createTaskForm'
       id='createTaskForm'
       action={formAction}
-      className=' relative flex flex-col p-6 gap-6 w-full rounded-2xl'
+      className='card relative flex flex-col p-6 gap-6 w-full rounded-2xl'
     >
       <input
         type='hidden'
