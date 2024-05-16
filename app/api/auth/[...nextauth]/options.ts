@@ -23,10 +23,13 @@ export const options: NextAuthConfig = {
           placeholder: 'your-awsome-password'
         }
       },
-      async authorize (credentials) {
+      async authorize (credentials, request) {
         const parsedCredentials = z
           .object({ username: z.string(), password: z.string().min(6) })
-          .safeParse(credentials)
+          .safeParse({
+            username: credentials.username,
+            password: credentials.password
+          })
 
         if (parsedCredentials.success) {
           const { username, password } = parsedCredentials.data
@@ -64,12 +67,19 @@ export const options: NextAuthConfig = {
     })
   ],
   callbacks: {
-    async signIn ({ credentials }) {
+    async signIn ({ user, account, profile, email, credentials }) {
       console.log(
         '############################# Hello from signIn callback #############################'
       )
-
-      return true
+      const isAllowedToSignIn = true
+      if (isAllowedToSignIn) {
+        return true
+      } else {
+        // Return false to display a default error message
+        return false
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
     },
     async jwt ({ token, user, session }) {
       // Persist the OAuth access_token and or the user id to the token right after signin

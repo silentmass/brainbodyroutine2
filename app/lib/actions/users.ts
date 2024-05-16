@@ -1,5 +1,11 @@
 'use server'
 import { User, UserRegisterSchema } from '@/app/lib/definitions'
+import { revalidateTag } from 'next/cache'
+import { cookies } from 'next/headers'
+import { permanentRedirect } from 'next/navigation'
+import { deleteSession } from '@/app/lib/session'
+import { signOutAction } from './auth'
+import { signOut } from '@/app/auth'
 
 export async function getUser (
   username: string,
@@ -64,6 +70,57 @@ export async function createUser (prevState: any, formData: FormData) {
     return { ...prevState, message: 'User created' }
   } catch (error) {
     console.error('Create user fetch failed', error)
-    return { ...prevState, error: 'Create user fetch failed' }
+    return {
+      ...prevState,
+      message: 'Create user fetch failed',
+      errors: 'Create user fetch failed'
+    }
   }
+}
+
+export const deleteUser = async (prevState: any, formData: FormData) => {
+  // Check access token cookie
+  // Assume `cookies().get()` returns an object { token: "your_token_here" }
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. No user deleted.'
+    }
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_USERS}/delete`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
+
+        mode: 'cors'
+      }
+    )
+
+    if (!res.ok) {
+      throw new Error('Failed to fetch delete user')
+    }
+
+    try {
+      revalidateTag('users')
+    } catch (revalidateErr) {
+      console.error(`Failed to delete user revalidate: `, revalidateErr)
+    }
+  } catch (err) {
+    console.error(`Failed to delete user`, err)
+    return {
+      ...prevState,
+      message: `Failed to delete user`,
+      errors: err
+    }
+  }
+
+  deleteSession()
+  await signOut()
+  return permanentRedirect('/tasks/filter')
 }

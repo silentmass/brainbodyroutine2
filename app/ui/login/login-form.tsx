@@ -61,6 +61,7 @@ export default function LoginForm () {
       </div>
       {/* Form action state message floating above card requires relative parent */}
       <ResponseDurationMessage state={state} />
+      {status}
     </form>
   )
 }

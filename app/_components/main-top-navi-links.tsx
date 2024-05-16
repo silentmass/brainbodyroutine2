@@ -10,7 +10,8 @@ import {
   Cog6ToothIcon,
   ArrowRightEndOnRectangleIcon,
   MoonIcon,
-  SunIcon
+  SunIcon,
+  UserIcon
 } from '@heroicons/react/24/outline'
 import { useEffect } from 'react'
 
@@ -98,6 +99,17 @@ export function Links ({
                 )}
               </button>
             </form>
+          </li>
+          <li>
+            <Link
+              className={`link ${clsx({
+                active: pathname && /^\/login/.test(pathname),
+                '': pathname !== '/login'
+              })}`}
+              href={'/login'}
+            >
+              <UserIcon className='icon-topnavi w-5' />
+            </Link>
           </li>
         </ul>
       </nav>
