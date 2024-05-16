@@ -57,9 +57,9 @@ export const createListDescription = async (
     }
 
     try {
-      revalidateTag(`descriptions`)
-      revalidateTag(`descriptionlist`)
-      revalidateTag(`descriptionlists`)
+      revalidateTag(`userdescriptions`)
+      revalidateTag(`userdescriptionlist`)
+      revalidateTag(`userdescriptionlists`)
     } catch (revalidateErr) {
       console.error(
         `List description create revalidate failed: `,
@@ -122,10 +122,10 @@ export const updateListDescription = async (
     }
 
     try {
-      revalidateTag(`descriptions`)
-      revalidateTag(`descriptionlist`)
-      revalidateTag(`descriptionlists`)
-      revalidateTag(`task`)
+      revalidateTag(`userdescriptions`)
+      revalidateTag(`userdescriptionlist`)
+      revalidateTag(`userdescriptionlists`)
+      revalidateTag(`usertask`)
     } catch (revalidateErr) {
       console.error(
         'List description update revalidation failed:',
@@ -173,10 +173,10 @@ export const deleteListDescription = async (
     }
 
     try {
-      revalidateTag(`descriptions`)
-      revalidateTag(`descriptionlist`)
-      revalidateTag(`descriptionlists`)
-      revalidateTag(`task`)
+      revalidateTag(`userdescriptions`)
+      revalidateTag(`userdescriptionlist`)
+      revalidateTag(`userdescriptionlists`)
+      revalidateTag(`usertask`)
     } catch (revalidateErr) {
       console.log(`List description deleted revalidation failed`, revalidateErr)
     }

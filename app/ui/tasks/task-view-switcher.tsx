@@ -1,19 +1,9 @@
 'use client'
 import { Task, TaskCategory } from '@/app/lib/definitions'
-import {
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  Suspense,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { FormEvent, Suspense, useEffect, useRef, useState } from 'react'
 import CreateTaskForm from './create-form'
 import TasksTable from './table'
 import TaskCarouselWrapper from '@/app/_components/task-carousel/task-carousel-wrapper'
-import clsx from 'clsx'
-import { ChevronRightIcon, ListBulletIcon } from '@heroicons/react/24/outline'
 import TaskViewBottomNavi from './task-view-bottom-navi'
 import TaskViewTopNavi from './task-view-top-navi'
 
@@ -168,8 +158,9 @@ export default function TaskViewSwitcher ({
       </div>
 
       {/* Task list or carousel */}
-      <div className='flex flex-col w-full overflow-auto h-full gap-y-6 p-6'>
+      <div className='flex flex-col items-center w-full overflow-auto h-full gap-y-6 p-6'>
         {viewMode === 'single' ? (
+          // Viewmode single
           categoryTasks && categoryTasks.length ? (
             <TaskCarouselWrapper
               tasks={categoryTasks}
@@ -180,15 +171,19 @@ export default function TaskViewSwitcher ({
               invert={true}
             />
           ) : (
-            <></>
+            <p>No tasks</p>
           )
         ) : (
-          <div className='flex flex-col w-full h-fit gap-y-6 p-6'>
+          // Viewmode all
+          <div className='flex flex-col w-full h-fit gap-y-6'>
+            {/* Create task */}
             <Suspense fallback={<p>Loading categories...</p>}>
               {categories && categories.length && (
                 <CreateTaskForm taskCategories={categories} />
               )}
             </Suspense>
+
+            {/* Tasks table */}
             <Suspense fallback={<p>Loading tasks...</p>}>
               {categoryTasks && categoryTasks.length ? (
                 <TasksTable

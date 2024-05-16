@@ -2,10 +2,8 @@
 
 ## VERY IMPORTANT
 
-- [x] Fetch null user tasks
-- [ ] Check all task fetches and revalidations
 - [ ] Add button to duplicate general task
-- [ ] Authenticate GET data endpoints, except when user is null
+  - [ ] Add form action
 - [ ] Add delete user form
 - [ ] Refresh session token and alarm when token is expired
   - [ ] Inform user that session token has expired
@@ -17,6 +15,7 @@
 ## LESS IMPORTANT
 
 - [ ] Add buttons to move tasks
+- [ ] How to control visibility and creation of task categories
 - [ ] Add lateral swipe to change category
 - [ ] Make development and production separate
 - [ ] Add order column in tasks, descriptionlist, and descriptions
@@ -34,3 +33,7 @@
 - [x] Save dark/light mode in cookie
 - [x] Add user registration
 - [x] Fetch user tasks
+- [x] Fetch null user tasks
+- [x] Check all task fetches and revalidations
+- [x] Remove ability to CRUD task catgories
+- [x] Authenticate GET data endpoints, except when user is null

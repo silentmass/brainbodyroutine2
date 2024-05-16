@@ -58,7 +58,7 @@ export const createTask = async (prevState: any, formData: FormData) => {
     }
 
     try {
-      revalidateTag('tasks')
+      revalidateTag('usertasks')
     } catch (revalidateErr) {
       console.error('Failed to create task revalidate: ', revalidateErr)
     }
@@ -103,7 +103,7 @@ export const deleteTask = async (
     }
 
     try {
-      revalidateTag('tasks')
+      revalidateTag('usertasks')
     } catch (revalidateErr) {
       console.error(`Failed to delete task revalidate: `, revalidateErr)
     }
@@ -180,8 +180,8 @@ export const updateTask = async (
     }
 
     try {
-      revalidateTag('task')
-      revalidateTag('tasks')
+      revalidateTag('usertask')
+      revalidateTag('usertasks')
     } catch (revalidateErr) {
       console.error(`Failed to update task revalidate: `, revalidateErr)
     }

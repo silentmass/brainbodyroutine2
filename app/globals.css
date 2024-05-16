@@ -15,7 +15,7 @@
   @media (prefers-color-scheme: dark) {
     :root {
       --color-bkg: 0 0 0;
-      --color-content: 255 255 255;
+      --color-content: 249 250 251;
       --color-accent1: 3 7 18;
       --color-accent2: 17 24 39;
       --color-accent3: 31 41 55;
@@ -25,7 +25,7 @@
   }
   :root[data-theme='dark'] {
     --color-bkg: 0 0 0;
-    --color-content: 255 255 255;
+    --color-content: 249 250 251;
     --color-accent1: 3 7 18;
     --color-accent2: 17 24 39;
     --color-accent3: 31 41 55;

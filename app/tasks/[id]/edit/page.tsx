@@ -1,8 +1,7 @@
 import {
-  fetchListDescriptions,
-  fetchTaskById,
+  fetchUserTaskById,
   fetchTaskCategories,
-  fetchTaskDescriptionLists
+  fetchUserTaskDescriptionLists
 } from '@/app/lib/data'
 import { Task, TaskCategory, TaskDescriptionList } from '@/app/lib/definitions'
 import EditTaskCategoryForm from '@/app/ui/task-categories/edit-form'
@@ -16,10 +15,10 @@ export const metadata: Metadata = {
 
 export default async function Page ({ params }: { params: { id: string } }) {
   const id = params.id !== '' ? params.id : null
-  const task: Task = id !== null ? await fetchTaskById(id) : null
+  const task: Task = id !== null ? await fetchUserTaskById(id) : null
   const taskCategories: TaskCategory[] = await fetchTaskCategories()
   const taskDescriptionLists: TaskDescriptionList[] =
-    id !== null ? await fetchTaskDescriptionLists(id) : null
+    id !== null ? await fetchUserTaskDescriptionLists(id) : null
 
   // console.log(taskDescriptionLists)
   return (

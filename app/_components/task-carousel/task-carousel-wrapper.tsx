@@ -20,7 +20,7 @@ export default function TaskCarouselWrapper ({
   invert: boolean
 }) {
   return (
-    <div className='flex flex-col h-full'>
+    <div className='flex flex-col h-full w-full'>
       <div className=''>
         {/* Task card carousel */}
         {tasks && selectedTask !== null && (
@@ -37,7 +37,7 @@ export default function TaskCarouselWrapper ({
       <div className='flex w-full'>
         <DescriptionListsView
           lists={selectedTask !== null ? selectedTask?.description_lists : []}
-          className='flex flex-col w-full gap-2'
+          className='flex flex-col w-full gap-6'
         />
       </div>
     </div>

@@ -368,7 +368,7 @@ export const TaskCarousel = ({
         <ul
           ref={listRef}
           id='taskList'
-          className={`absolute flex flex-col w-full gap-y-1 items-center select-none z-0 rounded-2xl p-1 pt-[100px] pb-[100px]`}
+          className={`absolute flex flex-col w-full gap-y-1 items-center select-none z-0 rounded-2xl pt-[100px] pb-[100px]`}
           style={{
             top: `${listTopPositionState}px`,
             paddingTop: `${listPaddingState.top}px`,

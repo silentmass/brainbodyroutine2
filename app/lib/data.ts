@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 
 // Task category operations
+
 export const fetchTaskCategories = async () => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKCATEGORIES}`,
@@ -66,14 +67,14 @@ export const fetchUserTasks = async (prevState: any) => {
   return res.json()
 }
 
-export const fetchTasks = async () => {
+export const fetchNullUserTasks = async () => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}`,
     {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       mode: 'cors',
-      next: { tags: ['tasks'] }
+      next: { tags: ['nullusertasks'] }
     }
   )
   if (!res.ok) {
@@ -82,14 +83,19 @@ export const fetchTasks = async () => {
   return res.json()
 }
 
-export const fetchTaskById = async (id: string) => {
+export const fetchUserTaskById = async (id: string) => {
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value) return null
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/${id}`,
+    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/${id}/user`,
     {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken.value}`
+      },
       mode: 'cors',
-      next: { tags: ['task'] }
+      next: { tags: ['usertask'] }
     }
   )
   if (!res.ok) {
@@ -98,14 +104,36 @@ export const fetchTaskById = async (id: string) => {
   return res.json()
 }
 
-export const fetchTaskDescriptionLists = async (taskId: string) => {
+export const fetchNullUserTaskById = async (id: string) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/${taskId}/descriptionlists`,
+    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/${id}/nulluser`,
     {
-      method: 'GET',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       mode: 'cors',
-      next: { tags: [`descriptionlists`] }
+      next: { tags: ['nullusertask'] }
+    }
+  )
+  if (!res.ok) {
+    throw new Error(`Failed to fetch task data.`)
+  }
+  return res.json()
+}
+
+export const fetchUserTaskDescriptionLists = async (taskId: string) => {
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value) return null
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/${taskId}/descriptionlists/user`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken.value}`
+      },
+      mode: 'cors',
+      next: { tags: [`userdescriptionlists`] }
     }
   )
   if (!res.ok) {
@@ -114,14 +142,36 @@ export const fetchTaskDescriptionLists = async (taskId: string) => {
   return res.json()
 }
 
-export const fetchTaskDescriptionListById = async (id: string) => {
+export const fetchNullUserTaskDescriptionLists = async (taskId: string) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${id}`,
+    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/${taskId}/descriptionlists/nulluser`,
     {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       mode: 'cors',
-      next: { tags: [`descriptionlist`] }
+      next: { tags: [`nulluserdescriptionlists`] }
+    }
+  )
+  if (!res.ok) {
+    throw new Error(`Failed to fetch task description lists`)
+  }
+  return res.json()
+}
+
+export const fetchUserTaskDescriptionListById = async (id: string) => {
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value) return null
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${id}/user`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken.value}`
+      },
+      mode: 'cors',
+      next: { tags: [`userdescriptionlist`] }
     }
   )
 
@@ -132,14 +182,58 @@ export const fetchTaskDescriptionListById = async (id: string) => {
   return res.json()
 }
 
-export const fetchListDescriptions = async (taskDescriptionListId: string) => {
+export const fetchNullUserTaskDescriptionListById = async (id: string) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${taskDescriptionListId}/descriptions`,
+    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${id}/nulluser`,
     {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       mode: 'cors',
-      next: { tags: [`descriptions`] }
+      next: { tags: [`nulluserdescriptionlist`] }
+    }
+  )
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch description list ${id}`)
+  }
+
+  return res.json()
+}
+
+export const fetchUserListDescriptions = async (
+  taskDescriptionListId: string
+) => {
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value) return null
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${taskDescriptionListId}/descriptions/user`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken.value}`
+      },
+      mode: 'cors',
+      next: { tags: [`userdescriptions`] }
+    }
+  )
+  if (!res.ok) {
+    throw new Error(`Failed to fetch task description list descriptions`)
+  }
+  return res.json()
+}
+
+export const fetchNullUserListDescriptions = async (
+  taskDescriptionListId: string
+) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${taskDescriptionListId}/descriptions/nulluser`,
+    {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      mode: 'cors',
+      next: { tags: [`nulluserdescriptions`] }
     }
   )
   if (!res.ok) {

@@ -1,7 +1,16 @@
 import {
-  fetchListDescriptions,
-  fetchTaskDescriptionListById
+  fetchNullUserListDescriptions,
+  fetchNullUserTaskById,
+  fetchNullUserTaskDescriptionListById,
+  fetchUserListDescriptions,
+  fetchUserTaskById,
+  fetchUserTaskDescriptionListById
 } from '@/app/lib/data'
+import {
+  ListDescription,
+  Task,
+  TaskDescriptionList
+} from '@/app/lib/definitions'
 import CreateListDescriptionForm from '@/app/ui/tasks/description-lists/descriptions/create-form'
 import ListDescriptionsTable from '@/app/ui/tasks/description-lists/descriptions/table'
 import UpdateDescriptionListForm from '@/app/ui/tasks/description-lists/edit-form'
@@ -12,19 +21,15 @@ export const metadata: Metadata = {
   title: 'Edit list descriptions'
 }
 
-export default async function Page ({
-  params
+function PageComponent ({
+  taskId,
+  descriptionList,
+  descriptions
 }: {
-  params: { id: string; listid: string }
+  taskId: number | null
+  descriptionList: TaskDescriptionList
+  descriptions: ListDescription[]
 }) {
-  const taskId = params.id !== '' ? params.id : null
-  const listId = params.listid !== '' ? params.listid : null
-
-  const descriptionList =
-    listId !== null ? await fetchTaskDescriptionListById(listId) : null
-  const descriptions =
-    listId !== null ? await fetchListDescriptions(listId) : null
-
   return (
     <div className='flex flex-col gap-y-3 w-full'>
       <Suspense fallback={<p>Loading list...</p>}>
@@ -58,4 +63,45 @@ export default async function Page ({
       </div>
     </div>
   )
+}
+
+export default async function Page ({
+  params
+}: {
+  params: { id: string; listid: string }
+}) {
+  const taskId = params.id !== '' ? parseInt(params.id) : null
+  const listId = params.listid !== '' ? parseInt(params.listid) : null
+
+  try {
+    const nullUserDescriptionList =
+      listId !== null
+        ? await fetchNullUserTaskDescriptionListById(`${listId}`)
+        : null
+    const nullUserDescriptions =
+      listId !== null ? await fetchNullUserListDescriptions(`${listId}`) : null
+
+    return (
+      <PageComponent
+        taskId={taskId}
+        descriptionList={nullUserDescriptionList}
+        descriptions={nullUserDescriptions}
+      />
+    )
+  } catch (error) {
+    const userDescriptionList =
+      listId !== null
+        ? await fetchUserTaskDescriptionListById(`${listId}`)
+        : null
+    const userDescriptions =
+      listId !== null ? await fetchUserListDescriptions(`${listId}`) : null
+
+    return (
+      <PageComponent
+        taskId={taskId}
+        descriptionList={userDescriptionList}
+        descriptions={userDescriptions}
+      />
+    )
+  }
 }

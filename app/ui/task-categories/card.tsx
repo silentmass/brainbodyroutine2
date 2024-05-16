@@ -6,16 +6,17 @@ export const CategoryCard = ({ category }: { category: TaskCategory }) => {
   return (
     <div
       key={category.id}
-      className=' flex rounded-2xl w-full gap-y-3 gap-x-4 p-5 items-center'
+      className='card flex rounded-2xl w-full gap-y-3 gap-x-4 p-5 items-center'
     >
       <div className='flex w-full gap-4'>
-        <label className=' flex gap-5'>
+        <label className=' flex'>
           <h2 className=''>{category.title}</h2>
         </label>
-        <UpdateButton href={`/task-categories/${category.id}/edit`} />
+        <label className=' flex'>
+          <h2 className=''>{category.description}</h2>
+        </label>
       </div>
       <div className='flex w-fit'></div>
-      <DeleteTaskCategory id={`${category.id}`} />
     </div>
   )
 }

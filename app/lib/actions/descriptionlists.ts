@@ -55,7 +55,7 @@ export const createDescriptionList = async (
     }
 
     try {
-      revalidateTag('descriptionlists')
+      revalidateTag('userdescriptionlists')
     } catch (revalidateErr) {
       console.error(
         'Failed to fetch task description list create revalidate: ',
@@ -132,8 +132,8 @@ export const updateDescriptionList = async (
     }
 
     try {
-      revalidateTag('descriptionlists')
-      revalidateTag(`descriptionlist`)
+      revalidateTag('userdescriptionlists')
+      revalidateTag(`userdescriptionlist`)
     } catch (revalidateErr) {
       console.error(
         'Description list update revalidate failed: ',
@@ -181,7 +181,7 @@ export const deleteDescriptionList = async (
     }
 
     try {
-      revalidateTag('descriptionlists')
+      revalidateTag('userdescriptionlists')
     } catch (revalidateErr) {
       console.error(
         `Task description list delete revalidate failed ${id}`,

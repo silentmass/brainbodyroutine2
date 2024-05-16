@@ -16,12 +16,11 @@ export default async function Page () {
 
   return (
     <>
-      <CreateTaskCategoryForm />
       <Suspense fallback={<p>Loading task categories...</p>}>
         {categories ? (
           <TaskCategoriesTable
             categories={categories}
-            className='flex flex-col w-full gap-y-1'
+            className='flex flex-col w-full gap-y-6 p-6'
           />
         ) : (
           <>No categories</>
