@@ -224,8 +224,8 @@ export function changeTask (
     return
   } else if (selectedTaskRef.current !== null) {
     const minDistanceIdx = absDistances
-      .map((distance, idx) => (distance === minAbsDistance ? idx : false))
-      .filter(idx => idx !== false)[0]
+      .map((distance, idx) => (distance === minAbsDistance ? idx : -1))
+      .filter(idx => idx !== -1)[0]
 
     if (minDistanceIdx !== undefined) {
       selectedTaskRef.current.id !== tasksRef.current[minDistanceIdx].id &&
