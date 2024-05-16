@@ -1,4 +1,4 @@
-import { TaskCategory } from '../../lib/definitions'
+import { TaskCategory } from '@/app/lib/definitions'
 import CategoryCard from './card'
 
 export default function TaskCategoriesTable ({

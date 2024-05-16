@@ -1,16 +1,7 @@
 'use client'
 import { Task } from '@/app/lib/definitions'
-import {
-  DeleteTask,
-  SetTaskActive,
-  SetTaskActiveForm,
-  UpdateTask
-} from './buttons'
-import {
-  ChevronRightIcon,
-  CheckIcon,
-  PencilIcon
-} from '@heroicons/react/24/outline'
+import { SetTaskActiveForm } from './buttons'
+import { ChevronRightIcon, PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import ResponseDurationMessage from '@/app/_components/response-duration'

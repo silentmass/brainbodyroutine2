@@ -11,8 +11,7 @@ import {
   changeTask,
   getClosestTaskCardPosition,
   getRollingDistance,
-  getTaskCardRect,
-  selectTaskCard
+  getTaskCardRect
 } from './task-carousel-utils'
 import { animateListMovement } from './task-carousel-animation'
 

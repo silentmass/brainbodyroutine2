@@ -1,6 +1,4 @@
 import { TaskCategory } from '@/app/lib/definitions'
-import { DeleteTaskCategory } from './buttons'
-import { UpdateButton } from '@/app/ui/form-components/buttons'
 
 export const CategoryCard = ({ category }: { category: TaskCategory }) => {
   return (

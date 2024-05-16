@@ -1,6 +1,5 @@
 import TaskCategoriesTable from '@/app/ui/task-categories/table'
-import { fetchTaskCategories } from '../lib/data'
-import CreateTaskCategoryForm from '@/app/ui/task-categories/create-form'
+import { fetchTaskCategories } from '@/app/lib/data'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 

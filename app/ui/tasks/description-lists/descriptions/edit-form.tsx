@@ -5,7 +5,6 @@ import { CreateButton } from '@/app/ui/form-components/buttons'
 import { useFormState } from 'react-dom'
 import { initialState } from '@/app/_components/response-state'
 import ResponseDurationMessage from '@/app/_components/response-duration'
-import { DeleteListDescription } from './buttons'
 
 export default function EditListDescriptionForm ({
   description

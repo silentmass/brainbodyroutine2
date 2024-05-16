@@ -1,20 +1,12 @@
 import {
   Dispatch,
   FormEvent,
-  MutableRefObject,
   RefObject,
   SetStateAction,
   useCallback,
   useEffect
 } from 'react'
-import {
-  changeTask,
-  getTaskCard,
-  getTaskCardRect,
-  getTouchAreaRect,
-  selectTaskCard,
-  yCenterTask
-} from './task-carousel-utils'
+import { changeTask, yCenterTask } from './task-carousel-utils'
 import { Task, TaskCategory } from '@/app/lib/definitions'
 
 export default function useMouseHandler (
