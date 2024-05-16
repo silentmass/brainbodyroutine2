@@ -14,7 +14,8 @@ export const metadata: Metadata = {
 
 export default async function Page ({ params }: { params: { id: string } }) {
   const id = params.id !== '' ? params.id : null
-  const task: Task = id !== null ? await fetchUserTaskById(id) : null
+  const task: Task | { message: string; errors: any } =
+    id !== null ? await fetchUserTaskById(id) : null
   const taskCategories: TaskCategory[] = await fetchTaskCategories()
   const taskDescriptionLists: TaskDescriptionList[] =
     id !== null ? await fetchUserTaskDescriptionLists(id) : null
@@ -22,7 +23,10 @@ export default async function Page ({ params }: { params: { id: string } }) {
   return (
     <div className='flex w-full h-fit flex-col'>
       <Suspense fallback={<p>Loading task...</p>}>
-        {task !== null && taskCategories && taskDescriptionLists ? (
+        {typeof task === 'object' &&
+        !('message' in task) &&
+        taskCategories &&
+        taskDescriptionLists ? (
           <EditTaskForm
             task={task}
             taskCategories={taskCategories}

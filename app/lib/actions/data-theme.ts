@@ -7,7 +7,7 @@ export async function handleDataThemeClick (prevState: any, formData: FormData) 
     const newData = `${
       formData.get('isDarkTheme') === 'true' ? 'true' : 'false'
     }`
-    cookies().set('is_dark_theme', newData, { maxAge: 360 })
+    cookies().set('is_dark_theme', newData, { maxAge: 60 * 60 * 24 * 360 })
 
     return {
       ...prevState,

@@ -18,7 +18,8 @@ export const metadata: Metadata = {
 
 export default async function Page () {
   const categories: TaskCategory[] = await fetchTaskCategories()
-  const userTasks: Task[] | InitialState = await fetchUserTasks(initialState)
+  const userTasks: Task[] | { message: string; errors: any } =
+    await fetchUserTasks()
   const nullUserTasks = await fetchNullUserTasks()
   return (
     <Suspense fallback={<p>Loading categories and tasks...</p>}>
