@@ -59,6 +59,30 @@ body {
   scrollbar-width: none; /* Firefox */
 }
 
+/* WebKit Browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 16px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Color of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-accent2)); /* Color of the scrollbar handle */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-accent2)); /* Color of the scrollbar handle on hover */
+}
+
+/* Firefox */
+html {
+  scrollbar-color: rgb(var(--color-accent2)) transparent; /* thumb color, track color */
+  scrollbar-width: thin; /* "auto" or "thin" */
+}
+
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
