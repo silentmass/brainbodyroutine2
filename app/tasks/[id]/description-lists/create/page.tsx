@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Edit Task Description List'
+  title: 'Create Task Description List'
 }
 
 export default async function Page ({ params }: { params: { id: string } }) {

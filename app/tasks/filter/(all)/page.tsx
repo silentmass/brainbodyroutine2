@@ -6,7 +6,12 @@ import {
 } from '@/app/lib/data'
 import { Task, TaskCategory } from '@/app/lib/definitions'
 import TaskViewSwitcher from '@/app/ui/tasks/task-view-switcher'
+import { Metadata } from 'next'
 import { Suspense } from 'react'
+
+export const metadata: Metadata = {
+  title: 'Tasks'
+}
 
 // export const dynamic = 'force-dynamic'
 // export const fetchCache = 'force-no-store'

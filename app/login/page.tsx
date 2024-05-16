@@ -2,6 +2,11 @@ import LoginForm from '@/app/ui/login/login-form'
 import { DeleteUserForm } from '@/app/ui/login/delete-user-form'
 import { auth } from '@/app/auth'
 import RegisterForm from '../ui/login/register-form'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Login'
+}
 
 export default async function LoginPage () {
   const session = await auth()

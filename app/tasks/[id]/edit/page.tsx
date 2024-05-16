@@ -4,7 +4,6 @@ import {
   fetchUserTaskDescriptionLists
 } from '@/app/lib/data'
 import { Task, TaskCategory, TaskDescriptionList } from '@/app/lib/definitions'
-import EditTaskCategoryForm from '@/app/ui/task-categories/edit-form'
 import EditTaskForm from '@/app/ui/tasks/edit-form'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
@@ -20,7 +19,6 @@ export default async function Page ({ params }: { params: { id: string } }) {
   const taskDescriptionLists: TaskDescriptionList[] =
     id !== null ? await fetchUserTaskDescriptionLists(id) : null
 
-  // console.log(taskDescriptionLists)
   return (
     <div className='flex w-full h-fit flex-col'>
       <Suspense fallback={<p>Loading task...</p>}>
