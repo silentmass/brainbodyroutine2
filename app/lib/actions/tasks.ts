@@ -4,6 +4,9 @@
 import { revalidateTag } from 'next/cache'
 import { TaskSchema, TaskWithIdSchema } from '../definitions'
 import { cookies } from 'next/headers'
+import { z } from 'zod'
+import { redirect } from 'next/dist/server/api-utils'
+import { permanentRedirect } from 'next/navigation'
 
 export const createTask = async (prevState: any, formData: FormData) => {
   // Check access token cookie
@@ -86,7 +89,7 @@ export const deleteTask = async (
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/${id}/delete`,
+      `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/user-tasks/${id}/delete`,
       {
         method: 'POST',
         headers: {
@@ -108,11 +111,20 @@ export const deleteTask = async (
       console.error(`Failed to delete task revalidate: `, revalidateErr)
     }
 
-    return { ...prevState, message: `Deleted task: ${id}` }
+    // return {
+    //   ...prevState,
+    //   message: `Deleted task: ${id}`,
+    //   redirectTo: '/tasks/filter'
+    // }
   } catch (err) {
-    console.error(`Failed to delete task: ${id}`)
-    return { ...prevState, message: `Failed to delete task: ${id}` }
+    console.error(`Failed to delete task: ${id}`, err)
+    return {
+      ...prevState,
+      message: `Failed to delete task: ${id}`,
+      errors: err
+    }
   }
+  return permanentRedirect('/tasks/filter')
 }
 
 export const updateTask = async (
@@ -193,5 +205,58 @@ export const updateTask = async (
       message: `Failed to fetch update task ${id}`,
       redirectTo: prevState.redirectTo
     }
+  }
+}
+
+export const duplicateNullUserTask = async (
+  id: string,
+  prevState: any,
+  formData: FormData
+) => {
+  const accessToken = cookies().get('access_token')
+  if (!accessToken?.value)
+    return {
+      ...prevState,
+      message: 'You need to authenticate. No task duplicated.'
+    }
+
+  const validatedFields = z.object({ id: z.number().min(1) }).safeParse({
+    id: parseInt(id)
+  })
+
+  if (!validatedFields.success) {
+    console.log(validatedFields.error.flatten().fieldErrors)
+    return { errors: validatedFields.error.flatten().fieldErrors }
+  }
+
+  const data = validatedFields.data
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}/user-tasks/${data.id}/copy`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken.value}`
+        },
+        mode: 'cors'
+      }
+    )
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch update task ${id}`)
+    }
+
+    try {
+      revalidateTag('usertask')
+      revalidateTag('usertasks')
+    } catch (revalidateErr) {
+      console.error(`Failed to duplicate task revalidate: `, revalidateErr)
+    }
+    return { ...prevState, message: `Task duplicated` }
+  } catch (error) {
+    console.error('Failed to duplicate task', error)
+    return { ...prevState, message: 'Failed to duplicate task' }
   }
 }

@@ -2,8 +2,9 @@
 
 ## VERY IMPORTANT
 
-- [ ] Add button to duplicate general task
-  - [ ] Add form action
+- [x] Add button to duplicate general task
+  - [x] Add form action
+- [x] Add delete task button
 - [ ] Add delete user form
 - [ ] Refresh session token and alarm when token is expired
   - [ ] Inform user that session token has expired

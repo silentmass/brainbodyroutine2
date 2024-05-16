@@ -1,5 +1,11 @@
 'use client'
-import { Dispatch, MutableRefObject, SetStateAction, useState } from 'react'
+import {
+  Dispatch,
+  FormEvent,
+  MutableRefObject,
+  SetStateAction,
+  useState
+} from 'react'
 import { Task, TaskCategory } from '@/app/lib/definitions'
 import { DescriptionListsView } from '../../ui/tasks/description-lists/card-list'
 import { TaskCarousel } from './task-carousel'
@@ -9,6 +15,8 @@ export default function TaskCarouselWrapper ({
   selectedTask,
   setSelectedTask,
   selectedCategory,
+  handleViewModeClick,
+  showTaskLink = true,
   horizontal = false,
   invert = true
 }: {
@@ -16,6 +24,8 @@ export default function TaskCarouselWrapper ({
   selectedTask: Task | null
   setSelectedTask: Dispatch<SetStateAction<Task | null>>
   selectedCategory: TaskCategory | null
+  handleViewModeClick: (event: FormEvent<HTMLButtonElement>) => void
+  showTaskLink: boolean
   horizontal: boolean
   invert: boolean
 }) {
@@ -29,6 +39,8 @@ export default function TaskCarouselWrapper ({
             selectedTask={selectedTask}
             handleTaskChange={setSelectedTask}
             selectedCategory={selectedCategory}
+            showTaskLink={showTaskLink}
+            handleViewModeClick={handleViewModeClick}
             horizontal={horizontal}
             invert={invert}
           />

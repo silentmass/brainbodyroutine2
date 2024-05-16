@@ -8,7 +8,8 @@ import { CreateButton, DeleteButton } from '../form-components/buttons'
 
 import { initialState } from '@/app/_components/response-state'
 import ResponseDurationMessage from '@/app/_components/response-duration'
-import { FormEvent, RefObject } from 'react'
+import { FormEvent, RefObject, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export function CreateTask () {
   const { pending } = useFormStatus()
@@ -29,6 +30,13 @@ export function DeleteTask ({ id }: { id: string }) {
   const deleteTaskWithId = deleteTask.bind(null, id)
   const [state, formAction] = useFormState(deleteTaskWithId, initialState)
   const { pending } = useFormStatus()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (state.redirectTo !== null) {
+      router.push(state.redirectTo)
+    }
+  }, [state])
 
   return (
     <form name='deleteTaskForm' action={formAction}>

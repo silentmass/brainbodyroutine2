@@ -167,6 +167,8 @@ export default function TaskViewSwitcher ({
               selectedTask={selectedTask}
               setSelectedTask={setSelectedTask}
               selectedCategory={selectedCategory}
+              showTaskLink={false}
+              handleViewModeClick={handleViewModeClick}
               horizontal={false}
               invert={true}
             />

@@ -1,7 +1,5 @@
 import { Task } from '@/app/lib/definitions'
 import TaskCard from './card'
-import Link from 'next/link'
-import { ChevronRightIcon, PencilIcon } from '@heroicons/react/24/outline'
 import { FormEvent } from 'react'
 
 export default function TasksTable ({
@@ -19,25 +17,11 @@ export default function TasksTable ({
     <ul className={`${className}`}>
       {tasks.map((task: Task) => (
         <li key={`${task.id}`}>
-          <TaskCard task={task}>
-            {showTaskLink ? (
-              <div className='flex items-center gap-6'>
-                <button onClick={handleViewModeClick} value={task.id}>
-                  <ChevronRightIcon className='icon w-10' />
-                </button>
-
-                {task.user_id === null ? (
-                  <button>Copy</button>
-                ) : (
-                  <Link href={`/tasks/${task.id}/edit`}>
-                    <PencilIcon className='icon w-5' />
-                  </Link>
-                )}
-              </div>
-            ) : (
-              <></>
-            )}
-          </TaskCard>
+          <TaskCard
+            task={task}
+            showTaskLink={showTaskLink}
+            handleViewModeClick={handleViewModeClick}
+          />
         </li>
       ))}
     </ul>

@@ -36,8 +36,6 @@ export const createListDescription = async (
 
   const data = validatedFields.data
 
-  console.log(data)
-
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${listId}/descriptions`,

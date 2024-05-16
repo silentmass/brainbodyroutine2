@@ -1,6 +1,7 @@
 'use client'
 import {
   Dispatch,
+  FormEvent,
   MutableRefObject,
   ReactNode,
   RefObject,
@@ -27,6 +28,8 @@ export const TaskCarousel = ({
   selectedTask,
   handleTaskChange,
   selectedCategory,
+  handleViewModeClick,
+  showTaskLink = true,
   horizontal = false,
   invert = true
 }: {
@@ -34,6 +37,8 @@ export const TaskCarousel = ({
   selectedTask: Task
   handleTaskChange: Dispatch<SetStateAction<Task | null>>
   selectedCategory: TaskCategory | null
+  handleViewModeClick: (event: FormEvent<HTMLButtonElement>) => void
+  showTaskLink: boolean
   horizontal: boolean
   invert: boolean
 }) => {
@@ -393,9 +398,11 @@ export const TaskCarousel = ({
                 </div> */}
 
                 <div className='absolute top-0 left-5 flex h-full w-full items-center justify-center z-30'></div>
-                <TaskCard task={task}>
-                  <></>
-                </TaskCard>
+                <TaskCard
+                  task={task}
+                  showTaskLink={showTaskLink}
+                  handleViewModeClick={handleViewModeClick}
+                />
               </li>
             ))}
         </ul>

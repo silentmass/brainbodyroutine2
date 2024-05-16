@@ -8,7 +8,7 @@ import Link from 'next/link'
 import DescriptionListsTable from './description-lists/table'
 import TaskCategoriesSelect from '@/app/ui/form-components/task-categories-select'
 import { IsTaskActive } from '../form-components/is-task-active'
-import { EditTask } from './buttons'
+import { DeleteTask, EditTask } from './buttons'
 import clsx from 'clsx'
 import { CreateButton } from '../form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
@@ -37,62 +37,67 @@ export default function EditTaskForm ({
 
   return (
     <div className='flex flex-col w-full gap-y-4'>
-      <form
-        name='editTaskForm'
-        action={formAction}
-        className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-6'
-      >
-        {/* Task title */}
-        <div className='flex gap-6 w-full items-center'>
-          <label className={``}>
-            <h2 className=''>Title</h2>
-          </label>
-          <input
-            type='text'
-            name='taskTitle'
-            id='taskTitle'
-            required
-            className={`w-full`}
-            defaultValue={task.title}
-          />
-        </div>
-
-        {/* Task category */}
-        <div className='flex gap-6 w-full items-center'>
-          <label className={``}>
-            <h2 className=''>Category</h2>
-          </label>
-          <TaskCategoriesSelect
-            categories={taskCategories}
-            defaultCategoryId={task.task_category_id}
-            className=''
-          />
-        </div>
-
-        {/* Task is active */}
-        <div className='flex gap-6 w-full items-center'>
-          <label className={``}>
-            <h2 className=''>Is active</h2>
-          </label>
-          <div className='flex items-center h-fit'>
-            <IsTaskActive isActiveValue={isActive} />
+      <div className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-6'>
+        <form
+          name='editTaskForm'
+          action={formAction}
+          className='flex flex-col gap-y-4 w-full'
+        >
+          {/* Task title */}
+          <div className='flex gap-6 w-full items-center pr-6'>
+            <label className={``}>
+              <h2 className=''>Title</h2>
+            </label>
+            <input
+              type='text'
+              name='taskTitle'
+              id='taskTitle'
+              required
+              className={`w-full`}
+              defaultValue={task.title}
+            />
           </div>
-        </div>
 
-        {/* Task controls */}
-        <div className='flex w-full justify-center items-center gap-4'>
-          <Link href={`/tasks/filter`} className={`rounded-2xl`}>
-            <CreateButton className='' ariaLabel='Cancel'>
-              Cancel
-            </CreateButton>
-          </Link>
-          <EditTask className={``} ariaLabel='Edit task'>
-            Edit task
-          </EditTask>
+          {/* Task category */}
+          <div className='flex gap-6 w-full items-center'>
+            <label className={``}>
+              <h2 className=''>Category</h2>
+            </label>
+            <TaskCategoriesSelect
+              categories={taskCategories}
+              defaultCategoryId={task.task_category_id}
+              className=''
+            />
+          </div>
+
+          {/* Task is active */}
+          <div className='flex gap-6 w-full items-center'>
+            <label className={``}>
+              <h2 className=''>Is active</h2>
+            </label>
+            <div className='flex items-center h-fit'>
+              <IsTaskActive isActiveValue={isActive} />
+            </div>
+          </div>
+
+          {/* Task controls */}
+          <div className='flex w-full justify-center items-center gap-6'>
+            <Link href={`/tasks/filter`} className={`rounded-2xl`}>
+              <CreateButton className='' ariaLabel='Cancel'>
+                Cancel
+              </CreateButton>
+            </Link>
+            <EditTask className={``} ariaLabel='Edit task'>
+              Edit task
+            </EditTask>
+          </div>
+          {/* Form action state message floating above card requires relative parent */}
+        </form>
+        <div className='absolute top-0 right-0 p-6 flex items-center z-20'>
+          <DeleteTask id={`${task.id}`} />
         </div>
-        {/* Form action state message floating above card requires relative parent */}
         <ResponseDurationMessage state={state} />
-      </form>
+      </div>
 
       {/* Task description lists */}
 
