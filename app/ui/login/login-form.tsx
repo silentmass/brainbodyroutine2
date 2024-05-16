@@ -6,10 +6,18 @@ import { initialState } from '@/app/_components/response-state'
 import { CreateButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { useSession } from 'next-auth/react'
+import { useEffect } from 'react'
 
 export default function LoginForm () {
   const [state, dispatch] = useFormState(authenticate, initialState)
   const { update: updateSession, data: session, status } = useSession()
+
+  useEffect(() => {
+    if (state.redirectTo !== null) {
+      console.log(state.redirectTo, 'status', status, 'session', session)
+      window.location.replace(state.redirectTo)
+    }
+  }, [state])
 
   return (
     <form
@@ -31,7 +39,7 @@ export default function LoginForm () {
           </label>
           <input
             className='peer'
-            id='username'
+            id='usernameSignIn'
             type='text'
             name='username'
             placeholder='Enter your username'
@@ -44,7 +52,7 @@ export default function LoginForm () {
           </label>
           <input
             className='peer'
-            id='password'
+            id='passwordSignIn'
             type='password'
             name='password'
             placeholder='Enter password'
@@ -53,7 +61,7 @@ export default function LoginForm () {
           />
         </div>
         <div className='flex justify-center'>
-          <CreateButton className='' ariaLabel='Create category'>
+          <CreateButton className='' ariaLabel='Login user'>
             Login
           </CreateButton>
         </div>
@@ -61,7 +69,7 @@ export default function LoginForm () {
       </div>
       {/* Form action state message floating above card requires relative parent */}
       <ResponseDurationMessage state={state} />
-      {status}
+      <div className='flex justify-center'>{status}</div>
     </form>
   )
 }

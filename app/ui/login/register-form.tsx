@@ -14,22 +14,22 @@ export default function RegisterForm () {
   return (
     <form
       name='registerForm'
-      className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-5'
+      className='card relative flex flex-col w-full rounded-2xl p-6'
       action={dispatch}
     >
       <div className='flex flex-col gap-y-4 w-full items-center'>
         <div className='flex flex-col gap-2'>
           <label className={`flex flex-col`} htmlFor='username'>
             <h2 className=''>Username</h2>
-            <input
-              className='peer'
-              id='username'
-              type='text'
-              name='username'
-              placeholder='Enter your username'
-              required
-            />
           </label>
+          <input
+            className='peer'
+            id='username'
+            type='text'
+            name='username'
+            placeholder='Enter your username'
+            required
+          />
         </div>
         <div className='flex flex-col gap-2'>
           <label className={`flex flex-col`} htmlFor='password'>

@@ -89,12 +89,18 @@ export const options: NextAuthConfig = {
       // }
       revalidateTag('taskcategories')
       revalidateTag('taskcategory')
-      revalidateTag('tasks')
-      revalidateTag('task')
-      revalidateTag('task')
-      revalidateTag('descriptionlists')
-      revalidateTag('descriptionlist')
-      revalidateTag('descriptions')
+      revalidateTag('usertasks')
+      revalidateTag('usertask')
+      revalidateTag('usertask')
+      revalidateTag('userdescriptionlists')
+      revalidateTag('userdescriptionlist')
+      revalidateTag('userdescriptions')
+      revalidateTag('nullusertasks')
+      revalidateTag('nullusertask')
+      revalidateTag('nullusertask')
+      revalidateTag('nulluserdescriptionlists')
+      revalidateTag('nulluserdescriptionlist')
+      revalidateTag('nulluserdescriptions')
       return token
     },
     async session ({ session, token, user }) {

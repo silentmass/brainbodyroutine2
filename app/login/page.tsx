@@ -11,16 +11,26 @@ export const metadata: Metadata = {
 export default async function LoginPage () {
   const session = await auth()
   return (
-    <div className='card rounded-2xl flex flex-col gap-5 w-full p-6 items-center justify-center'>
+    <div className=' rounded-2xl flex flex-col gap-6 w-full p-6 items-center justify-center'>
       {session !== null ? (
         <>
           <h1>Logged in</h1>
           <DeleteUserForm />
         </>
       ) : (
-        <div className='flex flex-col gap-6 justify-center'>
-          <LoginForm />
-          <RegisterForm />
+        <div className='flex flex-col gap-6 justify-center w-full'>
+          <div className='relative flex  justify-center items-center w-full rounded-2xl p-6'>
+            <div className='flex w-full'>
+              <LoginForm />
+            </div>
+          </div>
+          <div className='relative flex'>
+            <div className='relative flex bg-gradient-to-r from-accent-2 to-accent-4 justify-center items-center w-full rounded-2xl p-6'>
+              <div className='flex w-full'>
+                <RegisterForm />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

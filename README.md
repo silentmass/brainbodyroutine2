@@ -6,6 +6,9 @@
   - [x] Add form action
 - [x] Add delete task button
 - [x] Add delete user form
+- [ ] Fix carousel duplicate button z-index
+- [ ] Add hover and active to duplicate button
+- [ ] Add more tailwind colors
 - [ ] Refresh session token and alarm when token is expired
   - [ ] Inform user that session token has expired
 - [ ] Code review and clean code with CGPT

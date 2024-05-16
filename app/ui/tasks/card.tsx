@@ -57,7 +57,7 @@ const TaskCard = ({
     >
       <div className='flex flex-col w-full items-center h-full gap-6 justify-between'>
         {/* Open task */}
-        <div className='flex items-center z-10 rounded-2xl justify-between gap-6 w-full'>
+        <div className='flex items-center rounded-2xl justify-between gap-6 w-full'>
           <div>
             {showTaskLink ? (
               <button
@@ -72,7 +72,8 @@ const TaskCard = ({
             )}
           </div>
           {task.user_id === null ? (
-            <div>
+            // Duplicate task
+            <div className=''>
               <form
                 id='duplicateTaskForm'
                 name='duplicateTaskForm'
@@ -80,7 +81,7 @@ const TaskCard = ({
               >
                 <button
                   type='submit'
-                  className='flex bg-accent-3 items-center justify-center p-3 rounded-3xl'
+                  className='flex bg-accent-3 items-center justify-center p-3 rounded-3xl hover:bg-accent-4 active:bg-accent-5'
                 >
                   Duplicate
                 </button>

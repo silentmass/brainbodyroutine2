@@ -302,17 +302,6 @@ export const TaskCarousel = ({
         </button>
       </div>
 
-      {/* Help vertical center guide left */}
-      {/* <div
-        className='flex sticky left-0 w-6 z-40 justify-center items-center'
-        style={{
-          top: `${gradientHeight}px`,
-          height: `${touchAreaHeight - 2 * gradientHeight}px`
-        }}
-      >
-        <div className='flex h-[1px] w-full bg-content'></div>
-      </div> */}
-
       {/* Bottom gradient fade */}
       <div
         id='touchAreaBottomGradient'
@@ -388,12 +377,6 @@ export const TaskCarousel = ({
                   'opacity-100': task.id !== selectedTask?.id && !isTouchMove
                 })}`}
               >
-                {/* Help guide card vertical center */}
-                {/* <div className='absolute top-0 left-5 flex h-full w-full items-center'>
-                  <div className='flex w-full bg-content h-[1px] z-40'></div>
-                </div> */}
-
-                <div className='absolute top-0 left-5 flex h-full w-full items-center justify-center z-30'></div>
                 <TaskCard
                   task={task}
                   showTaskLink={showTaskLink}
