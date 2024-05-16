@@ -94,7 +94,7 @@ export function getClosestTaskCardPosition (
   )
 
   const distanceFromEndPositions = nonNullEndPositions.map(positionValue => {
-    if (position !== null) {
+    if (position !== null && positionValue !== null) {
       return Math.abs(position - positionValue)
     } else {
       return 999999
