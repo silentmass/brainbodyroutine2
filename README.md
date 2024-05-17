@@ -3,7 +3,7 @@
 ## VERY IMPORTANT
 
 - [ ] Refresh session token and alarm when token is expired
-  - [ ] Inform user that session token has expired
+  - [x] Inform user that session token has expired
   - [ ] Update NextAuth token and session
   - [ ] Refresh FastAPI token
 - [ ] The null user task doesn't get activated in carousel

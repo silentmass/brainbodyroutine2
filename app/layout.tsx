@@ -9,6 +9,7 @@ import { cookies } from 'next/headers'
 import { useFormState } from 'react-dom'
 import { fetchDataTheme, handleDataThemeClick } from './lib/actions/data-theme'
 import TokenMonitor from './_components/token-monitor'
+import CookieConsent from './_components/cookie-consent'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -58,6 +59,7 @@ export default function RootLayout ({
                 />
               </div>
             </div>
+            <CookieConsent />
             <div className='flex flex-col w-full max-w-2xl items-center h-full overflow-auto'>
               {children}
             </div>

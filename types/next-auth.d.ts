@@ -5,6 +5,7 @@ declare module 'next-auth' {
   interface Session {
     accessToken?: string
     full_name?: string
+    accessTokenExp?: number
   }
   // interface User {
   //   full_name: string
@@ -17,5 +18,6 @@ declare module 'next-auth/jwt' {
     /** OpenID ID Token */
     accessToken?: string
     full_name?: string
+    accessTokenExp?: number
   }
 }

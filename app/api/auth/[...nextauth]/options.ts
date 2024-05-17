@@ -6,7 +6,6 @@ import bcrypt from 'bcrypt'
 import { cookies } from 'next/headers'
 import { getUser } from '@/app/lib/actions/users'
 import { revalidateTag } from 'next/cache'
-import { UserNextAuth } from '@/app/lib/definitions'
 
 export const options: NextAuthConfig = {
   providers: [
@@ -21,7 +20,7 @@ export const options: NextAuthConfig = {
         password: {
           label: 'Password',
           type: 'password',
-          placeholder: 'your-awsome-password'
+          placeholder: 'your-awesome-password'
         }
       },
       async authorize (credentials, request) {
@@ -54,7 +53,7 @@ export const options: NextAuthConfig = {
                 sameSite: 'lax',
                 path: '/'
               })
-              return user
+              return { ...user, access_token: token.access_token }
             }
           } catch (error) {
             console.error('Failed to fetch token:', error)
@@ -69,10 +68,11 @@ export const options: NextAuthConfig = {
   ],
   callbacks: {
     async signIn ({ user, account, profile, email, credentials }) {
-      console.group('signIn callback')
+      // console.group('signIn callback')
       // console.log('user', user)
       // console.log('profile', profile)
-      console.groupEnd()
+      // console.groupEnd()
+
       const isAllowedToSignIn = true
       if (isAllowedToSignIn) {
         return true
@@ -92,19 +92,39 @@ export const options: NextAuthConfig = {
         user !== undefined &&
         token !== undefined
       ) {
-        // console.log('user.full_name', user.full_name)
-        // console.log('token.user.full_name', token.user.full_name)
-        token.accessToken = account.access_token
+        const fastAPIAccessToken =
+          'access_token' in user && typeof user.access_token === 'string'
+            ? user.access_token
+            : ''
+
+        if (fastAPIAccessToken.split('.').length === 3) {
+          const tokenExp = new Date(
+            JSON.parse(atob(fastAPIAccessToken.split('.')[1]))?.exp * 1000
+          ).getTime()
+          const timeRemaining = tokenExp - new Date().getTime()
+          const remainingH = timeRemaining / 1000 / 60 / 60
+          const remainingMin = (remainingH - Math.trunc(remainingH)) * 60
+          const remainingSec = (remainingMin - Math.trunc(remainingMin)) * 60
+          const remainingString = `${Math.trunc(remainingH)}h:${Math.trunc(
+            remainingMin
+          )}m:${Math.trunc(remainingSec)}s`
+
+          // console.log('timeRemaining s', remainingString)
+
+          token.accessTokenExp = tokenExp
+        }
+
+        token.accessToken = fastAPIAccessToken
         token.full_name =
           'full_name' in user && typeof user.full_name === 'string'
             ? user.full_name
             : ''
-        // token.user.full_name = 'hello'
-        console.group('jwt callback')
-        console.log('account', account)
-        console.log('user', user)
-        console.log('token', token)
-        console.groupEnd()
+
+        // console.group('jwt callback')
+        // console.log('account', account)
+        // console.log('user', user)
+        // console.log('token', token)
+        // console.groupEnd()
       }
 
       revalidateTag('taskcategories')
@@ -128,12 +148,12 @@ export const options: NextAuthConfig = {
       if (token !== undefined) {
         session.accessToken = token.accessToken
         session.full_name = token.full_name
-        // session.user.id = token.id
-        // session.user.name = token.user.full_name
-        console.group('session callback')
-        console.log('session', session)
-        console.log('token', token)
-        console.groupEnd()
+        session.accessTokenExp = token.accessTokenExp
+
+        // console.group('session callback')
+        // console.log('session', session)
+        // console.log('token', token)
+        // console.groupEnd()
       }
 
       return session

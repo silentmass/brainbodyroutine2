@@ -4,6 +4,7 @@ import { auth } from '@/app/auth'
 import RegisterForm from '../ui/login/register-form'
 import { Metadata } from 'next'
 import { LogOutForm } from '../ui/login/logout-form'
+import TokenExpireTimer from '../_components/token-expire-timer'
 
 export const metadata: Metadata = {
   title: 'Login'
@@ -15,7 +16,15 @@ export default async function LoginPage () {
     <div className=' rounded-2xl flex flex-col gap-6 w-full p-6 items-center justify-center'>
       {session !== null ? (
         <div className='flex flex-col gap-y-80'>
-          <div className='flex justify-center items-center gap-6'>
+          <div className='flex flex-col justify-center items-center gap-6'>
+            {session.accessTokenExp ? (
+              <div className='flex flex-col justify-center items-center'>
+                <h2>Token expires in:</h2>
+                <TokenExpireTimer session={session} />
+              </div>
+            ) : (
+              <></>
+            )}
             <h2>
               Log out{' '}
               {session.full_name

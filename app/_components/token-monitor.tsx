@@ -1,36 +1,55 @@
 'use client'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
-import { signOutAction } from '../lib/actions/auth'
+import { signOutAction } from '@/app/lib/actions/auth'
 
 export default function TokenMonitor () {
   const { data: session, status } = useSession()
 
   useEffect(() => {
     const checkAndRefreshToken = async () => {
-      console.log('checkAndRefreshToken')
       if (status === 'authenticated') {
         const currentTime = new Date().getTime()
         const expiryTimeNextAuth = new Date(session?.expires).getTime()
-        const timeRemaining = expiryTimeNextAuth - currentTime
-        const timeHour = timeRemaining / 1000 / 60 / 60
-        const timeMin = (timeHour - Math.trunc(timeHour)) * 60
-        const timeSec = (timeMin - Math.trunc(timeMin)) * 60
+        const expiryFastAPI = session.accessTokenExp
 
-        console.log(
-          'timeRemaining',
-          `${Math.trunc(timeHour)}h:${Math.trunc(timeMin)}m:${Math.trunc(
-            timeSec
-          )}s`
-        )
-        if (timeRemaining < 0) {
-          alert('NextAuth token expired')
-          await signOutAction()
+        if (expiryFastAPI !== undefined) {
+          const timeRemaining = expiryFastAPI - currentTime
+
+          const remainingHour = timeRemaining / 1000 / 60 / 60
+          const remainingMin = (remainingHour - Math.trunc(remainingHour)) * 60
+          const remainingSec = (remainingMin - Math.trunc(remainingMin)) * 60
+
+          const remainingHString =
+            Math.trunc(remainingHour) < 10
+              ? `0${Math.trunc(remainingHour)}`
+              : `${Math.trunc(remainingHour)}`
+          const remainingMinString =
+            Math.trunc(remainingMin) < 10
+              ? `0${Math.trunc(remainingMin)}`
+              : `${Math.trunc(remainingMin)}`
+          const remainingSecString =
+            Math.trunc(remainingSec) < 10
+              ? `0${Math.trunc(remainingSec)}`
+              : `${Math.trunc(remainingSec)}`
+
+          const remainingTimeString = `${remainingHString}h:${remainingMinString}m:${remainingSecString}s`
+
+          console.log(
+            'checkAndRefreshToken',
+            'token expires in',
+            remainingTimeString
+          )
+
+          if (timeRemaining <= 0) {
+            alert('Token expired, logging out')
+            await signOutAction()
+          }
         }
       }
     }
 
-    const interval = setInterval(checkAndRefreshToken, 5 * 1000)
+    const interval = setInterval(checkAndRefreshToken, 60 * 1000)
     return () => clearInterval(interval)
   }, [session, status])
   return null
