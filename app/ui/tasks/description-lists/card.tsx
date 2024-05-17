@@ -2,7 +2,9 @@ import { TaskDescriptionList } from '@/app/lib/definitions'
 import { DeleteTaskDescriptionList } from './buttons'
 import ListDescriptionsTable from './descriptions/table'
 import { DescriptionsCardListView } from '@/app/ui/tasks/description-lists/descriptions/card-list'
-import { UpdateButton } from '@/app/ui/form-components/buttons'
+import { FormButton, UpdateButton } from '@/app/ui/form-components/buttons'
+import Link from 'next/link'
+import { PencilIcon } from '@heroicons/react/24/outline'
 
 export const DescriptionListCard = ({
   taskDescriptionList
@@ -10,7 +12,7 @@ export const DescriptionListCard = ({
   taskDescriptionList: TaskDescriptionList
 }) => {
   return (
-    <div className='card flex rounded-2xl  flex-col gap-y-3 p-5'>
+    <div className='card flex rounded-2xl flex-col gap-y-6 p-2'>
       <div className='flex justify-between items-center w-full'>
         <div className='flex gap-6 w-full'>
           <label className='flex gap-5 w-full'>
@@ -18,9 +20,17 @@ export const DescriptionListCard = ({
             {taskDescriptionList.title}
           </label>
           <div className='flex gap-6 items-center'>
-            <UpdateButton
+            <Link
               href={`/tasks/${taskDescriptionList.task_id}/description-lists/${taskDescriptionList.id}/edit`}
-            />
+            >
+              <button
+                className={`flex items-center justify-center`}
+                type={undefined}
+                aria-label={'Edit list'}
+              >
+                <PencilIcon className='icon w-5' />
+              </button>
+            </Link>
             <DeleteTaskDescriptionList
               taskDescriptionListId={`${taskDescriptionList.id}`}
             />

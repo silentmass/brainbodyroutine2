@@ -1,19 +1,24 @@
 import { TaskDescriptionList } from '@/app/lib/definitions'
-import DescriptionLists from './card-list'
+import DescriptionListCard from './card'
 
 export default function DescriptionListsTable ({
-  taskDescriptionLists
+  lists
 }: {
-  taskDescriptionLists: TaskDescriptionList[]
+  lists: TaskDescriptionList[]
 }) {
-  const isList = taskDescriptionLists && taskDescriptionLists.length
+  const isList = lists && lists.length
 
-  return isList ? (
-    <DescriptionLists
-      lists={taskDescriptionLists}
-      className='flex flex-col w-full gap-y-1'
-    />
-  ) : (
-    <></>
+  if (!isList) {
+    return null
+  }
+
+  return (
+    <ul className={`flex flex-col w-full gap-y-1`}>
+      {lists.map(list => (
+        <li key={list.id}>
+          <DescriptionListCard taskDescriptionList={list} />
+        </li>
+      ))}
+    </ul>
   )
 }

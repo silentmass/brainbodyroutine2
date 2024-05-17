@@ -1,16 +1,20 @@
 import { ListDescription } from '@/app/lib/definitions'
-import DescriptionsCardList from './card-list'
+import DescriptionCard from './card'
 
 export default function ListDescriptionsTable ({
   descriptions
 }: {
   descriptions: ListDescription[] | null
 }) {
-  return descriptions && descriptions.length ? (
-    <>
-      <DescriptionsCardList descriptions={descriptions} />
-    </>
-  ) : (
-    <p>No descriptions</p>
+  if (!descriptions || !descriptions.length) return <p>No descriptions</p>
+
+  return (
+    <ul className='flex flex-col w-full gap-y-4'>
+      {descriptions.map(description => (
+        <li key={`${description.id}`}>
+          <DescriptionCard description={description} />
+        </li>
+      ))}
+    </ul>
   )
 }

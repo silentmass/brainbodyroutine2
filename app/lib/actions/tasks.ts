@@ -245,7 +245,7 @@ export const duplicateNullUserTask = async (
     )
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch update task ${id}`)
+      throw new Error(`Failed to fetch duplicate task`)
     }
 
     try {
@@ -257,6 +257,6 @@ export const duplicateNullUserTask = async (
     return { ...prevState, message: `Task duplicated` }
   } catch (error) {
     console.error('Failed to duplicate task', error)
-    return { ...prevState, message: 'Failed to duplicate task' }
+    return { ...prevState, message: 'Failed to duplicate task', errors: error }
   }
 }

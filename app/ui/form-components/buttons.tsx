@@ -16,8 +16,33 @@ export const CreateButton = ({
 
   return (
     <button
-      className={`${className} formActionButton flex w-fit items-center justify-center p-2 rounded-2xl`}
+      className={`${className} formActionButton flex w-fit items-center justify-center p-3 rounded-2xl`}
       type='submit'
+      aria-disabled={pending}
+      aria-label={ariaLabel}
+    >
+      {children}
+    </button>
+  )
+}
+
+export const FormButton = ({
+  children,
+  ariaLabel,
+  className = '',
+  type = 'submit'
+}: {
+  children: React.ReactNode
+  ariaLabel: string
+  className: string
+  type: 'submit' | 'button' | 'reset' | undefined
+}) => {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      className={`${className} formActionButton flex items-center justify-center p-3 rounded-3xl min-w-24`}
+      type={type}
       aria-disabled={pending}
       aria-label={ariaLabel}
     >

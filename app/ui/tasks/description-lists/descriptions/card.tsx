@@ -8,11 +8,11 @@ export default function DescriptionCard ({
   description: ListDescription
 }) {
   return (
-    <div className='card relative flex justify-between w-full rounded-2xl'>
+    <div className='relative flex justify-between w-full rounded-2xl'>
       <div className='flex w-full'>
         <EditListDescriptionForm description={description} />
       </div>
-      <div className='absolute flex top-0 right-0 p-6'>
+      <div className='absolute flex top-0 right-0'>
         <DeleteListDescription id={`${description.id}`} />
       </div>
     </div>

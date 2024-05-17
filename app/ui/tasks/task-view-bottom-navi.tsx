@@ -10,12 +10,12 @@ export default function TaskViewBottomNavi ({
   handleViewModeClick: (event: FormEvent<HTMLButtonElement>) => void
 }) {
   return (
-    <div className='flex w-full h-fit p-3 bg-accent-5 justify-center items-center z-30'>
+    <div className='flex w-full h-fit p-3 bg-accent-2 justify-center items-center z-30'>
       <div className='flex w-fit items-center justify-center h-full gap-6 rounded-2xl'>
         <div
           className={`flex items-center justify-center rounded-3xl ${clsx({
             '': viewMode !== null,
-            'bg-accent-4': viewMode === null
+            'bg-accent-1': viewMode === null
           })}`}
         >
           <button
@@ -29,7 +29,7 @@ export default function TaskViewBottomNavi ({
         <div
           className={`flex items-center justify-center rounded-3xl ${clsx({
             '': viewMode === null,
-            'bg-accent-4': viewMode !== null
+            'bg-accent-1': viewMode !== null
           })}`}
         >
           <button

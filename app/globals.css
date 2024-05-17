@@ -2,44 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+
 @layer base {
   :root {
     --color-bkg: 255 255 255;
     --color-content: 0 0 0;
-    --color-accent1: 249 250 251;
-    --color-accent2: 243 244 246;
-    --color-accent3: 229 231 235;
-    --color-accent4: 209 213 219;
-    --color-accent5: 156 163 175;
+    --color-accent1: 216 216 216;
+    --color-accent2: 191 191 190;
+    --color-accent3: 165 165 165;
+    --color-accent4: 160 163 165;
+    --color-accent5: 129 135 140;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --color-bkg: 0 0 0;
-      --color-content: 249 250 251;
-      --color-accent1: 3 7 18;
-      --color-accent2: 17 24 39;
-      --color-accent3: 31 41 55;
-      --color-accent4: 55 65 81;
-      --color-accent5: 75 85 99;
+      --color-content: 255 255 255;
+      --color-accent1: 12 12 12;
+      --color-accent2: 38 38 38;
+      --color-accent3: 63 63 63;
+      --color-accent4: 89 89 89;
+      --color-accent5: 165 165 165;
     }
   }
   :root[data-theme='dark'] {
     --color-bkg: 0 0 0;
-    --color-content: 249 250 251;
-    --color-accent1: 3 7 18;
-    --color-accent2: 17 24 39;
-    --color-accent3: 31 41 55;
-    --color-accent4: 55 65 81;
-    --color-accent5: 75 85 99;
+    --color-content: 255 255 255;
+    --color-accent1: 12 12 12;
+    --color-accent2: 38 38 38;
+    --color-accent3: 63 63 63;
+    --color-accent4: 89 89 89;
+    --color-accent5: 165 165 165;
   }
   :root[data-theme='light'] {
     --color-bkg: 255 255 255;
     --color-content: 0 0 0;
-    --color-accent1: 249 250 251;
-    --color-accent2: 243 244 246;
-    --color-accent3: 229 231 235;
-    --color-accent4: 209 213 219;
-    --color-accent5: 156 163 175;
+    --color-accent1: 216 216 216;
+    --color-accent2: 191 191 190;
+    --color-accent3: 165 165 165;
+    --color-accent4: 160 163 165;
+    --color-accent5: 129 135 140;
   }
 }
 
@@ -129,6 +132,10 @@ html {
   border-style: solid;
 }
 
+label {
+  min-width: 6rem;
+}
+
 input[type='checkbox'] {
   background-color: transparent;
   color: rgb(var(--color-content));
@@ -160,6 +167,7 @@ input[type='text'] {
   border-bottom-width: 1px;
   border-color: rgb(var(--color-accent3));
   width: 100%;
+  padding-left: 4px;
 }
 input[type='password'] {
   color: rgb(var(--color-content));

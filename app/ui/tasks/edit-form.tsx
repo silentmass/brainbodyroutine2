@@ -1,30 +1,31 @@
 'use client'
-import { Task, TaskCategory, TaskDescriptionList } from '@/app/lib/definitions'
+import { Task, TaskCategory } from '@/app/lib/definitions'
 import { updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import DescriptionListsTable from './description-lists/table'
 import TaskCategoriesSelect from '@/app/ui/form-components/task-categories-select'
-import { IsTaskActive } from '../form-components/is-task-active'
-import { DeleteTask, EditTask } from './buttons'
+import { IsTaskActive } from '@/app/ui/form-components/is-task-active'
+import { DeleteTask } from './buttons'
 import clsx from 'clsx'
-import { CreateButton } from '../form-components/buttons'
+import { FormButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
+
 export default function EditTaskForm ({
   task,
-  taskCategories,
-  taskDescriptionLists
+  taskCategories
 }: {
   task: Task
   taskCategories: TaskCategory[]
-  taskDescriptionLists: TaskDescriptionList[]
 }) {
   const [isActive, setIsActive] = useState(task.is_active)
-  const updateTaskWithId = updateTask.bind(null, `${task.id}`)
-  const [state, formAction] = useFormState(updateTaskWithId, initialState)
+  const [state, formAction] = useFormState(
+    updateTask.bind(null, `${task.id}`),
+    initialState
+  )
   const router = useRouter()
 
   useEffect(() => {
@@ -33,19 +34,20 @@ export default function EditTaskForm ({
     }
   }, [state, router])
 
-  const isList = taskDescriptionLists && taskDescriptionLists.length > 0
+  const isList = task.description_lists && task.description_lists.length > 0
 
   return (
-    <div className='flex flex-col w-full gap-y-4'>
+    <div className='flex flex-col w-full gap-y-6'>
+      {/* Edit task card */}
       <div className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-6'>
         <form
           name='editTaskForm'
           action={formAction}
           className='flex flex-col gap-y-4 w-full'
         >
-          {/* Task title */}
-          <div className='flex gap-6 w-full items-center pr-6'>
-            <label className={``}>
+          {/* Title */}
+          <div className='flex w-full items-center pr-6'>
+            <label className={`flex`}>
               <h2 className=''>Title</h2>
             </label>
             <input
@@ -57,10 +59,9 @@ export default function EditTaskForm ({
               defaultValue={task.title}
             />
           </div>
-
-          {/* Task category */}
-          <div className='flex gap-6 w-full items-center'>
-            <label className={``}>
+          {/* Category */}
+          <div className='flex w-full items-center'>
+            <label className={`flex`}>
               <h2 className=''>Category</h2>
             </label>
             <TaskCategoriesSelect
@@ -69,58 +70,65 @@ export default function EditTaskForm ({
               className=''
             />
           </div>
-
-          {/* Task is active */}
-          <div className='flex gap-6 w-full items-center'>
-            <label className={``}>
+          {/* Is active */}
+          <div className='flex w-full items-center'>
+            <label className={`flex`}>
               <h2 className=''>Is active</h2>
             </label>
             <div className='flex items-center h-fit'>
               <IsTaskActive isActiveValue={isActive} />
             </div>
           </div>
-
-          {/* Task controls */}
+          {/* Controls */}
           <div className='flex w-full justify-center items-center gap-6'>
             <Link href={`/tasks/filter`} className={`rounded-2xl`}>
-              <CreateButton className='' ariaLabel='Cancel'>
+              <FormButton className='' ariaLabel='Cancel' type={undefined}>
                 Cancel
-              </CreateButton>
+              </FormButton>
             </Link>
-            <EditTask className={``} ariaLabel='Edit task'>
-              Edit task
-            </EditTask>
+            <FormButton className='' ariaLabel='Edit task' type='submit'>
+              Edit
+            </FormButton>
           </div>
-          {/* Form action state message floating above card requires relative parent */}
         </form>
+        {/* Delete form */}
         <div className='absolute top-0 right-0 p-6 flex items-center z-20'>
           <DeleteTask id={`${task.id}`} />
         </div>
+        {/* Form action state message floating above card requires relative parent */}
         <ResponseDurationMessage state={state} />
       </div>
 
       {/* Task description lists */}
 
-      <div className='flex flex-col gap-y-2 w-full p-6'>
+      <div className='flex flex-col gap-y-2 w-full'>
+        {/* Lists title and create button */}
         <div className='flex justify-between items-center w-full'>
-          <h2 className=''>
-            {clsx({
-              Lists: isList,
-              'No lists': !isList
-            })}
-          </h2>
-          <Link
-            href={`/tasks/${task.id}/description-lists/create`}
-            className={``}
-          >
-            <CreateButton className='' ariaLabel='Create list'>
-              Create List
-            </CreateButton>
-          </Link>
+          <div className='flex items-center'>
+            <h2 className=''>
+              {clsx({
+                Lists: isList,
+                'No lists': !isList
+              })}
+            </h2>
+          </div>
+          <div className='flex items-center'>
+            <Link
+              href={`/tasks/${task.id}/description-lists/create`}
+              className={``}
+            >
+              <FormButton className='' ariaLabel='Create list' type={undefined}>
+                Create List
+              </FormButton>
+            </Link>
+          </div>
         </div>
-        <div className='flex w-full'>
-          <DescriptionListsTable taskDescriptionLists={taskDescriptionLists} />
-        </div>
+        {/* Lists  */}
+        {task.description_lists !== null && (
+          <div className='flex w-full'>
+            <DescriptionListsTable lists={task.description_lists} />
+          </div>
+        )}
       </div>
     </div>
   )
