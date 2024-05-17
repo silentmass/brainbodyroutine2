@@ -6,11 +6,15 @@
   - [x] Add form action
 - [x] Add delete task button
 - [x] Add delete user form
-- [ ] Fix carousel duplicate button z-index
-- [ ] Add hover and active to duplicate button
-- [ ] Add more tailwind colors
+- [x] Fix carousel duplicate button z-index
+- [x] Add hover and active to duplicate button
+- [x] The is task active button doesn't refresh cache
 - [ ] Refresh session token and alarm when token is expired
   - [ ] Inform user that session token has expired
+  - [ ] Update NextAuth token and session
+  - [ ] Refresh FastAPI token
+- [ ] The null user task doesn't get activated in carousel
+- [ ] Add more tailwind colors
 - [ ] Code review and clean code with CGPT
   - [ ] Remove unused routes
   - [ ] Unify and simplify variable naming

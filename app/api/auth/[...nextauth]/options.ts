@@ -81,12 +81,12 @@ export const options: NextAuthConfig = {
         // return '/unauthorized'
       }
     },
-    async jwt ({ token, user, session }) {
+    async jwt ({ token, user, account, profile, session }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
-      // if (account) {
-      //   token.accessToken = account.access_token
-      //   token.id = profile?.id
-      // }
+      if (account && profile) {
+        token.accessToken = account.access_token
+        token.id = profile.id
+      }
       revalidateTag('taskcategories')
       revalidateTag('taskcategory')
       revalidateTag('usertasks')
@@ -105,8 +105,8 @@ export const options: NextAuthConfig = {
     },
     async session ({ session, token, user }) {
       // Send properties to the client, like an access_token and user id from a provider.
-      // session.accessToken = token.accessToken
-      // session.user.id = token.id
+      session.accessToken = token.accessToken
+      session.user.id = token.id
 
       return session
     }

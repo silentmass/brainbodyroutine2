@@ -98,19 +98,21 @@ export const SetTaskActiveForm = ({
         type='hidden'
         name='taskIsActive'
         id='taskIsActive'
-        value={`${!isActive}`}
+        value={`${isActive}`}
       />
       <button
         id='isActiveButton'
         type='submit'
         className='flex justify-center items-center w-8 h-8 rounded-full border z-30 border-accent-5'
-        value={`${!isActive}`}
+        value={`${isActive}`}
         onClick={isActiveOnClick}
       >
-        {!isActive ? (
-          <CheckIcon className='w-full h-full z-10 stroke-accent-5' />
-        ) : (
+        {isActive ? (
+          // Empty
           <></>
+        ) : (
+          // Checked
+          <CheckIcon className='w-full h-full z-10 stroke-accent-5' />
         )}
       </button>
 

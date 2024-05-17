@@ -37,12 +37,17 @@ const TaskCard = ({
 
   function isActiveOnClick (event: FormEvent<HTMLButtonElement>) {
     // event.preventDefault()
-    setIsActive(previousState => !previousState)
+    // This is executed before form server action !!!!
+    const isActiveValue = event.currentTarget.value === 'true' ? true : false
+    console.log('isActiveOnClick', isActiveValue)
+    setIsActive(!isActiveValue)
   }
 
   useEffect(() => {
-    if (state.message !== 'Task updated' && state.message != '') {
-      setIsActive(previousState => !previousState)
+    if (state.message !== 'Task updated' && state.message !== '') {
+      // When update fails change state back
+      console.log('isActive:', isActive, '->', `${!isActive}`, task.is_active)
+      setIsActive(prevState => !prevState)
     }
   }, [state])
 
@@ -95,6 +100,7 @@ const TaskCard = ({
                 </Link>
               </div>
 
+              {/* Mark task as done: isActive = false or not done: isActive = true */}
               <div className='flex h-full items-center justify-center '>
                 <SetTaskActiveForm
                   task={task}
