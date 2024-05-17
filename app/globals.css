@@ -7,8 +7,8 @@
 
 @layer base {
   :root {
-    --color-bkg: 255 255 255;
-    --color-content: 0 0 0;
+    --color-bkg: 239 240 242;
+    --color-content: 12 12 12;
     --color-accent1: 216 216 216;
     --color-accent2: 191 191 190;
     --color-accent3: 165 165 165;
@@ -18,7 +18,7 @@
   @media (prefers-color-scheme: dark) {
     :root {
       --color-bkg: 0 0 0;
-      --color-content: 255 255 255;
+      --color-content: 239 240 242;
       --color-accent1: 12 12 12;
       --color-accent2: 38 38 38;
       --color-accent3: 63 63 63;
@@ -28,7 +28,7 @@
   }
   :root[data-theme='dark'] {
     --color-bkg: 0 0 0;
-    --color-content: 255 255 255;
+    --color-content: 239 240 242;
     --color-accent1: 12 12 12;
     --color-accent2: 38 38 38;
     --color-accent3: 63 63 63;
@@ -36,8 +36,8 @@
     --color-accent5: 165 165 165;
   }
   :root[data-theme='light'] {
-    --color-bkg: 255 255 255;
-    --color-content: 0 0 0;
+    --color-bkg: 239 240 242;
+    --color-content: 12 12 12;
     --color-accent1: 216 216 216;
     --color-accent2: 191 191 190;
     --color-accent3: 165 165 165;
@@ -45,6 +45,8 @@
     --color-accent5: 129 135 140;
   }
 }
+
+
 
 body {
   background-color: rgb(var(--color-bkg));
