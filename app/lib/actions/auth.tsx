@@ -41,8 +41,6 @@ export async function authenticate (prevState: any, formData: FormData) {
       redirect: false
     }).then(
       async value => {
-        console.log(value)
-
         // try {
         //   const token = await getToken(username, password)
 
@@ -59,10 +57,10 @@ export async function authenticate (prevState: any, formData: FormData) {
         //   throw new Error('Failed to fetch token.')
         // }
 
-        return { ...prevState, message: `We signed in ${value}` }
+        return { ...prevState, message: `We signed in` }
       },
       value => {
-        return { ...prevState, message: `Failed to sign in ${value}` }
+        return { ...prevState, message: `Failed to sign in` }
       }
     )
 

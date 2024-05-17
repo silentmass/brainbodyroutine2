@@ -67,23 +67,6 @@ export function Links ({
             </Link>
           </li>
           <li>
-            {status === 'unauthenticated' ? (
-              <Link
-                className={`link ${clsx({
-                  active: pathname && /^\/login/.test(pathname),
-                  '': pathname !== '/login'
-                })}`}
-                href={'/login'}
-              >
-                <ArrowRightEndOnRectangleIcon className='icon-topnavi w-5' />
-              </Link>
-            ) : status === 'authenticated' ? (
-              <LogOutForm />
-            ) : (
-              <>{status}</>
-            )}
-          </li>
-          <li>
             <form action={formAction}>
               <input
                 type='hidden'
@@ -108,7 +91,18 @@ export function Links ({
               })}`}
               href={'/login'}
             >
-              <UserIcon className='icon-topnavi w-5' />
+              {session ? (
+                session.full_name !== '' ? (
+                  session.full_name
+                    ?.split(' ')
+                    .map(words => words[0])
+                    .join('')
+                ) : (
+                  'Log out'
+                )
+              ) : (
+                <UserIcon className='icon-topnavi w-5' />
+              )}
             </Link>
           </li>
         </ul>

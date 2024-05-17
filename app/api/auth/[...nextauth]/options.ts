@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt'
 import { cookies } from 'next/headers'
 import { getUser } from '@/app/lib/actions/users'
 import { revalidateTag } from 'next/cache'
+import { UserNextAuth } from '@/app/lib/definitions'
 
 export const options: NextAuthConfig = {
   providers: [
@@ -68,9 +69,10 @@ export const options: NextAuthConfig = {
   ],
   callbacks: {
     async signIn ({ user, account, profile, email, credentials }) {
-      console.log(
-        '############################# Hello from signIn callback #############################'
-      )
+      console.group('signIn callback')
+      // console.log('user', user)
+      // console.log('profile', profile)
+      console.groupEnd()
       const isAllowedToSignIn = true
       if (isAllowedToSignIn) {
         return true
@@ -83,10 +85,28 @@ export const options: NextAuthConfig = {
     },
     async jwt ({ token, user, account, profile, session }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
-      if (account && profile) {
+
+      if (
+        account !== undefined &&
+        account !== null &&
+        user !== undefined &&
+        token !== undefined
+      ) {
+        // console.log('user.full_name', user.full_name)
+        // console.log('token.user.full_name', token.user.full_name)
         token.accessToken = account.access_token
-        token.id = profile.id
+        token.full_name =
+          'full_name' in user && typeof user.full_name === 'string'
+            ? user.full_name
+            : ''
+        // token.user.full_name = 'hello'
+        console.group('jwt callback')
+        console.log('account', account)
+        console.log('user', user)
+        console.log('token', token)
+        console.groupEnd()
       }
+
       revalidateTag('taskcategories')
       revalidateTag('taskcategory')
       revalidateTag('usertasks')
@@ -105,8 +125,16 @@ export const options: NextAuthConfig = {
     },
     async session ({ session, token, user }) {
       // Send properties to the client, like an access_token and user id from a provider.
-      session.accessToken = token.accessToken
-      session.user.id = token.id
+      if (token !== undefined) {
+        session.accessToken = token.accessToken
+        session.full_name = token.full_name
+        // session.user.id = token.id
+        // session.user.name = token.user.full_name
+        console.group('session callback')
+        console.log('session', session)
+        console.log('token', token)
+        console.groupEnd()
+      }
 
       return session
     }
