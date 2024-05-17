@@ -100,7 +100,6 @@ export default function EditTaskForm ({
       </div>
 
       {/* Task description lists */}
-
       <div className='flex flex-col gap-y-2 w-full'>
         {/* Lists title and create button */}
         <div className='flex justify-between items-center w-full'>

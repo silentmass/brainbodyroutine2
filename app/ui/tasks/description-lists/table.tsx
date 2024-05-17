@@ -6,17 +6,15 @@ export default function DescriptionListsTable ({
 }: {
   lists: TaskDescriptionList[]
 }) {
-  const isList = lists && lists.length
-
-  if (!isList) {
+  if (!lists || !lists.length) {
     return null
   }
 
   return (
-    <ul className={`flex flex-col w-full gap-y-1`}>
+    <ul className={`flex flex-col w-full gap-y-2`}>
       {lists.map(list => (
         <li key={list.id}>
-          <DescriptionListCard taskDescriptionList={list} />
+          <DescriptionListCard list={list} />
         </li>
       ))}
     </ul>

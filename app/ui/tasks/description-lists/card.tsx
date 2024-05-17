@@ -2,42 +2,42 @@ import { TaskDescriptionList } from '@/app/lib/definitions'
 import { DeleteTaskDescriptionList } from './buttons'
 import ListDescriptionsTable from './descriptions/table'
 import { DescriptionsCardListView } from '@/app/ui/tasks/description-lists/descriptions/card-list'
-import { FormButton, UpdateButton } from '@/app/ui/form-components/buttons'
 import Link from 'next/link'
 import { PencilIcon } from '@heroicons/react/24/outline'
 
 export const DescriptionListCard = ({
-  taskDescriptionList
+  list
 }: {
-  taskDescriptionList: TaskDescriptionList
+  list: TaskDescriptionList
 }) => {
   return (
     <div className='card flex rounded-2xl flex-col gap-y-6 p-2'>
-      <div className='flex justify-between items-center w-full'>
-        <div className='flex gap-6 w-full'>
-          <label className='flex gap-5 w-full'>
-            <h2 className=''>Title</h2>
-            {taskDescriptionList.title}
-          </label>
-          <div className='flex gap-6 items-center'>
-            <Link
-              href={`/tasks/${taskDescriptionList.task_id}/description-lists/${taskDescriptionList.id}/edit`}
+      <div className='flex gap-6 w-full'>
+        {/* List title */}
+        <label className='flex gap-5 w-full'>
+          <h2 className=''>Title</h2>
+          {list.title}
+        </label>
+        {/* Controls */}
+        <div className='flex gap-6 items-center'>
+          {/* Edit list */}
+          <Link
+            href={`/tasks/${list.task_id}/description-lists/${list.id}/edit`}
+          >
+            <button
+              className={`flex items-center justify-center`}
+              type={undefined}
+              aria-label={'Edit list'}
             >
-              <button
-                className={`flex items-center justify-center`}
-                type={undefined}
-                aria-label={'Edit list'}
-              >
-                <PencilIcon className='icon w-5' />
-              </button>
-            </Link>
-            <DeleteTaskDescriptionList
-              taskDescriptionListId={`${taskDescriptionList.id}`}
-            />
-          </div>
+              <PencilIcon className='icon w-5' />
+            </button>
+          </Link>
+          {/* Delete list */}
+          <DeleteTaskDescriptionList taskDescriptionListId={`${list.id}`} />
         </div>
       </div>
-      <ListDescriptionsTable descriptions={taskDescriptionList.descriptions} />
+      {/* Descriptions */}
+      <ListDescriptionsTable descriptions={list.descriptions} />
     </div>
   )
 }
