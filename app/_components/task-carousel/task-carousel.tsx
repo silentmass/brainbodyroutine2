@@ -42,7 +42,7 @@ export const TaskCarousel = ({
 
   const touchAreaHeight = 200
   const gradientHeight = Math.round(touchAreaHeight / 5)
-  const gradientContainerStyle = `from-transparent to-bkg to-80% w-full z-10`
+  const gradientContainerStyle = `from-transparent to-bkg to-80% w-full z-40`
 
   // Get touch area dimension
   let initCounter = 0
@@ -231,26 +231,6 @@ export const TaskCarousel = ({
     }
   }, [])
 
-  function scrollToSelectedTask () {
-    const selectedTaskYCenter = yCenterTask(
-      touchAreaRef,
-      selectedTaskRef.current.id
-    )
-
-    console.group('scrollToSelectedTask', selectedTaskRef.current.title)
-    console.log('selectedTaskYCenter', selectedTaskYCenter)
-
-    if (selectedTaskYCenter !== null) {
-      console.log('scrollTo', -selectedTaskYCenter)
-
-      touchAreaRef.current?.scrollBy({
-        top: -selectedTaskYCenter,
-        behavior: 'instant'
-      })
-    }
-    console.groupEnd()
-  }
-
   const selectedTaskIdx =
     tasks && tasks.length && selectedTask
       ? tasks
@@ -319,7 +299,7 @@ export const TaskCarousel = ({
         )}`}
         style={{
           height: `${gradientHeight}px`,
-          top: `${touchAreaHeight - gradientHeight}px`
+          top: `${touchAreaHeight - gradientHeight + 5}px`
         }}
       >
         <button

@@ -94,11 +94,15 @@ const TaskCard = ({
             </div>
           ) : (
             <>
-              <div>
-                <Link href={`/tasks/${task.id}/edit`}>
-                  <PencilIcon className='icon w-5' />
-                </Link>
-              </div>
+              {showTaskLink ? (
+                <div>
+                  <Link href={`/tasks/${task.id}/edit`}>
+                    <PencilIcon className='icon w-5' />
+                  </Link>
+                </div>
+              ) : (
+                <></>
+              )}
 
               {/* Mark task as done: isActive = false or not done: isActive = true */}
               <div className='flex h-full items-center justify-center '>
