@@ -9,6 +9,7 @@ import { Task, TaskCategory } from '@/app/lib/definitions'
 import {
   changeTask,
   getClosestTaskCardPosition,
+  getParentButtonElement,
   getRollingDistance,
   getTaskAfterListMove,
   getTaskCardRect
@@ -26,8 +27,8 @@ export default function useTouchHandler (
   tasksRef: RefObject<Task[] | null>,
   listTopPositionRef: RefObject<number | null>,
   isTouchMove: boolean,
-  setIsTouchMoveFun: Dispatch<SetStateAction<boolean>>,
-  setTaskChangeFun: Dispatch<SetStateAction<Task | null>>,
+  setIsTouchMove: Dispatch<SetStateAction<boolean>>,
+  setTaskChange: Dispatch<SetStateAction<Task | null>>,
   setListTopPositionFun: Dispatch<SetStateAction<number | null>>
 ): {
   handleTouchStart: (event: TouchEvent) => void
@@ -51,7 +52,7 @@ export default function useTouchHandler (
     (event: TouchEvent) => {
       event.preventDefault()
       if (!isTouchMove) {
-        setIsTouchMoveFun(true)
+        setIsTouchMove(true)
       }
 
       touchTimer = performance.now()
@@ -69,7 +70,7 @@ export default function useTouchHandler (
         acceleration: { x: 0, y: 0 }
       }
     },
-    [setIsTouchMoveFun]
+    [setIsTouchMove]
   )
 
   // Touch end event handler
@@ -78,7 +79,6 @@ export default function useTouchHandler (
       const touchDuration = performance.now() - touchTimer
 
       if (!selectedTaskRef.current) {
-        console.log('No selected task')
         return
       }
 
@@ -87,83 +87,66 @@ export default function useTouchHandler (
 
       // Tap handling
       if (touchDuration < 120) {
-        const elementUnderClick = document.elementFromPoint(
-          touchCurrentPosition.x,
-          touchCurrentPosition.y
-        )
-
-        if (
-          elementUnderClick?.tagName.toLocaleLowerCase() === 'button' &&
-          elementUnderClick?.id === 'isActiveButton'
-        ) {
-          ;(elementUnderClick as HTMLButtonElement)?.click()
-        } else if (elementUnderClick?.tagName.toLocaleLowerCase() === 'svg') {
-          console.log(
-            elementUnderClick?.parentElement,
-            elementUnderClick?.parentElement?.tagName
-          )
-          if (
-            elementUnderClick?.parentElement?.tagName.toLocaleLowerCase() ===
-            'button'
-          ) {
-            elementUnderClick?.parentElement.click()
-          }
-        } else if (elementUnderClick?.tagName.toLocaleLowerCase() === 'path') {
-          console.log(elementUnderClick?.parentElement?.parentElement)
-          if (
-            elementUnderClick?.parentElement?.parentElement?.tagName.toLocaleLowerCase() ===
-            'button'
-          ) {
-            elementUnderClick?.parentElement?.parentElement.click()
-          }
-        }
-
-        if (!cardRect || !listRect) {
-          return
-        }
-
+        const tasks = tasksRef.current
         if (
           !listRect ||
-          tasksRef.current === null ||
+          tasks === null ||
           listTopPositionRef.current === null ||
           !cardRect
         ) {
           return
         }
 
-        const moveDirection =
-          elementUnderClick && elementUnderClick?.id === 'listButtonUp'
-            ? 1
-            : elementUnderClick && elementUnderClick?.id === 'listButtonDown'
-            ? -1
-            : 0
-
-        const closestCardPosition = getClosestTaskCardPosition(
-          tasksRef.current,
-          listTopPositionRef.current + moveDirection * cardRect?.height,
-          touchAreaRef
+        const elementUnderClick = document.elementFromPoint(
+          touchCurrentPosition.x,
+          touchCurrentPosition.y
         )
 
-        if (
-          closestCardPosition !== null &&
-          closestCardPosition !== undefined &&
-          listTopPositionRef.current !== undefined &&
-          listTopPositionRef.current !== null
-        ) {
-          // Change is touch move flag
-          animateListMovement(
-            listTopPositionRef.current,
-            closestCardPosition,
-            animateRollingWrapper(
-              touchAreaRef,
-              selectedTaskRef,
-              tasksRef,
-              setListTopPositionFun,
-              setTaskChangeFun
-            )
-          )
-          if (isTouchMove) {
-            setIsTouchMoveFun(false)
+        if (elementUnderClick) {
+          const buttonElement = getParentButtonElement(elementUnderClick)
+          if (buttonElement) {
+            const nextTaskID = buttonElement?.value
+            if (nextTaskID !== undefined) {
+              const taskAbove = tasks.find(
+                task =>
+                  task.id === parseInt(nextTaskID) ||
+                  task.id === selectedTaskRef.current?.id
+              )
+
+              if (taskAbove) {
+                const moveDirection =
+                  taskAbove.id === parseInt(nextTaskID) ? 1 : -1
+
+                const closestCardPosition = getClosestTaskCardPosition(
+                  tasks,
+                  listTopPositionRef.current + moveDirection * cardRect?.height,
+                  touchAreaRef
+                )
+
+                if (
+                  closestCardPosition !== null &&
+                  closestCardPosition !== undefined &&
+                  listTopPositionRef.current !== undefined &&
+                  listTopPositionRef.current !== null
+                ) {
+                  // Change is touch move flag
+                  animateListMovement(
+                    listTopPositionRef.current,
+                    closestCardPosition,
+                    animateRollingWrapper(
+                      touchAreaRef,
+                      selectedTaskRef,
+                      tasksRef,
+                      setListTopPositionFun,
+                      setTaskChange
+                    )
+                  )
+                  if (isTouchMove) {
+                    setIsTouchMove(false)
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -181,7 +164,7 @@ export default function useTouchHandler (
         isNaN(averageEndVelocity)
       ) {
         // Change is touch move flag
-        setIsTouchMoveFun(false)
+        setIsTouchMove(false)
         return
       }
 
@@ -214,10 +197,10 @@ export default function useTouchHandler (
           selectedTaskRef,
           tasksRef,
           setListTopPositionFun,
-          setTaskChangeFun
+          setTaskChange
         )
       )
-      setIsTouchMoveFun(false)
+      setIsTouchMove(false)
     },
     [
       touchAreaRef,
@@ -225,8 +208,8 @@ export default function useTouchHandler (
       listTopPositionRef,
       selectedTaskRef,
       tasksRef,
-      setTaskChangeFun,
-      setIsTouchMoveFun,
+      setTaskChange,
+      setIsTouchMove,
       setListTopPositionFun
     ]
   )
@@ -236,7 +219,7 @@ export default function useTouchHandler (
     (event: TouchEvent) => {
       event.preventDefault()
       if (!isTouchMove) {
-        setIsTouchMoveFun(true)
+        setIsTouchMove(true)
       }
 
       const touchX = event.touches[0].clientX
@@ -329,7 +312,7 @@ export default function useTouchHandler (
         selectedTaskRef.current &&
         selectedTaskRef.current.id !== newTask.id
       ) {
-        setTaskChangeFun(newTask)
+        setTaskChange(newTask)
       }
     },
     [
@@ -338,9 +321,9 @@ export default function useTouchHandler (
       listTopPositionRef,
       tasksRef,
       selectedTaskRef,
-      setIsTouchMoveFun,
+      setIsTouchMove,
       setListTopPositionFun,
-      setTaskChangeFun
+      setTaskChange
     ]
   )
 
@@ -360,7 +343,7 @@ export default function useTouchHandler (
       touchAreaRef?.current?.removeEventListener('touchmove', handleTouchMove)
       touchAreaRef?.current?.removeEventListener('touchend', handleTouchEnd)
     }
-  }, [handleTouchStart, handleTouchMove, handleTouchEnd])
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd, touchAreaRef])
 
   return { handleTouchStart, handleTouchMove, handleTouchEnd }
 }

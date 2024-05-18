@@ -144,56 +144,40 @@ export default function TaskViewSwitcher ({
           handleCategoryClick={handleCategoryClick}
         />
       </div>
-
       {/* Task list or carousel */}
       <div className='flex flex-col items-center w-full overflow-auto h-full gap-y-6 pl-6 pr-6 pb-6'>
         {viewMode === 'single' ? (
-          <div className='flex w-full'>
-            {
-              // Viewmode single
-              categoryTasks && categoryTasks.length ? (
-                <TaskCarouselWrapper
-                  tasks={categoryTasks}
-                  selectedTask={selectedTask}
-                  setSelectedTask={setSelectedTask}
-                  selectedCategory={selectedCategory}
-                  showTaskLink={false}
-                  handleViewModeClick={handleViewModeClick}
-                  horizontal={false}
-                  invert={true}
-                />
-              ) : (
-                <p>No tasks</p>
-              )
-            }
+          <div className='flex w-full justify-center pt-2'>
+            <TaskCarouselWrapper
+              tasks={categoryTasks}
+              selectedTask={selectedTask}
+              setSelectedTask={setSelectedTask}
+              selectedCategory={selectedCategory}
+              showTaskLink={false}
+              handleViewModeClick={handleViewModeClick}
+              horizontal={false}
+              invert={true}
+            />
           </div>
         ) : (
           // Viewmode all
           <div className='flex flex-col w-full h-fit gap-y-6 pt-6'>
             {/* Create task */}
-            <Suspense fallback={<p>Loading categories...</p>}>
-              {categories && categories.length && (
-                <CreateTaskForm taskCategories={categories} />
-              )}
-            </Suspense>
-
+            {categories && categories.length && (
+              <CreateTaskForm taskCategories={categories} />
+            )}
             {/* Tasks table */}
-            <Suspense fallback={<p>Loading tasks...</p>}>
-              {categoryTasks && categoryTasks.length ? (
-                <TasksTable
-                  tasks={categoryTasks}
-                  showTaskLink={true}
-                  handleViewModeClick={handleViewModeClick}
-                  className='flex flex-col gap-y-3 w-full'
-                />
-              ) : (
-                <></>
-              )}
-            </Suspense>
+            {categoryTasks && categoryTasks.length && (
+              <TasksTable
+                tasks={categoryTasks}
+                showTaskLink={true}
+                handleViewModeClick={handleViewModeClick}
+                className='flex flex-col gap-y-3 w-full'
+              />
+            )}
           </div>
         )}
       </div>
-
       {/* Tasks bottom navi for list and single views */}
       <div id='taskViewBottomNavi' className='flex justify-center items-center'>
         <TaskViewBottomNavi

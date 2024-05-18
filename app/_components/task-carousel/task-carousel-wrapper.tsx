@@ -23,9 +23,12 @@ export default function TaskCarouselWrapper ({
   horizontal: boolean
   invert: boolean
 }) {
+  if (!tasks || selectedTask === null) {
+    return <p>No tasks</p>
+  }
   return (
-    <div className='flex flex-col h-full w-full gap-6'>
-      <div className=''>
+    <div className='flex flex-col w-full gap-6 h-full'>
+      <div className='fle w-full'>
         {/* Task card carousel */}
         {tasks && selectedTask !== null && (
           <TaskCarousel

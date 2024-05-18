@@ -9,60 +9,50 @@ import {
 import { changeTask, yCenterTask } from './task-carousel-utils'
 import { Task, TaskCategory } from '@/app/lib/definitions'
 
+type MouseHandlerReturnType = {
+  handleScroll: (event: Event) => void
+  handleScrollEnd: (event: Event) => void
+  handleMouseMove: (event: MouseEvent) => void
+  handleMouseClick: (event: FormEvent<HTMLButtonElement>) => void
+}
+
 export default function useMouseHandler (
   touchAreaRef: RefObject<HTMLDivElement>,
   listRef: RefObject<HTMLUListElement>,
   selectedCategoryRef: RefObject<TaskCategory | null>,
   selectedTaskRef: RefObject<Task | null>,
   tasksRef: RefObject<Task[] | null>,
-  setIsTouchMoveFun: Dispatch<SetStateAction<boolean>>,
-  setTaskChangeFun: Dispatch<SetStateAction<Task | null>>
-): {
-  handleScroll: (event: Event) => void
-  handleScrollEnd: (event: Event) => void
-  handleMouseMove: (event: MouseEvent) => void
-  handleMouseClick: (event: FormEvent<HTMLButtonElement>) => void
-} {
-  const handleScroll = useCallback((event: Event) => {
-    event.preventDefault()
-    // setIsTouchMoveFun(true)
-    const newTask = changeTask(touchAreaRef, selectedTaskRef, tasksRef)
-    if (
-      newTask !== undefined &&
-      newTask !== null &&
-      selectedTaskRef.current &&
-      selectedTaskRef.current.id !== newTask.id
-    ) {
-      setTaskChangeFun(newTask)
-    }
-  }, [])
+  setIsTouchMove: Dispatch<SetStateAction<boolean>>,
+  setTaskChange: Dispatch<SetStateAction<Task | null>>
+): MouseHandlerReturnType {
+  const handleScroll = useCallback(
+    (event: Event) => {
+      event.preventDefault()
+      const newTask = changeTask(touchAreaRef, selectedTaskRef, tasksRef)
+      if (newTask && selectedTaskRef.current?.id !== newTask.id) {
+        setTaskChange(newTask)
+      }
+    },
+    [touchAreaRef, selectedTaskRef, tasksRef, setTaskChange]
+  )
 
-  const handleScrollEnd = useCallback((event: Event) => {
-    event.preventDefault()
-    // setIsTouchMoveFun(false)
+  const handleScrollEnd = useCallback(
+    (event: Event) => {
+      event.preventDefault()
 
-    if (selectedTaskRef.current === null) {
-      console.log('Selected task is null')
-      return
-    }
-
-    const taskCardYCenter = yCenterTask(
-      touchAreaRef,
-      selectedTaskRef.current.id
-    )
-
-    if (taskCardYCenter === null) {
-      console.log('Task y center is null')
-      return
-    }
-
-    touchAreaRef.current?.scrollTo({
-      top: -taskCardYCenter,
-      behavior: 'smooth'
-    })
-
-    console.groupEnd()
-  }, [])
+      const selectedTaskId = selectedTaskRef.current?.id
+      if (selectedTaskId !== null && selectedTaskId !== undefined) {
+        const taskCardYCenter = yCenterTask(touchAreaRef, selectedTaskId)
+        if (taskCardYCenter !== null) {
+          touchAreaRef.current?.scrollTo({
+            top: -taskCardYCenter,
+            behavior: 'smooth'
+          })
+        }
+      }
+    },
+    [selectedTaskRef, touchAreaRef]
+  )
 
   const handleMouseMove = useCallback((event: MouseEvent) => {
     event.preventDefault()
@@ -71,37 +61,35 @@ export default function useMouseHandler (
   const handleMouseClick = useCallback(
     (event: FormEvent<HTMLButtonElement>) => {
       event.preventDefault()
-
+      const nextTaskId = parseInt(event.currentTarget.value)
       const nextTask =
-        event.currentTarget.value !== null && tasksRef.current
-          ? tasksRef.current.filter(
-              task => task.id === parseInt(event.currentTarget.value)
-            )[0]
-          : null
+        tasksRef.current?.find(task => task.id === nextTaskId) ?? null
 
-      if (nextTask !== null && nextTask !== undefined) {
+      if (nextTask && selectedTaskRef.current?.id !== nextTask.id) {
         const nextYCenter = yCenterTask(touchAreaRef, nextTask.id)
-        nextYCenter !== null &&
+        if (nextYCenter !== null) {
           touchAreaRef.current?.scrollTo({
             top: -nextYCenter,
             behavior: 'smooth'
           })
+        }
       }
     },
-    []
+    [selectedTaskRef, touchAreaRef, tasksRef]
   )
 
   useEffect(() => {
-    touchAreaRef?.current?.addEventListener('scroll', handleScroll)
-    touchAreaRef?.current?.addEventListener('scrollend', handleScrollEnd)
-    touchAreaRef?.current?.addEventListener('mousemove', handleMouseMove)
+    const touchAreaElement = touchAreaRef.current
+    touchAreaElement?.addEventListener('scroll', handleScroll)
+    touchAreaElement?.addEventListener('scrollend', handleScrollEnd)
+    touchAreaElement?.addEventListener('mousemove', handleMouseMove)
 
     return () => {
-      touchAreaRef?.current?.removeEventListener('scroll', handleScroll)
-      touchAreaRef?.current?.removeEventListener('scrollend', handleScrollEnd)
-      touchAreaRef?.current?.removeEventListener('mousemove', handleMouseMove)
+      touchAreaElement?.removeEventListener('scroll', handleScroll)
+      touchAreaElement?.removeEventListener('scrollend', handleScrollEnd)
+      touchAreaElement?.removeEventListener('mousemove', handleMouseMove)
     }
-  }, [handleScroll, handleScrollEnd, handleMouseMove])
+  }, [handleScroll, handleScrollEnd, handleMouseMove, touchAreaRef])
 
   return { handleScroll, handleScrollEnd, handleMouseMove, handleMouseClick }
 }

@@ -46,7 +46,7 @@ export const animateRollingWrapper = (
   selectedTaskRef: RefObject<Task | null>,
   tasksRef: RefObject<Task[] | null>,
   setListTopPositionFun: Dispatch<SetStateAction<number | null>>,
-  setTaskChangeFun: Dispatch<SetStateAction<Task | null>>
+  setTaskChange: Dispatch<SetStateAction<Task | null>>
 ) => {
   const animateRolling = (position: number) => {
     // Change list position
@@ -59,7 +59,7 @@ export const animateRollingWrapper = (
       selectedTaskRef.current &&
       selectedTaskRef.current.id !== newTask.id
     ) {
-      setTaskChangeFun(newTask)
+      setTaskChange(newTask)
     }
   }
   return animateRolling

@@ -282,3 +282,20 @@ export function getTaskAfterListMove (
   }
   return null
 }
+
+export function getParentButtonElement (
+  element: Element
+): null | HTMLButtonElement {
+  if (element.tagName.toLowerCase() === 'button') {
+    return element as HTMLButtonElement
+  }
+
+  let currentElement: Element | HTMLElement | HTMLButtonElement = element
+  while (currentElement.parentElement) {
+    if (currentElement.parentElement.tagName.toLowerCase() === 'button') {
+      return currentElement.parentElement as HTMLButtonElement
+    }
+    currentElement = currentElement.parentElement
+  }
+  return null
+}
