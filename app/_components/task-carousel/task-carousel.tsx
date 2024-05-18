@@ -98,6 +98,7 @@ export const TaskCarousel = ({
     selectedTaskRef,
     tasksRef,
     listTopPositionStateRef,
+    isTouchMove,
     setIsTouchMove,
     handleTaskChange,
     setListTopPositionState

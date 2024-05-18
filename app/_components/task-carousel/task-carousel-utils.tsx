@@ -231,3 +231,54 @@ export function changeTask (
   }
   return null
 }
+export function getTaskAfterListMove (
+  touchAreaRef: RefObject<HTMLDivElement>,
+  selectedTaskRef: RefObject<Task | null>,
+  tasksRef: RefObject<Task[] | null>,
+  yChange: number
+) {
+  if (tasksRef.current === null) {
+    console.error('No tasks')
+    return
+  }
+
+  const yCenterDistances = tasksRef.current
+    .map(task => {
+      if (touchAreaRef.current) {
+        const cardRect = getTaskCardRect(touchAreaRef, task.id)
+        const touchRect = getTouchAreaRect(touchAreaRef)
+
+        if (cardRect && touchRect) {
+          return (
+            cardRect.y +
+            cardRect.height / 2 +
+            yChange -
+            (touchRect.y + touchRect.height / 2)
+          )
+        }
+      }
+      return NaN
+    })
+    .filter(distance => !isNaN(distance))
+
+  const absDistances = yCenterDistances.map(distance => Math.abs(distance))
+
+  const minAbsDistance = Math.min(...absDistances)
+
+  const nMinDistance = absDistances.filter(
+    distance => distance === minAbsDistance
+  ).length
+
+  if (selectedTaskRef.current !== null && nMinDistance !== 2) {
+    const minDistanceIdx = absDistances
+      .map((distance, idx) => (distance === minAbsDistance ? idx : -1))
+      .filter(idx => idx !== -1)[0]
+
+    if (minDistanceIdx !== undefined) {
+      if (selectedTaskRef.current.id !== tasksRef.current[minDistanceIdx].id) {
+        return tasksRef.current[minDistanceIdx]
+      }
+    }
+  }
+  return null
+}

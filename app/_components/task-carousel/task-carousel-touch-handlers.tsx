@@ -10,6 +10,7 @@ import {
   changeTask,
   getClosestTaskCardPosition,
   getRollingDistance,
+  getTaskAfterListMove,
   getTaskCardRect
 } from './task-carousel-utils'
 import {
@@ -24,6 +25,7 @@ export default function useTouchHandler (
   selectedTaskRef: RefObject<Task | null>,
   tasksRef: RefObject<Task[] | null>,
   listTopPositionRef: RefObject<number | null>,
+  isTouchMove: boolean,
   setIsTouchMoveFun: Dispatch<SetStateAction<boolean>>,
   setTaskChangeFun: Dispatch<SetStateAction<Task | null>>,
   setListTopPositionFun: Dispatch<SetStateAction<number | null>>
@@ -48,7 +50,9 @@ export default function useTouchHandler (
   const handleTouchStart = useCallback(
     (event: TouchEvent) => {
       event.preventDefault()
-      setIsTouchMoveFun(true)
+      if (!isTouchMove) {
+        setIsTouchMoveFun(true)
+      }
 
       touchTimer = performance.now()
 
@@ -158,7 +162,9 @@ export default function useTouchHandler (
               setTaskChangeFun
             )
           )
-          setIsTouchMoveFun(false)
+          if (isTouchMove) {
+            setIsTouchMoveFun(false)
+          }
         }
       }
 
@@ -211,7 +217,6 @@ export default function useTouchHandler (
           setTaskChangeFun
         )
       )
-
       setIsTouchMoveFun(false)
     },
     [
@@ -227,11 +232,12 @@ export default function useTouchHandler (
   )
 
   // Touch move
-
   const handleTouchMove = useCallback(
     (event: TouchEvent) => {
       event.preventDefault()
-      setIsTouchMoveFun(true)
+      if (!isTouchMove) {
+        setIsTouchMoveFun(true)
+      }
 
       const touchX = event.touches[0].clientX
       const touchY = event.touches[0].clientY
