@@ -1,9 +1,5 @@
-import {
-  fetchUserTaskById,
-  fetchTaskCategories,
-  fetchUserTaskDescriptionLists
-} from '@/app/lib/data'
-import { Task, TaskCategory, TaskDescriptionList } from '@/app/lib/definitions'
+import { fetchUserTaskById, fetchTaskCategories } from '@/app/lib/data'
+import { Task, TaskCategory } from '@/app/lib/definitions'
 import EditTaskForm from '@/app/ui/tasks/edit-form'
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -22,19 +18,19 @@ export default async function Page ({ params }: { params: { id: string } }) {
   try {
     const task: Task | { message: string; errors: any } =
       id !== null ? await fetchUserTaskById(`${id}`) : null
-    const taskCategories: TaskCategory[] = await fetchTaskCategories()
+    const categories: TaskCategory[] = await fetchTaskCategories()
 
     const isTask =
       task !== null && typeof task === 'object' && !('message' in task)
 
-    if (!isTask || !taskCategories || !task.description_lists) {
+    if (!isTask || !categories || !task.description_lists) {
       return redirect('/tasks/filter')
     }
 
     return (
       <div className='flex w-full flex-col justify-center'>
         <Suspense fallback={<p>Loading task...</p>}>
-          <EditTaskForm task={task} taskCategories={taskCategories} />
+          <EditTaskForm task={task} categories={categories} />
         </Suspense>
       </div>
     )

@@ -184,11 +184,10 @@ export function getListVerticalPadding (
 export function changeTask (
   touchAreaRef: RefObject<HTMLDivElement>,
   selectedTaskRef: RefObject<Task | null>,
-  tasksRef: RefObject<Task[] | null>,
-  handleTaskChangeFun: Dispatch<SetStateAction<Task | null>>
+  tasksRef: RefObject<Task[] | null>
 ) {
   if (tasksRef.current === null) {
-    console.log('No tasks')
+    console.error('No tasks')
     return
   }
 
@@ -219,17 +218,16 @@ export function changeTask (
     distance => distance === minAbsDistance
   ).length
 
-  if (nMinDistance === 2) {
-    console.log("Midway between task cards. Don't change task")
-    return
-  } else if (selectedTaskRef.current !== null) {
+  if (selectedTaskRef.current !== null && nMinDistance !== 2) {
     const minDistanceIdx = absDistances
       .map((distance, idx) => (distance === minAbsDistance ? idx : -1))
       .filter(idx => idx !== -1)[0]
 
     if (minDistanceIdx !== undefined) {
-      selectedTaskRef.current.id !== tasksRef.current[minDistanceIdx].id &&
-        handleTaskChangeFun(tasksRef.current[minDistanceIdx])
+      if (selectedTaskRef.current.id !== tasksRef.current[minDistanceIdx].id) {
+        return tasksRef.current[minDistanceIdx]
+      }
     }
   }
+  return null
 }

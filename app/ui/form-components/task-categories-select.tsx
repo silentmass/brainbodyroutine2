@@ -3,7 +3,7 @@ import { TaskCategory } from '@/app/lib/definitions'
 export default function TaskCategoriesSelect ({
   categories,
   defaultCategoryId,
-  className = `bg-transparent border-b`
+  className = ``
 }: {
   categories: TaskCategory[]
   defaultCategoryId: number

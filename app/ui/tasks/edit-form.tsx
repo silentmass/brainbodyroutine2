@@ -16,10 +16,10 @@ import { initialState } from '@/app/_components/response-state'
 
 export default function EditTaskForm ({
   task,
-  taskCategories
+  categories
 }: {
   task: Task
-  taskCategories: TaskCategory[]
+  categories: TaskCategory[]
 }) {
   const [isActive, setIsActive] = useState(task.is_active)
   const [state, formAction] = useFormState(
@@ -65,7 +65,7 @@ export default function EditTaskForm ({
               <h2 className=''>Category</h2>
             </label>
             <TaskCategoriesSelect
-              categories={taskCategories}
+              categories={categories}
               defaultCategoryId={task.task_category_id}
               className=''
             />

@@ -1,3 +1,7 @@
+import { Task } from '@/app/lib/definitions'
+import { Dispatch, RefObject, SetStateAction } from 'react'
+import { changeTask } from './task-carousel-utils'
+
 export async function animateListMovement (
   startPosition: number,
   endPosition: number,
@@ -35,4 +39,28 @@ export async function animateListMovement (
       }
     }, Math.round(1000 * dt))
   })
+}
+
+export const animateRollingWrapper = (
+  touchAreaRef: RefObject<HTMLDivElement>,
+  selectedTaskRef: RefObject<Task | null>,
+  tasksRef: RefObject<Task[] | null>,
+  setListTopPositionFun: Dispatch<SetStateAction<number | null>>,
+  setTaskChangeFun: Dispatch<SetStateAction<Task | null>>
+) => {
+  const animateRolling = (position: number) => {
+    // Change list position
+    setListTopPositionFun(position)
+    // Change selected task
+    const newTask = changeTask(touchAreaRef, selectedTaskRef, tasksRef)
+    if (
+      newTask !== undefined &&
+      newTask !== null &&
+      selectedTaskRef.current &&
+      selectedTaskRef.current.id !== newTask.id
+    ) {
+      setTaskChangeFun(newTask)
+    }
+  }
+  return animateRolling
 }

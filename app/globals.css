@@ -183,6 +183,11 @@ input[type='password'] {
 }
 select {
   background-color: transparent;
+  border-top-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+  border-bottom-width: 1px;
+  border-color: rgb(var(--color-accent3));
 }
 
 textarea {

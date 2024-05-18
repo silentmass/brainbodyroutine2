@@ -11,20 +11,23 @@ export const metadata: Metadata = {
 }
 
 export default async function Page () {
-  const categories = await fetchTaskCategories()
+  try {
+    const categories = await fetchTaskCategories()
 
-  return (
-    <>
+    if (!categories || !categories.length) {
+      return <p>No categories</p>
+    }
+
+    return (
       <Suspense fallback={<p>Loading task categories...</p>}>
-        {categories ? (
-          <TaskCategoriesTable
-            categories={categories}
-            className='flex flex-col w-full gap-y-6 p-6'
-          />
-        ) : (
-          <>No categories</>
-        )}
+        <TaskCategoriesTable
+          categories={categories}
+          className='flex flex-col w-full gap-y-6 p-6'
+        />
       </Suspense>
-    </>
-  )
+    )
+  } catch (error) {
+    console.error('Fetching error:', error)
+    return <p>Failed to load categories</p>
+  }
 }

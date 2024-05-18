@@ -12,15 +12,23 @@ export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
 export default async function Page () {
-  const categories: TaskCategory[] = await fetchTaskCategories()
-  return (
-    <div className='flex flex-col w-full max-w-2xl border items-center justify-center p-5'>
-      <h2>Create task</h2>
-      <Suspense fallback={<p>Loading categories...</p>}>
-        {categories && categories.length && (
+  try {
+    const categories: TaskCategory[] = await fetchTaskCategories()
+
+    if (!categories || !categories.length) {
+      return <p>No categories. Task creation requires categories.</p>
+    }
+
+    return (
+      <div className='flex flex-col w-full items-center justify-center p-6'>
+        <h2>Create task</h2>
+        <Suspense fallback={<p>Loading categories...</p>}>
           <CreateTaskForm taskCategories={categories} />
-        )}
-      </Suspense>
-    </div>
-  )
+        </Suspense>
+      </div>
+    )
+  } catch (error) {
+    console.error('Fetch error:', error)
+    return <p>Failed to load categories</p>
+  }
 }

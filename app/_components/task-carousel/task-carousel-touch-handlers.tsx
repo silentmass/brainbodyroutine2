@@ -1,6 +1,5 @@
 import {
   Dispatch,
-  MutableRefObject,
   RefObject,
   SetStateAction,
   useCallback,
@@ -13,7 +12,10 @@ import {
   getRollingDistance,
   getTaskCardRect
 } from './task-carousel-utils'
-import { animateListMovement } from './task-carousel-animation'
+import {
+  animateListMovement,
+  animateRollingWrapper
+} from './task-carousel-animation'
 
 export default function useTouchHandler (
   touchAreaRef: RefObject<HTMLDivElement>,
@@ -21,9 +23,9 @@ export default function useTouchHandler (
   selectedCategoryRef: RefObject<TaskCategory | null>,
   selectedTaskRef: RefObject<Task | null>,
   tasksRef: RefObject<Task[] | null>,
-  listTopPositionRef: MutableRefObject<number | null>,
+  listTopPositionRef: RefObject<number | null>,
   setIsTouchMoveFun: Dispatch<SetStateAction<boolean>>,
-  handleTaskChangeFun: Dispatch<SetStateAction<Task | null>>,
+  setTaskChangeFun: Dispatch<SetStateAction<Task | null>>,
   setListTopPositionFun: Dispatch<SetStateAction<number | null>>
 ): {
   handleTouchStart: (event: TouchEvent) => void
@@ -40,349 +42,301 @@ export default function useTouchHandler (
     acceleration: { x: number; y: number }
   }
 
-  const touchAreaRect = touchAreaRef?.current?.getBoundingClientRect()
-  const touchAreaCenterY = touchAreaRect
-    ? touchAreaRect?.height / 2 + touchAreaRect?.y
-    : 0
-
   // Touch event handlers
 
-  // Touch start
+  // Touch start event handler
+  const handleTouchStart = useCallback(
+    (event: TouchEvent) => {
+      event.preventDefault()
+      setIsTouchMoveFun(true)
 
-  const handleTouchStart = useCallback((event: TouchEvent) => {
-    event.preventDefault()
-    setIsTouchMoveFun(true)
+      touchTimer = performance.now()
 
-    touchTimer = performance.now()
-    console.log('handleTouchStart')
-
-    touchStartPosition = {
-      x: event.touches[0].clientX,
-      y: event.touches[0].clientY,
-      time: performance.now()
-    }
-    touchCurrentPosition = {
-      x: touchStartPosition.x,
-      y: touchStartPosition.y,
-      time: touchStartPosition.time,
-      velocity: { x: 0, y: 0 },
-      acceleration: { x: 0, y: 0 }
-    }
-  }, [])
-
-  // Touch end
-
-  const handleTouchEnd = useCallback((event: TouchEvent) => {
-    const touchDuration = performance.now() - touchTimer
-    console.log('handleTouchEnd', touchDuration)
-
-    if (!selectedTaskRef.current) {
-      console.log('No selected task')
-      return
-    }
-
-    const cardRect = getTaskCardRect(touchAreaRef, selectedTaskRef.current.id)
-    const listRect = listRef.current?.getBoundingClientRect()
-
-    // Tap
-
-    if (touchDuration < 120) {
-      console.log('tap')
-
-      // Check element under tap
-
-      const elementUnderClick = document.elementFromPoint(
-        touchCurrentPosition.x,
-        touchCurrentPosition.y
-      )
-
-      if (
-        elementUnderClick?.tagName.toLocaleLowerCase() === 'button' &&
-        elementUnderClick?.id === 'isActiveButton'
-      ) {
-        ;(elementUnderClick as HTMLButtonElement)?.click()
-      } else if (elementUnderClick?.tagName.toLocaleLowerCase() === 'svg') {
-        console.log(
-          elementUnderClick?.parentElement,
-          elementUnderClick?.parentElement?.tagName
-        )
-        if (
-          elementUnderClick?.parentElement?.tagName.toLocaleLowerCase() ===
-          'button'
-        ) {
-          elementUnderClick?.parentElement.click()
-        }
-      } else if (elementUnderClick?.tagName.toLocaleLowerCase() === 'path') {
-        console.log(elementUnderClick?.parentElement?.parentElement)
-        if (
-          elementUnderClick?.parentElement?.parentElement?.tagName.toLocaleLowerCase() ===
-          'button'
-        ) {
-          elementUnderClick?.parentElement?.parentElement.click()
-        }
+      touchStartPosition = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+        time: performance.now()
       }
+      touchCurrentPosition = {
+        x: touchStartPosition.x,
+        y: touchStartPosition.y,
+        time: touchStartPosition.time,
+        velocity: { x: 0, y: 0 },
+        acceleration: { x: 0, y: 0 }
+      }
+    },
+    [setIsTouchMoveFun]
+  )
 
-      console.log(elementUnderClick)
+  // Touch end event handler
+  const handleTouchEnd = useCallback(
+    (event: TouchEvent) => {
+      const touchDuration = performance.now() - touchTimer
 
-      if (!cardRect || !listRect) {
+      if (!selectedTaskRef.current) {
+        console.log('No selected task')
         return
       }
 
-      if (elementUnderClick && elementUnderClick?.id === 'listButtonUp') {
-        console.log('Up click')
+      const cardRect = getTaskCardRect(touchAreaRef, selectedTaskRef.current.id)
+      const listRect = listRef.current?.getBoundingClientRect()
 
-        // Move list up
+      // Tap handling
+      if (touchDuration < 120) {
+        const elementUnderClick = document.elementFromPoint(
+          touchCurrentPosition.x,
+          touchCurrentPosition.y
+        )
 
         if (
-          listRect &&
-          tasksRef.current !== null &&
-          listTopPositionRef.current !== null &&
-          cardRect &&
-          listRef !== null
+          elementUnderClick?.tagName.toLocaleLowerCase() === 'button' &&
+          elementUnderClick?.id === 'isActiveButton'
         ) {
-          const animateRolling = (position: number) => {
-            // Change selected task
+          ;(elementUnderClick as HTMLButtonElement)?.click()
+        } else if (elementUnderClick?.tagName.toLocaleLowerCase() === 'svg') {
+          console.log(
+            elementUnderClick?.parentElement,
+            elementUnderClick?.parentElement?.tagName
+          )
+          if (
+            elementUnderClick?.parentElement?.tagName.toLocaleLowerCase() ===
+            'button'
+          ) {
+            elementUnderClick?.parentElement.click()
+          }
+        } else if (elementUnderClick?.tagName.toLocaleLowerCase() === 'path') {
+          console.log(elementUnderClick?.parentElement?.parentElement)
+          if (
+            elementUnderClick?.parentElement?.parentElement?.tagName.toLocaleLowerCase() ===
+            'button'
+          ) {
+            elementUnderClick?.parentElement?.parentElement.click()
+          }
+        }
 
-            setListTopPositionFun(position)
-            changeTask(
+        if (!cardRect || !listRect) {
+          return
+        }
+
+        if (
+          !listRect ||
+          tasksRef.current === null ||
+          listTopPositionRef.current === null ||
+          !cardRect
+        ) {
+          return
+        }
+
+        const moveDirection =
+          elementUnderClick && elementUnderClick?.id === 'listButtonUp'
+            ? 1
+            : elementUnderClick && elementUnderClick?.id === 'listButtonDown'
+            ? -1
+            : 0
+
+        const closestCardPosition = getClosestTaskCardPosition(
+          tasksRef.current,
+          listTopPositionRef.current + moveDirection * cardRect?.height,
+          touchAreaRef
+        )
+
+        if (
+          closestCardPosition !== null &&
+          closestCardPosition !== undefined &&
+          listTopPositionRef.current !== undefined &&
+          listTopPositionRef.current !== null
+        ) {
+          // Change is touch move flag
+          animateListMovement(
+            listTopPositionRef.current,
+            closestCardPosition,
+            animateRollingWrapper(
               touchAreaRef,
               selectedTaskRef,
               tasksRef,
-              handleTaskChangeFun
+              setListTopPositionFun,
+              setTaskChangeFun
             )
-          }
-
-          const listTopPositionAfterEndRolling =
-            listTopPositionRef.current + cardRect?.height
-
-          // Get closest card position to  after rolling end position
-          const closestCardPosition = getClosestTaskCardPosition(
-            tasksRef.current,
-            listTopPositionAfterEndRolling,
-            touchAreaRef
           )
-
-          if (
-            closestCardPosition !== null &&
-            closestCardPosition !== undefined &&
-            listTopPositionRef.current !== undefined &&
-            listTopPositionRef.current !== null
-          ) {
-            animateListMovement(
-              listTopPositionRef.current,
-              closestCardPosition,
-              animateRolling
-            ).then(() => {
-              console.log('setIsTouchMove end')
-              setIsTouchMoveFun(false)
-            })
-          }
+          setIsTouchMoveFun(false)
         }
-      } else if (
-        elementUnderClick &&
-        elementUnderClick?.id === 'listButtonDown'
+      }
+
+      // Scroll end continues
+      event.preventDefault()
+
+      const averageEndVelocity =
+        (touchCurrentPosition.y - touchStartPosition.y) /
+        ((touchCurrentPosition.time - touchStartPosition.time) / 1000)
+
+      if (
+        listTopPositionRef.current === null ||
+        listTopPositionRef.current === undefined ||
+        isNaN(averageEndVelocity)
       ) {
-        console.log('Down click')
-
-        // Move list down
-
-        // Animate end rolling
-
-        if (
-          listRect &&
-          tasksRef.current !== null &&
-          listTopPositionRef.current !== null &&
-          cardRect
-        ) {
-          const animateRolling = (position: number) => {
-            // Change selected task
-            setListTopPositionFun(position)
-            changeTask(
-              touchAreaRef,
-              selectedTaskRef,
-              tasksRef,
-              handleTaskChangeFun
-            )
-          }
-
-          const listTopPositionAfterEndRolling =
-            listTopPositionRef.current - cardRect?.height
-
-          // Get closest card position to  after rolling end position
-          const closestCardPosition = getClosestTaskCardPosition(
-            tasksRef.current,
-            listTopPositionAfterEndRolling,
-            touchAreaRef
-          )
-
-          if (
-            closestCardPosition !== null &&
-            closestCardPosition !== undefined &&
-            listTopPositionRef.current !== undefined &&
-            listTopPositionRef.current !== null
-          ) {
-            animateListMovement(
-              listTopPositionRef.current,
-              closestCardPosition,
-              animateRolling
-            ).then(() => {
-              console.log('setIsTouchMove end')
-              setIsTouchMoveFun(false)
-            })
-          }
-        }
-      }
-    }
-
-    // Scroll end continues
-    // ############################
-
-    event.preventDefault()
-
-    const averageEndVelocity =
-      (touchCurrentPosition.y - touchStartPosition.y) /
-      ((touchCurrentPosition.time - touchStartPosition.time) / 1000)
-
-    if (
-      listTopPositionRef.current === null ||
-      listTopPositionRef.current === undefined ||
-      isNaN(averageEndVelocity)
-    ) {
-      setIsTouchMoveFun(false)
-      return
-    }
-
-    if (!selectedTaskRef.current) {
-      console.error('No tasksRef.current selected')
-      return
-    }
-
-    // Animate end rolling
-
-    if (listRect && tasksRef.current !== null) {
-      const animateRolling = (position: number) => {
-        // Change selected task
-
-        setListTopPositionFun(position)
-        changeTask(touchAreaRef, selectedTaskRef, tasksRef, handleTaskChangeFun)
+        // Change is touch move flag
+        setIsTouchMoveFun(false)
+        return
       }
 
-      const listTopPositionAfterEndRolling =
-        listTopPositionRef.current + getRollingDistance(averageEndVelocity)
+      if (!selectedTaskRef.current || tasksRef.current === null) {
+        console.error('No task selected')
+        return
+      }
 
-      // Get closest card position to  after rolling end position
+      // Get closest card position after rolling end position
       const closestCardPosition = getClosestTaskCardPosition(
         tasksRef.current,
-        listTopPositionAfterEndRolling,
+        listTopPositionRef.current + getRollingDistance(averageEndVelocity),
         touchAreaRef
       )
 
       if (
-        closestCardPosition !== null &&
-        closestCardPosition !== undefined &&
-        listTopPositionRef.current !== undefined &&
-        listTopPositionRef.current !== null
+        closestCardPosition === null ||
+        closestCardPosition === undefined ||
+        listTopPositionRef.current === undefined ||
+        listTopPositionRef.current === null
       ) {
-        animateListMovement(
-          listTopPositionRef.current,
-          closestCardPosition,
-          animateRolling
-        ).then(() => {
-          console.log('setIsTouchMove end')
-          setIsTouchMoveFun(false)
-        })
+        return
       }
-    }
-  }, [])
+
+      animateListMovement(
+        listTopPositionRef.current,
+        closestCardPosition,
+        animateRollingWrapper(
+          touchAreaRef,
+          selectedTaskRef,
+          tasksRef,
+          setListTopPositionFun,
+          setTaskChangeFun
+        )
+      )
+
+      setIsTouchMoveFun(false)
+    },
+    [
+      touchAreaRef,
+      listRef,
+      listTopPositionRef,
+      selectedTaskRef,
+      tasksRef,
+      setTaskChangeFun,
+      setIsTouchMoveFun,
+      setListTopPositionFun
+    ]
+  )
 
   // Touch move
 
-  const handleTouchMove = useCallback((event: TouchEvent) => {
-    event.preventDefault()
-    setIsTouchMoveFun(true)
+  const handleTouchMove = useCallback(
+    (event: TouchEvent) => {
+      event.preventDefault()
+      setIsTouchMoveFun(true)
 
-    const touchX = event.touches[0].clientX
-    const touchY = event.touches[0].clientY
-    const currentTime = performance.now()
-    const currentVelocity = {
-      x:
-        (touchCurrentPosition.x - touchX) /
-        (currentTime - touchCurrentPosition.time),
-      y:
-        (touchCurrentPosition.y - touchY) /
-        (currentTime - touchCurrentPosition.time)
-    }
-
-    // Get list dimensions
-    if (!listRef.current) {
-      console.error('No list')
-      return
-    }
-
-    // Check if we have a list
-    if (!tasksRef.current) {
-      console.log('No tasksRef.current')
-      return
-    }
-
-    if (!selectedTaskRef.current) {
-      return console.error('No task selected')
-    }
-
-    const cardRect = listRef.current
-      ?.querySelector(`#taskCard${selectedTaskRef.current.id}`)
-      ?.getBoundingClientRect()
-
-    if (!cardRect) {
-      return console.error('No card rect')
-    }
-
-    const yChange = touchY - touchCurrentPosition.y
-
-    if (
-      listTopPositionRef.current == null ||
-      listTopPositionRef.current == undefined
-    ) {
-      // setListTopPositionState
-      return
-    }
-
-    const newListTopPosition = listTopPositionRef.current + yChange
-
-    if (
-      (newListTopPosition > listTopPositionRef.current &&
-        tasksRef.current[0].id !== selectedTaskRef.current.id) ||
-      (newListTopPosition < listTopPositionRef.current &&
-        tasksRef.current[tasksRef.current.length - 1].id !==
-          selectedTaskRef.current.id)
-    ) {
-      setListTopPositionFun(newListTopPosition)
-    }
-
-    touchCurrentPosition = {
-      x: touchX,
-      y: touchY,
-      time: currentTime,
-      velocity: {
+      const touchX = event.touches[0].clientX
+      const touchY = event.touches[0].clientY
+      const currentTime = performance.now()
+      const currentVelocity = {
         x:
           (touchCurrentPosition.x - touchX) /
           (currentTime - touchCurrentPosition.time),
         y:
           (touchCurrentPosition.y - touchY) /
           (currentTime - touchCurrentPosition.time)
-      },
-      acceleration: {
-        x:
-          (touchCurrentPosition.velocity.x - currentVelocity.x) /
-          (currentTime - touchCurrentPosition.time),
-        y:
-          (touchCurrentPosition.velocity.y - currentVelocity.y) /
-          (currentTime - touchCurrentPosition.time)
       }
-    }
 
-    changeTask(touchAreaRef, selectedTaskRef, tasksRef, handleTaskChangeFun)
-  }, [])
+      // Get list dimensions
+      if (!listRef.current) {
+        console.error('No list')
+        return
+      }
+
+      // Check if we have a list
+      if (!tasksRef.current) {
+        console.log('No tasks')
+        return
+      }
+
+      if (!selectedTaskRef.current) {
+        console.error('No task selected')
+        return
+      }
+
+      const cardRect = listRef.current
+        ?.querySelector(`#taskCard${selectedTaskRef.current.id}`)
+        ?.getBoundingClientRect()
+
+      if (!cardRect) {
+        console.error('No task card')
+        return
+      }
+
+      const yChange = touchY - touchCurrentPosition.y
+
+      if (
+        listTopPositionRef.current == null ||
+        listTopPositionRef.current == undefined
+      ) {
+        console.error('Missing list position')
+        return
+      }
+
+      const newListTopPosition = listTopPositionRef.current + yChange
+
+      if (
+        (newListTopPosition > listTopPositionRef.current &&
+          tasksRef.current[0].id !== selectedTaskRef.current.id) ||
+        (newListTopPosition < listTopPositionRef.current &&
+          tasksRef.current[tasksRef.current.length - 1].id !==
+            selectedTaskRef.current.id)
+      ) {
+        setListTopPositionFun(newListTopPosition)
+      }
+
+      touchCurrentPosition = {
+        x: touchX,
+        y: touchY,
+        time: currentTime,
+        velocity: {
+          x:
+            (touchCurrentPosition.x - touchX) /
+            (currentTime - touchCurrentPosition.time),
+          y:
+            (touchCurrentPosition.y - touchY) /
+            (currentTime - touchCurrentPosition.time)
+        },
+        acceleration: {
+          x:
+            (touchCurrentPosition.velocity.x - currentVelocity.x) /
+            (currentTime - touchCurrentPosition.time),
+          y:
+            (touchCurrentPosition.velocity.y - currentVelocity.y) /
+            (currentTime - touchCurrentPosition.time)
+        }
+      }
+
+      // Change task if changed
+      const newTask = changeTask(touchAreaRef, selectedTaskRef, tasksRef)
+      if (
+        newTask !== undefined &&
+        newTask !== null &&
+        selectedTaskRef.current &&
+        selectedTaskRef.current.id !== newTask.id
+      ) {
+        setTaskChangeFun(newTask)
+      }
+    },
+    [
+      touchAreaRef,
+      listRef,
+      listTopPositionRef,
+      tasksRef,
+      selectedTaskRef,
+      setIsTouchMoveFun,
+      setListTopPositionFun,
+      setTaskChangeFun
+    ]
+  )
 
   useEffect(() => {
     touchAreaRef?.current?.addEventListener('touchstart', handleTouchStart, {

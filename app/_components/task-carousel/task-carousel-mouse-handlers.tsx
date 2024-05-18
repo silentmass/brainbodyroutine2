@@ -16,30 +16,28 @@ export default function useMouseHandler (
   selectedTaskRef: RefObject<Task | null>,
   tasksRef: RefObject<Task[] | null>,
   setIsTouchMoveFun: Dispatch<SetStateAction<boolean>>,
-  handleTaskChangeFun: Dispatch<SetStateAction<Task | null>>
+  setTaskChangeFun: Dispatch<SetStateAction<Task | null>>
 ): {
   handleScroll: (event: Event) => void
   handleScrollEnd: (event: Event) => void
   handleMouseMove: (event: MouseEvent) => void
   handleMouseClick: (event: FormEvent<HTMLButtonElement>) => void
 } {
-  const touchAreaRect = touchAreaRef?.current?.getBoundingClientRect()
-  const touchAreaCenterY = touchAreaRect
-    ? touchAreaRect?.height / 2 + touchAreaRect?.y
-    : 0
-
   const handleScroll = useCallback((event: Event) => {
     event.preventDefault()
     // setIsTouchMoveFun(true)
-
-    console.log('handleScroll')
-
-    changeTask(touchAreaRef, selectedTaskRef, tasksRef, handleTaskChangeFun)
+    const newTask = changeTask(touchAreaRef, selectedTaskRef, tasksRef)
+    if (
+      newTask !== undefined &&
+      newTask !== null &&
+      selectedTaskRef.current &&
+      selectedTaskRef.current.id !== newTask.id
+    ) {
+      setTaskChangeFun(newTask)
+    }
   }, [])
 
   const handleScrollEnd = useCallback((event: Event) => {
-    console.group('handleScrollEnd')
-
     event.preventDefault()
     // setIsTouchMoveFun(false)
 
@@ -68,11 +66,6 @@ export default function useMouseHandler (
 
   const handleMouseMove = useCallback((event: MouseEvent) => {
     event.preventDefault()
-
-    const elementUnderClick = document.elementFromPoint(
-      event.clientX,
-      event.clientY
-    )
   }, [])
 
   const handleMouseClick = useCallback(
@@ -85,8 +78,6 @@ export default function useMouseHandler (
               task => task.id === parseInt(event.currentTarget.value)
             )[0]
           : null
-
-      console.log('Mouse click', event.currentTarget.value, nextTask)
 
       if (nextTask !== null && nextTask !== undefined) {
         const nextYCenter = yCenterTask(touchAreaRef, nextTask.id)
