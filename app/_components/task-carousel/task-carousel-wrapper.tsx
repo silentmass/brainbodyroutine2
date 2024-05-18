@@ -40,7 +40,7 @@ export default function TaskCarouselWrapper ({
           />
         )}
       </div>
-      <div className='flex w-full p-6'>
+      <div className='flex w-full'>
         <DescriptionListsView
           lists={selectedTask !== null ? selectedTask?.description_lists : []}
           className='flex flex-col w-full gap-2'
