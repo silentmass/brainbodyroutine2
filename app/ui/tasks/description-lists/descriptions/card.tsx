@@ -1,8 +1,6 @@
 import { ListDescription, ListDescriptionBase } from '@/app/lib/definitions'
 import { DeleteListDescription } from './buttons'
 import EditListDescriptionForm from './edit-form'
-import { deleteListDescription } from '@/app/lib/actions/descriptions'
-import { useOptimistic } from 'react'
 
 export default function DescriptionCard ({
   description,

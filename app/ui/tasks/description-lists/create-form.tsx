@@ -3,7 +3,7 @@
 import { useFormState } from 'react-dom'
 import { createDescriptionList } from '@/app/lib/actions/descriptionlists'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { RefObject, useEffect } from 'react'
 import { Task } from '@/app/lib/definitions'
 import Link from 'next/link'
 import { FormButton } from '../../form-components/buttons'
@@ -11,11 +11,19 @@ import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
 
 export default function CreateTaskDescriptionListForm ({
-  task
+  task,
+  formActionFun,
+  createFormRef
 }: {
   task: Task
+  formActionFun: (
+    taskId: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+  createFormRef: RefObject<HTMLFormElement>
 }) {
-  const createTaskDescriptionListWithTaskId = createDescriptionList.bind(
+  const createTaskDescriptionListWithTaskId = formActionFun.bind(
     null,
     `${task.id}`
   )
@@ -23,16 +31,18 @@ export default function CreateTaskDescriptionListForm ({
     createTaskDescriptionListWithTaskId,
     initialState
   )
-  const router = useRouter()
 
-  useEffect(() => {
-    if (state?.redirectTo !== '' && state.redirectTo !== null) {
-      router.push(state?.redirectTo)
-    }
-  }, [state, router])
+  // const router = useRouter()
+
+  // useEffect(() => {
+  //   if (state?.redirectTo !== '' && state.redirectTo !== null) {
+  //     router.push(state?.redirectTo)
+  //   }
+  // }, [state, router])
 
   return (
     <form
+      ref={createFormRef}
       name='createTaskDescriptionListForm'
       id='createTaskDescriptionListForm'
       action={formAction}

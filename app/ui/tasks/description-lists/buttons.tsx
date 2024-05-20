@@ -1,32 +1,51 @@
 'use client'
 
-import { deleteDescriptionList } from '@/app/lib/actions/descriptionlists'
-import { useFormState } from 'react-dom'
-import { TrashIcon } from '@heroicons/react/24/outline'
+import { useFormState, useFormStatus } from 'react-dom'
 import { initialState } from '@/app/_components/response-state'
+import {
+  TaskDescriptionList,
+  TaskDescriptionListBase
+} from '@/app/lib/definitions'
+import { DeleteButton } from '@/app/ui/form-components/buttons'
 
 export const DeleteTaskDescriptionList = ({
-  taskDescriptionListId
+  list,
+  formActionFun
 }: {
-  taskDescriptionListId: string
+  list: TaskDescriptionList | TaskDescriptionListBase
+  formActionFun: (
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
 }) => {
-  const deleteTaskDescriptionListWithId = deleteDescriptionList.bind(
-    null,
-    taskDescriptionListId
-  )
-  const [state, formAction] = useFormState(
-    deleteTaskDescriptionListWithId,
-    initialState
-  )
-  return (
-    <form
-      name='deleteTaskDescriptionListForm'
-      id='deleteTaskDescriptionListForm'
-      action={formAction}
-    >
-      <button type='submit' className='flex' aria-label='Delete'>
-        <TrashIcon className='icon w-5' />
-      </button>
-    </form>
-  )
+  if ('id' in list) {
+    const { pending } = useFormStatus()
+    const deleteTaskDescriptionListWithId = formActionFun.bind(
+      null,
+      `${list.id}`
+    )
+    const [state, formAction] = useFormState(
+      deleteTaskDescriptionListWithId,
+      initialState
+    )
+    return (
+      <form
+        name='deleteTaskDescriptionListForm'
+        id='deleteTaskDescriptionListForm'
+        action={formAction}
+      >
+        <DeleteButton ariaDisabled={pending} classNameIcon='' />
+      </form>
+    )
+  } else {
+    return (
+      <form
+        name='deleteTaskDescriptionListForm'
+        id='deleteTaskDescriptionListForm'
+      >
+        <DeleteButton ariaDisabled={true} classNameIcon=''></DeleteButton>
+      </form>
+    )
+  }
 }

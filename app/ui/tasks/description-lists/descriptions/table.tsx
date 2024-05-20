@@ -18,7 +18,6 @@ export default function ListDescriptionsTable ({
     <ul className='flex flex-col w-full gap-y-4'>
       {descriptions.map((description, idx) => (
         <li
-          // key={`${idx}`}
           key={`${
             'id' in description && description.id !== undefined
               ? description?.id

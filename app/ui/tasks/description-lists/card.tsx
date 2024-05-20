@@ -1,24 +1,33 @@
-import { TaskDescriptionList } from '@/app/lib/definitions'
+import {
+  TaskDescriptionList,
+  TaskDescriptionListBase
+} from '@/app/lib/definitions'
 import { DeleteTaskDescriptionList } from './buttons'
 import ListDescriptionsTable from './descriptions/table'
 import { DescriptionsCardListView } from '@/app/ui/tasks/description-lists/descriptions/card-list'
 import Link from 'next/link'
 import { PencilIcon } from '@heroicons/react/24/outline'
-import { useOptimistic, useRef } from 'react'
+import { useOptimistic } from 'react'
+import { FormButton } from '@/app/ui/form-components/buttons'
 import {
-  formActionDeleteDescriptionWrapper,
-  optimisticFn
-} from './edit-list-view'
-import { FormButton } from '../../form-components/buttons'
+  optimisticFnDescriptions,
+  formActionDeleteDescriptionWrapper
+} from './descriptions/optimistic-utils'
 
 export const DescriptionListCard = ({
-  list
+  list,
+  formActionDeleteDescriptionListFun
 }: {
-  list: TaskDescriptionList
+  list: TaskDescriptionList | TaskDescriptionListBase
+  formActionDeleteDescriptionListFun: (
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
 }) => {
   const [optimisticDescriptions, crudOptimisticDescription] = useOptimistic(
-    list.descriptions,
-    optimisticFn
+    'descriptions' in list && list.descriptions ? list.descriptions : null,
+    optimisticFnDescriptions
   )
 
   return (
@@ -32,19 +41,33 @@ export const DescriptionListCard = ({
         {/* Controls */}
         <div className='flex gap-6 items-center'>
           {/* Edit list */}
-          <Link
-            href={`/tasks/${list.task_id}/description-lists/${list.id}/edit`}
-          >
+          {'id' in list ? (
+            <Link
+              href={`/tasks/${list.task_id}/description-lists/${list.id}/edit`}
+            >
+              <FormButton
+                className={`flex items-center justify-center`}
+                type={undefined}
+                ariaLabel={'Edit list'}
+              >
+                <PencilIcon className='icon w-5' />
+              </FormButton>
+            </Link>
+          ) : (
             <FormButton
-              className={`flex items-center justify-center`}
+              className={`flex items-center justify-center pending`}
               type={undefined}
               ariaLabel={'Edit list'}
             >
-              <PencilIcon className='icon w-5' />
+              <PencilIcon className='icon w-5 pending-icon' />
             </FormButton>
-          </Link>
+          )}
+
           {/* Delete list */}
-          <DeleteTaskDescriptionList taskDescriptionListId={`${list.id}`} />
+          <DeleteTaskDescriptionList
+            list={list}
+            formActionFun={formActionDeleteDescriptionListFun}
+          />
         </div>
       </div>
       {/* Descriptions */}

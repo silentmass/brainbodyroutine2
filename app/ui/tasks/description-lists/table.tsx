@@ -1,10 +1,19 @@
-import { TaskDescriptionList } from '@/app/lib/definitions'
+import {
+  TaskDescriptionList,
+  TaskDescriptionListBase
+} from '@/app/lib/definitions'
 import DescriptionListCard from './card'
 
 export default function DescriptionListsTable ({
-  lists
+  lists,
+  formActionDeleteDescriptionListFun
 }: {
-  lists: TaskDescriptionList[]
+  lists: TaskDescriptionList[] | TaskDescriptionListBase[] | null
+  formActionDeleteDescriptionListFun: (
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
 }) {
   if (!lists || !lists.length) {
     return null
@@ -12,9 +21,20 @@ export default function DescriptionListsTable ({
 
   return (
     <ul className={`flex flex-col w-full gap-y-2`}>
-      {lists.map(list => (
-        <li key={list.id}>
-          <DescriptionListCard list={list} />
+      {lists.map((list, idx) => (
+        <li
+          key={
+            'id' in list && list.id !== undefined
+              ? `${list.id}`
+              : `${list.title}${idx}`
+          }
+        >
+          <DescriptionListCard
+            list={list}
+            formActionDeleteDescriptionListFun={
+              formActionDeleteDescriptionListFun
+            }
+          />
         </li>
       ))}
     </ul>

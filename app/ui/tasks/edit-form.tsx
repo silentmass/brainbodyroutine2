@@ -3,7 +3,7 @@ import { Task, TaskCategory } from '@/app/lib/definitions'
 import { updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useOptimistic, useState } from 'react'
 import Link from 'next/link'
 import DescriptionListsTable from './description-lists/table'
 import TaskCategoriesSelect from '@/app/ui/form-components/task-categories-select'
@@ -13,6 +13,10 @@ import clsx from 'clsx'
 import { FormButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
+import {
+  formActionDeleteDescriptionListWrapper,
+  optimisticFnLists
+} from './description-lists/optimistic-utils'
 
 export default function EditTaskForm ({
   task,
@@ -33,6 +37,11 @@ export default function EditTaskForm ({
       router.push(state.redirectTo)
     }
   }, [state, router])
+
+  const [optimisticLists, crudOptimisticList] = useOptimistic(
+    task.description_lists,
+    optimisticFnLists
+  )
 
   const isList = task.description_lists && task.description_lists.length > 0
 
@@ -125,7 +134,13 @@ export default function EditTaskForm ({
         {/* Lists  */}
         {task.description_lists !== null && (
           <div className='flex w-full'>
-            <DescriptionListsTable lists={task.description_lists} />
+            <DescriptionListsTable
+              lists={optimisticLists}
+              formActionDeleteDescriptionListFun={formActionDeleteDescriptionListWrapper.bind(
+                null,
+                crudOptimisticList
+              )}
+            />
           </div>
         )}
       </div>

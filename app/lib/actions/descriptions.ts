@@ -36,12 +36,6 @@ export const createListDescription = async (
 
   const data = validatedFields.data
 
-  // #################################################
-  // USED FOR TESTING SERVER LATENCY AND OPTIMISTIC STATES
-  // REMEMBER TO REMOVE
-  await new Promise(res => setTimeout(res, 2000))
-  // #################################################
-
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${listId}/descriptions`,
@@ -115,12 +109,6 @@ export const updateListDescription = async (
   }
 
   const data = validatedFields.data
-
-  // #################################################
-  // USED FOR TESTING SERVER LATENCY AND OPTIMISTIC STATES
-  // REMEMBER TO REMOVE
-  await new Promise(res => setTimeout(res, 2000))
-  // #################################################
 
   try {
     const res = await fetch(
