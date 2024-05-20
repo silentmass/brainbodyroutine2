@@ -2,7 +2,7 @@
 
 import { useFormState } from 'react-dom'
 import { initialState } from '@/app/_components/response-state'
-import { CreateButton } from '@/app/ui/form-components/buttons'
+import { FormButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { useSession } from 'next-auth/react'
 import { createUser } from '@/app/lib/actions/users'
@@ -46,9 +46,9 @@ export default function RegisterForm () {
           />
         </div>
         <div className='flex justify-center'>
-          <CreateButton className='' ariaLabel='Register user'>
+          <FormButton className='' ariaLabel='Register user' type='submit'>
             Register
-          </CreateButton>
+          </FormButton>
         </div>
         {/* {state.message} */}
       </div>

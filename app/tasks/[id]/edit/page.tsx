@@ -2,7 +2,7 @@ import { fetchUserTaskById, fetchTaskCategories } from '@/app/lib/data'
 import { Task, TaskCategory } from '@/app/lib/definitions'
 import EditTaskForm from '@/app/ui/tasks/edit-form'
 import { Metadata } from 'next'
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
 export const metadata: Metadata = {
@@ -15,16 +15,18 @@ export default async function Page ({ params }: { params: { id: string } }) {
   if (id === null) {
     redirect('/tasks/filter')
   }
+
   try {
-    const task: Task | { message: string; errors: any } =
-      id !== null ? await fetchUserTaskById(`${id}`) : null
-    const categories: TaskCategory[] = await fetchTaskCategories()
+    const [task, categories]: [
+      Task | { message: string; errors: any },
+      TaskCategory[]
+    ] = await Promise.all([fetchUserTaskById(`${id}`), fetchTaskCategories()])
 
     const isTask =
       task !== null && typeof task === 'object' && !('message' in task)
 
     if (!isTask || !categories || !task.description_lists) {
-      return redirect('/tasks/filter')
+      notFound()
     }
 
     return (
@@ -36,6 +38,7 @@ export default async function Page ({ params }: { params: { id: string } }) {
     )
   } catch (error) {
     console.error('Error fetching data:', error)
-    return redirect('/tasks/filter')
+    // return redirect('/tasks/filter')
+    notFound()
   }
 }

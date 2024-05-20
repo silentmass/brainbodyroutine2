@@ -6,6 +6,7 @@
   - [x] Inform user that session token has expired
   - [ ] Update NextAuth token and session
   - [ ] Refresh FastAPI token
+- [ ] Fix transition to top task bug in carousel view when changing category
 - [ ] The null user task doesn't get activated in carousel
 - [ ] Code review and clean code with CGPT
   - [ ] Remove unused routes

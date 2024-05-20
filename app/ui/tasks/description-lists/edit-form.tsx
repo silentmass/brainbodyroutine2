@@ -4,7 +4,7 @@ import { TaskDescriptionList } from '@/app/lib/definitions'
 import Link from 'next/link'
 import { updateDescriptionList } from '@/app/lib/actions/descriptionlists'
 import { useFormState } from 'react-dom'
-import { CreateButton } from '../../form-components/buttons'
+import { FormButton } from '../../form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
 
@@ -45,13 +45,13 @@ export const UpdateDescriptionListForm = ({
       {/* Controls */}
       <div className='flex w-full justify-center items-center gap-4'>
         <Link href={`/tasks/${list.task_id}/edit`} className={``}>
-          <CreateButton className='' ariaLabel='Cancel'>
+          <FormButton className='' ariaLabel='Cancel' type={undefined}>
             Cancel
-          </CreateButton>
+          </FormButton>
         </Link>
-        <CreateButton className='' ariaLabel='Update list'>
+        <FormButton className='' ariaLabel='Update list' type='submit'>
           Update list
-        </CreateButton>
+        </FormButton>
       </div>
       {/* Form action state message floating above card requires relative parent */}
       <ResponseDurationMessage state={state} />

@@ -49,15 +49,13 @@ export default function RootLayout ({
       <AuthProvider>
         <body className={`flex flex-col items-center`}>
           <TokenMonitor />
-          <main className='flex flex-col w-full max-w-2xl h-screen '>
-            <div className='topnavi flex items-center justify-center w-full h-30 sticky top-0 z-30'>
-              <div className='flex w-full'>
-                <Links
-                  className='topnavi h-full flex flex-col w-full gap-5 pt-3 pb-3 pl-8 pr-8 justify-center items-center'
-                  isDarkTheme={isDarkTheme}
-                  formAction={formAction}
-                />
-              </div>
+          <main className='flex flex-col w-full max-w-2xl h-screen'>
+            <div className='topnavi flex items-center justify-center w-full h-30 top-0 z-30'>
+              <Links
+                className='topnavi flex w-full p-3 items-center justify-around'
+                isDarkTheme={isDarkTheme}
+                formAction={formAction}
+              />
             </div>
             <CookieConsent />
             <div className='flex flex-col w-full max-w-2xl items-center h-full overflow-auto'>

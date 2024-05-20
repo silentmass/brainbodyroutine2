@@ -1,11 +1,12 @@
 'use client'
+
 import { useFormState } from 'react-dom'
 import { createDescriptionList } from '@/app/lib/actions/descriptionlists'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { Task } from '@/app/lib/definitions'
 import Link from 'next/link'
-import { CreateButton } from '../../form-components/buttons'
+import { FormButton } from '../../form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
 
@@ -53,13 +54,13 @@ export default function CreateTaskDescriptionListForm ({
       {/* Form controls */}
       <div className='flex w-full justify-center items-center gap-4'>
         <Link href={`/tasks/${task.id}/edit`} className={`rounded-2xl`}>
-          <CreateButton className='' ariaLabel='Cancel'>
+          <FormButton className='' ariaLabel='Cancel' type={undefined}>
             Cancel
-          </CreateButton>
+          </FormButton>
         </Link>
-        <CreateButton className='' ariaLabel='Create list'>
+        <FormButton className='' ariaLabel='Create list' type='submit'>
           Create
-        </CreateButton>
+        </FormButton>
       </div>
       {/* Form action state message floating above card requires relative parent */}
       <ResponseDurationMessage state={state} />

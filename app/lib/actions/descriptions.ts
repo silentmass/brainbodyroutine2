@@ -36,6 +36,12 @@ export const createListDescription = async (
 
   const data = validatedFields.data
 
+  // #################################################
+  // USED FOR TESTING SERVER LATENCY AND OPTIMISTIC STATES
+  // REMEMBER TO REMOVE
+  await new Promise(res => setTimeout(res, 2000))
+  // #################################################
+
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONLISTS}/${listId}/descriptions`,
@@ -56,8 +62,10 @@ export const createListDescription = async (
 
     try {
       revalidateTag(`userdescriptions`)
-      revalidateTag(`userdescriptionlist`)
-      revalidateTag(`userdescriptionlists`)
+      // revalidateTag(`userdescriptionlist`)
+      // revalidateTag(`userdescriptionlists`)
+      // revalidateTag(`usertasks`)
+      revalidateTag(`usertask`)
     } catch (revalidateErr) {
       console.error(
         `List description create revalidate failed: `,
@@ -65,10 +73,17 @@ export const createListDescription = async (
       )
     }
 
-    return { ...prevState, message: `Description created` }
+    return {
+      ...prevState,
+      message: `Description created`
+    }
   } catch (err) {
     console.error(`List description create fetch failed`, err)
-    return { ...prevState, errors: `List description create fetch failed` }
+
+    return {
+      ...prevState,
+      errors: `List description create fetch failed`
+    }
   }
 }
 
@@ -101,6 +116,12 @@ export const updateListDescription = async (
 
   const data = validatedFields.data
 
+  // #################################################
+  // USED FOR TESTING SERVER LATENCY AND OPTIMISTIC STATES
+  // REMEMBER TO REMOVE
+  await new Promise(res => setTimeout(res, 2000))
+  // #################################################
+
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_DESCRIPTIONS}/${data.id}/update`,
@@ -124,6 +145,7 @@ export const updateListDescription = async (
       revalidateTag(`userdescriptionlist`)
       revalidateTag(`userdescriptionlists`)
       revalidateTag(`usertask`)
+      revalidateTag(`usertasks`)
     } catch (revalidateErr) {
       console.error(
         'List description update revalidation failed:',

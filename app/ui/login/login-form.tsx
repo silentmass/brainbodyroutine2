@@ -3,7 +3,7 @@
 import { useFormState } from 'react-dom'
 import { authenticate } from '@/app/lib/actions/auth'
 import { initialState } from '@/app/_components/response-state'
-import { CreateButton } from '@/app/ui/form-components/buttons'
+import { FormButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
@@ -61,9 +61,9 @@ export default function LoginForm () {
           />
         </div>
         <div className='flex justify-center'>
-          <CreateButton className='' ariaLabel='Login user'>
+          <FormButton className='' ariaLabel='Login user' type='submit'>
             Login
-          </CreateButton>
+          </FormButton>
         </div>
         {/* {state.message} */}
       </div>

@@ -20,10 +20,10 @@ export default function TaskViewBottomNavi ({
           value={`null`}
           className={`${bottomNaviButtonStyle} ${clsx({
             'bottom-navi-active': viewMode === null,
-            '': viewMode !== null
+            'bottom-navi': viewMode !== null
           })}`}
         >
-          <ListBulletIcon className='w-5 icon' />
+          <ListBulletIcon className='w-5 icon-bottomnavi' />
         </button>
       </div>
       {/* Single view */}
@@ -32,11 +32,11 @@ export default function TaskViewBottomNavi ({
           onClick={handleViewModeClick}
           value={`single`}
           className={`${bottomNaviButtonStyle} ${clsx({
-            '': viewMode === null,
+            'bottom-navi': viewMode === null,
             'bottom-navi-active': viewMode !== null
           })}`}
         >
-          <ChevronRightIcon className='w-5 icon' />
+          <ChevronRightIcon className='w-5 icon-bottomnavi' />
         </button>
       </div>
     </div>

@@ -1,62 +1,14 @@
 import {
-  fetchNullUserListDescriptions,
-  fetchNullUserTaskDescriptionListById,
-  fetchUserListDescriptions,
+  fetchUserTaskById,
   fetchUserTaskDescriptionListById
 } from '@/app/lib/data'
-import { ListDescription, TaskDescriptionList } from '@/app/lib/definitions'
-import CreateListDescriptionForm from '@/app/ui/tasks/description-lists/descriptions/create-form'
-import ListDescriptionsTable from '@/app/ui/tasks/description-lists/descriptions/table'
-import UpdateDescriptionListForm from '@/app/ui/tasks/description-lists/edit-form'
+import { Task } from '@/app/lib/definitions'
+import EditDescriptionListView from '@/app/ui/tasks/description-lists/edit-list-view'
 import { Metadata } from 'next'
-import { Suspense } from 'react'
+import { notFound, redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Edit list descriptions'
-}
-
-function PageComponent ({
-  taskId,
-  descriptionList,
-  descriptions
-}: {
-  taskId: number | null
-  descriptionList: TaskDescriptionList
-  descriptions: ListDescription[]
-}) {
-  return (
-    <div className='flex flex-col gap-y-3 w-full'>
-      <Suspense fallback={<p>Loading list...</p>}>
-        {descriptionList ? (
-          <UpdateDescriptionListForm list={descriptionList} />
-        ) : (
-          <>No list</>
-        )}
-      </Suspense>
-
-      <div className={``}>
-        <Suspense fallback={<p>Loading list...</p>}>
-          {descriptionList && taskId !== null ? (
-            <CreateListDescriptionForm
-              descriptionList={descriptionList}
-              redirectTo={`/tasks/${taskId}/edit`}
-            />
-          ) : (
-            <>No list</>
-          )}
-        </Suspense>
-      </div>
-      <div className={``}>
-        <Suspense fallback={<p>Loading descriptions...</p>}>
-          {descriptions ? (
-            <ListDescriptionsTable descriptions={descriptions} />
-          ) : (
-            <>No description</>
-          )}
-        </Suspense>
-      </div>
-    </div>
-  )
 }
 
 export default async function Page ({
@@ -68,34 +20,28 @@ export default async function Page ({
   const listId = params.listid !== '' ? parseInt(params.listid) : null
 
   try {
-    const nullUserDescriptionList =
-      listId !== null
-        ? await fetchNullUserTaskDescriptionListById(`${listId}`)
-        : null
-    const nullUserDescriptions =
-      listId !== null ? await fetchNullUserListDescriptions(`${listId}`) : null
-
-    return (
-      <PageComponent
-        taskId={taskId}
-        descriptionList={nullUserDescriptionList}
-        descriptions={nullUserDescriptions}
-      />
+    const [task]: [Task | { message: string; errors: any }] = await Promise.all(
+      [fetchUserTaskById(`${taskId}`)]
     )
+
+    const isTask =
+      task !== null && typeof task === 'object' && !('message' in task)
+
+    if (!isTask || !task.description_lists) {
+      notFound()
+    }
+
+    const descriptionList = task.description_lists.find(
+      list => list.id === listId
+    )
+
+    if (!descriptionList) {
+      throw new Error('No list')
+    }
+
+    return <EditDescriptionListView descriptionList={descriptionList} />
   } catch (error) {
-    const userDescriptionList =
-      listId !== null
-        ? await fetchUserTaskDescriptionListById(`${listId}`)
-        : null
-    const userDescriptions =
-      listId !== null ? await fetchUserListDescriptions(`${listId}`) : null
-
-    return (
-      <PageComponent
-        taskId={taskId}
-        descriptionList={userDescriptionList}
-        descriptions={userDescriptions}
-      />
-    )
+    console.error('Fetch error', error)
+    redirect('/tasks/filter')
   }
 }

@@ -2,18 +2,27 @@
 import { createListDescription } from '@/app/lib/actions/descriptions'
 import { TaskDescriptionList } from '@/app/lib/definitions'
 import { useFormState } from 'react-dom'
-import { CreateButton } from '@/app/ui/form-components/buttons'
+import { FormButton } from '@/app/ui/form-components/buttons'
 import { initialState } from '@/app/_components/response-state'
 import ResponseDurationMessage from '@/app/_components/response-duration'
+import { RefObject } from 'react'
 
 export default function CreateListDescriptionForm ({
   descriptionList,
-  redirectTo
+  redirectTo,
+  formActionFun,
+  formRef
 }: {
   descriptionList: TaskDescriptionList
   redirectTo: string
+  formActionFun: (
+    listId: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+  formRef: RefObject<HTMLFormElement>
 }) {
-  const createListDescriptionWithId = createListDescription.bind(
+  const createListDescriptionWithId = formActionFun.bind(
     null,
     `${descriptionList.id}`
   )
@@ -21,9 +30,18 @@ export default function CreateListDescriptionForm ({
     createListDescriptionWithId,
     initialState
   )
+  // const createListDescriptionWithId = createListDescription.bind(
+  //   null,
+  //   `${descriptionList.id}`
+  // )
+  // const [state, formAction] = useFormState(
+  //   createListDescriptionWithId,
+  //   initialState
+  // )
 
   return (
     <form
+      ref={formRef}
       name='createListDescriptionForm'
       id='createListDescriptionForm'
       action={formAction}
@@ -42,9 +60,9 @@ export default function CreateListDescriptionForm ({
         </div>
 
         <div className='flex w-full justify-center'>
-          <CreateButton className='' ariaLabel='Create description'>
+          <FormButton className='' ariaLabel='Create description' type='submit'>
             Create
-          </CreateButton>
+          </FormButton>
         </div>
       </div>
       {/* Form action state message floating above card. Requires relative parent. */}

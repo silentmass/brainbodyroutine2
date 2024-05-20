@@ -1,11 +1,19 @@
-import { ListDescription } from '@/app/lib/definitions'
+import { ListDescription, ListDescriptionBase } from '@/app/lib/definitions'
 import { DeleteListDescription } from './buttons'
 import EditListDescriptionForm from './edit-form'
+import { deleteListDescription } from '@/app/lib/actions/descriptions'
+import { useOptimistic } from 'react'
 
 export default function DescriptionCard ({
-  description
+  description,
+  formActionDeleteDescriptionFun
 }: {
-  description: ListDescription
+  description: ListDescription | ListDescriptionBase
+  formActionDeleteDescriptionFun: (
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
 }) {
   return (
     <div className='relative flex justify-between w-full rounded-2xl'>
@@ -13,7 +21,10 @@ export default function DescriptionCard ({
         <EditListDescriptionForm description={description} />
       </div>
       <div className='absolute flex top-0 right-0'>
-        <DeleteListDescription id={`${description.id}`} />
+        <DeleteListDescription
+          description={description}
+          formActionFun={formActionDeleteDescriptionFun}
+        />
       </div>
     </div>
   )

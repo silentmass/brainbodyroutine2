@@ -4,7 +4,7 @@ import { deleteTask } from '@/app/lib/actions/tasks'
 import { CheckIcon, PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Task } from '@/app/lib/definitions'
-import { CreateButton, DeleteButton } from '../form-components/buttons'
+import { DeleteButton } from '../form-components/buttons'
 
 import { initialState } from '@/app/_components/response-state'
 import ResponseDurationMessage from '@/app/_components/response-duration'
@@ -40,7 +40,7 @@ export function DeleteTask ({ id }: { id: string }) {
 
   return (
     <form name='deleteTaskForm' action={formAction}>
-      <DeleteButton ariaDisabled={pending} />
+      <DeleteButton ariaDisabled={pending} classNameIcon='' />
       <ResponseDurationMessage state={state} />
     </form>
   )
@@ -51,24 +51,6 @@ export function UpdateTask ({ id }: { id: string }) {
     <Link href={`/tasks/${id}/edit`}>
       <PencilIcon className='icon w-5' />
     </Link>
-  )
-}
-
-export function EditTask ({
-  children,
-  className,
-  ariaLabel
-}: Readonly<{
-  children: React.ReactNode
-  className: string
-  ariaLabel: string
-}>) {
-  const { pending } = useFormStatus()
-
-  return (
-    <CreateButton className={className} ariaLabel={ariaLabel}>
-      {children}
-    </CreateButton>
   )
 }
 

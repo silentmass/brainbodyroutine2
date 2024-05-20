@@ -1,5 +1,6 @@
 'use client'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 import Link from 'next/link'
 import { useFormStatus } from 'react-dom'
 
@@ -41,10 +42,13 @@ export const FormButton = ({
 
   return (
     <button
-      className={`${className} formActionButton flex items-center justify-center p-3 rounded-3xl min-w-24`}
+      className={`${className} flex items-center justify-center px-3 py-1.5 rounded-3xl min-w-16 ${clsx(
+        { pending: pending, formActionButton: !pending }
+      )}`}
       type={type}
       aria-disabled={pending}
       aria-label={ariaLabel}
+      disabled={pending}
     >
       {children}
     </button>
@@ -59,15 +63,27 @@ export function UpdateButton ({ href }: { href: string }) {
   )
 }
 
-export const DeleteButton = ({ ariaDisabled }: { ariaDisabled: boolean }) => {
+export const DeleteButton = ({
+  ariaDisabled,
+  classNameIcon = ''
+}: {
+  ariaDisabled: boolean
+  classNameIcon: string
+}) => {
   return (
     <button
       type='submit'
       className='flex items-center justify-center'
       aria-label='Delete'
       aria-disabled={ariaDisabled}
+      disabled={ariaDisabled}
     >
-      <TrashIcon className='icon w-5' />
+      <TrashIcon
+        className={`w-5 ${classNameIcon} ${clsx({
+          icon: !ariaDisabled,
+          'pending-icon': ariaDisabled
+        })}`}
+      />
     </button>
   )
 }

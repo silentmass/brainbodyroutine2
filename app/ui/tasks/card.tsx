@@ -9,6 +9,7 @@ import { initialState } from '@/app/_components/response-state'
 import { duplicateNullUserTask, updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 import clsx from 'clsx'
+import { FormButton } from '../form-components/buttons'
 
 const TaskCard = ({
   task,
@@ -84,12 +85,13 @@ const TaskCard = ({
                 name='duplicateTaskForm'
                 action={formActionDuplicateTask}
               >
-                <button
+                <FormButton
+                  className=''
+                  ariaLabel='Duplicate task'
                   type='submit'
-                  className='flex bg-accent-3 items-center justify-center p-3 rounded-3xl hover:bg-accent-4 active:bg-accent-5'
                 >
                   Duplicate
-                </button>
+                </FormButton>
               </form>
             </div>
           ) : (
