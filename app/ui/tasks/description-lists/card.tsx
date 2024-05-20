@@ -4,12 +4,23 @@ import ListDescriptionsTable from './descriptions/table'
 import { DescriptionsCardListView } from '@/app/ui/tasks/description-lists/descriptions/card-list'
 import Link from 'next/link'
 import { PencilIcon } from '@heroicons/react/24/outline'
+import { useOptimistic, useRef } from 'react'
+import {
+  formActionDeleteDescriptionWrapper,
+  optimisticFn
+} from './edit-list-view'
+import { FormButton } from '../../form-components/buttons'
 
 export const DescriptionListCard = ({
   list
 }: {
   list: TaskDescriptionList
 }) => {
+  const [optimisticDescriptions, crudOptimisticDescription] = useOptimistic(
+    list.descriptions,
+    optimisticFn
+  )
+
   return (
     <div className='card flex rounded-2xl flex-col gap-y-6 p-2'>
       <div className='flex gap-6 w-full'>
@@ -24,20 +35,26 @@ export const DescriptionListCard = ({
           <Link
             href={`/tasks/${list.task_id}/description-lists/${list.id}/edit`}
           >
-            <button
+            <FormButton
               className={`flex items-center justify-center`}
               type={undefined}
-              aria-label={'Edit list'}
+              ariaLabel={'Edit list'}
             >
               <PencilIcon className='icon w-5' />
-            </button>
+            </FormButton>
           </Link>
           {/* Delete list */}
           <DeleteTaskDescriptionList taskDescriptionListId={`${list.id}`} />
         </div>
       </div>
       {/* Descriptions */}
-      <ListDescriptionsTable descriptions={list.descriptions} />
+      <ListDescriptionsTable
+        descriptions={optimisticDescriptions}
+        formActionDeleteDescriptionFun={formActionDeleteDescriptionWrapper.bind(
+          null,
+          crudOptimisticDescription
+        )}
+      />
     </div>
   )
 }

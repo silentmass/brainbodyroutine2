@@ -1,7 +1,4 @@
-import {
-  fetchUserTaskById,
-  fetchUserTaskDescriptionListById
-} from '@/app/lib/data'
+import { fetchUserTaskById } from '@/app/lib/data'
 import { Task } from '@/app/lib/definitions'
 import EditDescriptionListView from '@/app/ui/tasks/description-lists/edit-list-view'
 import { Metadata } from 'next'
