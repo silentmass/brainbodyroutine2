@@ -73,11 +73,6 @@ export const TaskCarousel = ({
     bottom: 0
   })
 
-  // let listVerticalPadding: { top: number; bottom: number } = {
-  //   top: 0,
-  //   bottom: 0
-  // }
-
   const listPaddingRef = useRef(listPaddingState)
 
   const { handleScroll, handleScrollEnd, handleMouseMove, handleMouseClick } =
@@ -113,10 +108,6 @@ export const TaskCarousel = ({
   }, [listBoundingRectState])
 
   useEffect(() => {
-    selectedCategoryRef.current = selectedCategory
-  }, [selectedCategory])
-
-  useEffect(() => {
     selectedTaskRef.current = selectedTask
   }, [selectedTask])
 
@@ -129,108 +120,122 @@ export const TaskCarousel = ({
   }, [listPaddingState])
 
   useEffect(() => {
-    if (!selectedTaskRef.current) {
-      handleTaskChange(tasks[0])
-      selectedTaskRef.current = tasks[0]
-    }
-
-    // Pad card list to position first and last cards at the center of the touch area
-
-    // Get start and end card positions
-    const listVerticalPadding = getListVerticalPadding(touchAreaRef, tasks)
-    listPaddingRef.current = listVerticalPadding
-    setListPaddingState(listVerticalPadding)
-
-    if (touchAreaRef?.current?.scrollHeight === undefined) {
-      console.error('Touch area has no height')
-      return
-    }
-
-    const selectedTaskYCenter = yCenterTask(
-      touchAreaRef,
-      selectedTaskRef.current.id
-    )
-
-    console.group('Init')
-    console.log('category', selectedCategory)
-    console.log(
-      'task',
-      selectedTaskRef.current !== null
-        ? selectedTaskRef.current.title
-        : selectedTaskRef.current
-    )
-    console.log(
-      'tasks',
-      tasks.map(task => task.title)
-    )
-    console.log('listVerticalPadding', listPaddingRef.current)
-    console.log('listScrollHeight', listRef.current?.scrollHeight)
-    console.groupEnd()
-
-    // Init list position to show selected task
-    // Move list for mobile and scroll on desktop and mouse
-    const isMobile = window.innerWidth <= 767
-
-    if (isMobile) {
-      // Move list on mobile
-      console.group('Mobile')
-      console.log('selectedTask', selectedTaskRef.current.title)
-      console.groupEnd()
-
-      if (selectedTaskYCenter !== null) {
-        setListTopPositionState(
-          selectedTaskYCenter - listPaddingRef.current.top
-        )
-      }
-    } else {
-      // Scroll on desktop
-      console.group('Desktop')
-
-      const endPositionSelectedCardScroll = yCenterTaskScroll(
+    selectedCategoryRef.current = selectedCategory
+    if (selectedTaskRef.current) {
+      const selectedTaskYCenter = yCenterTask(
         touchAreaRef,
         selectedTaskRef.current.id
       )
 
-      console.log('selectedTask', selectedTaskRef.current.title)
-      console.log('selectedTaskYCenter', selectedTaskYCenter)
-      console.log(
-        'endPositionSelectedCardScroll',
-        endPositionSelectedCardScroll
+      // Init list position to show selected task
+      // Move list for mobile and scroll on desktop and mouse
+      const isMobile = window.innerWidth <= 767
+
+      if (isMobile) {
+        // Move list on mobile
+
+        if (selectedTaskYCenter !== null) {
+          setListTopPositionState(selectedTaskYCenter)
+        }
+      }
+    }
+  }, [selectedCategory])
+
+  useEffect(
+    () => {
+      if (!selectedTaskRef.current) {
+        handleTaskChange(tasks[0])
+        selectedTaskRef.current = tasks[0]
+      }
+
+      // Pad card list to position first and last cards at the center of the touch area
+
+      // Get start and end card positions
+      const listVerticalPadding = getListVerticalPadding(touchAreaRef, tasks)
+      listPaddingRef.current = listVerticalPadding
+      setListPaddingState(listVerticalPadding)
+
+      if (touchAreaRef?.current?.scrollHeight === undefined) {
+        console.error('Touch area has no height')
+        return
+      }
+
+      const selectedTaskYCenter = yCenterTask(
+        touchAreaRef,
+        selectedTaskRef.current.id
       )
-      console.log('element.scrollTop', touchAreaRef?.current.scrollTop)
-      console.log('initCounter', initCounter)
-      initCounter += 1
-      console.groupEnd()
 
-      selectedTaskYCenter !== null &&
-        touchAreaRef.current.scrollTo({
-          top: -selectedTaskYCenter + listPaddingRef.current.top,
-          behavior: 'instant'
-        })
-    }
+      // Init list position to show selected task
+      // Move list for mobile and scroll on desktop and mouse
+      const isMobile = window.innerWidth <= 767
 
-    touchAreaRef?.current?.addEventListener('scroll', handleScroll, {
-      passive: false
-    })
-    touchAreaRef?.current?.addEventListener('scrollend', handleScrollEnd)
-    touchAreaRef?.current?.addEventListener('mousemove', handleMouseMove)
-    touchAreaRef?.current?.addEventListener('touchstart', handleTouchStart, {
-      passive: false
-    })
-    touchAreaRef?.current?.addEventListener('touchmove', handleTouchMove, {
-      passive: false
-    })
-    touchAreaRef?.current?.addEventListener('touchend', handleTouchEnd, {
-      passive: false
-    })
-    return () => {
-      touchAreaRef?.current?.removeEventListener('scrollend', handleScrollEnd)
-      touchAreaRef?.current?.removeEventListener('mousemove', handleMouseMove)
-      touchAreaRef?.current?.removeEventListener('touchstart', handleTouchStart)
-      touchAreaRef?.current?.removeEventListener('touchmove', handleTouchMove)
-      touchAreaRef?.current?.removeEventListener('touchend', handleTouchEnd)
-    }
-  }, [])
+      if (isMobile) {
+        // Move list on mobile
+
+        if (selectedTaskYCenter !== null) {
+          setListTopPositionState(
+            selectedTaskYCenter - listPaddingRef.current.top
+          )
+        }
+      } else {
+        // Scroll on desktop
+
+        const endPositionSelectedCardScroll = yCenterTaskScroll(
+          touchAreaRef,
+          selectedTaskRef.current.id
+        )
+
+        console.log('selectedTask', selectedTaskRef.current.title)
+        console.log('selectedTaskYCenter', selectedTaskYCenter)
+        console.log(
+          'endPositionSelectedCardScroll',
+          endPositionSelectedCardScroll
+        )
+        console.log('element.scrollTop', touchAreaRef?.current.scrollTop)
+        console.log('initCounter', initCounter)
+        initCounter += 1
+        console.groupEnd()
+
+        selectedTaskYCenter !== null &&
+          touchAreaRef.current.scrollTo({
+            top: -selectedTaskYCenter + listPaddingRef.current.top,
+            behavior: 'instant'
+          })
+      }
+
+      touchAreaRef?.current?.addEventListener('scroll', handleScroll, {
+        passive: false
+      })
+      touchAreaRef?.current?.addEventListener('scrollend', handleScrollEnd)
+      touchAreaRef?.current?.addEventListener('mousemove', handleMouseMove)
+      touchAreaRef?.current?.addEventListener('touchstart', handleTouchStart, {
+        passive: false
+      })
+      touchAreaRef?.current?.addEventListener('touchmove', handleTouchMove, {
+        passive: false
+      })
+      touchAreaRef?.current?.addEventListener('touchend', handleTouchEnd, {
+        passive: false
+      })
+      return () => {
+        touchAreaRef?.current?.removeEventListener('scrollend', handleScrollEnd)
+        touchAreaRef?.current?.removeEventListener('mousemove', handleMouseMove)
+        touchAreaRef?.current?.removeEventListener(
+          'touchstart',
+          handleTouchStart
+        )
+        touchAreaRef?.current?.removeEventListener('touchmove', handleTouchMove)
+        touchAreaRef?.current?.removeEventListener('touchend', handleTouchEnd)
+      }
+    },
+    [
+      // selectedCategoryRef,
+      // selectedCategory
+      // selectedTaskRef,
+      // selectedTask,
+      // touchAreaRef
+    ]
+  )
 
   const selectedTaskIdx =
     tasks && tasks.length && selectedTask
