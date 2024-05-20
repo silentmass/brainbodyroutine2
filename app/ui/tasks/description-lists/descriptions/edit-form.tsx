@@ -12,17 +12,16 @@ export default function EditListDescriptionForm ({
 }: {
   description: ListDescription | ListDescriptionBase
 }) {
+  const updateListDescriptionWithId = updateListDescription.bind(
+    null,
+    'id' in description ? `${description.id}` : '',
+    `${description.description_list_id}`
+  )
+  const [state, formAction] = useFormState(
+    updateListDescriptionWithId,
+    initialState
+  )
   if ('id' in description && description.id !== undefined) {
-    const updateListDescriptionWithId = updateListDescription.bind(
-      null,
-      `${description.id}`,
-      `${description.description_list_id}`
-    )
-    const [state, formAction] = useFormState(
-      updateListDescriptionWithId,
-      initialState
-    )
-
     return (
       <div className='relative flex flex-col w-full rounded-2xl'>
         <form

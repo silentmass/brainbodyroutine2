@@ -19,16 +19,16 @@ export const DeleteTaskDescriptionList = ({
     formData: FormData
   ) => Promise<any>
 }) => {
+  const { pending } = useFormStatus()
+  const deleteTaskDescriptionListWithId = formActionFun.bind(
+    null,
+    'id' in list ? `${list.id}` : ''
+  )
+  const [state, formAction] = useFormState(
+    deleteTaskDescriptionListWithId,
+    initialState
+  )
   if ('id' in list) {
-    const { pending } = useFormStatus()
-    const deleteTaskDescriptionListWithId = formActionFun.bind(
-      null,
-      `${list.id}`
-    )
-    const [state, formAction] = useFormState(
-      deleteTaskDescriptionListWithId,
-      initialState
-    )
     return (
       <form
         name='deleteTaskDescriptionListForm'

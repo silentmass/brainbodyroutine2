@@ -16,18 +16,18 @@ export function DeleteListDescription ({
     formData: FormData
   ) => Promise<any>
 }) {
+  const { pending } = useFormStatus()
+
+  const deleteListDescriptionWithId = formActionFun.bind(
+    null,
+    'id' in description ? `${description.id}` : ''
+  )
+  const [state, formAction] = useFormState(
+    deleteListDescriptionWithId,
+    initialState
+  )
+
   if ('id' in description && description.id !== undefined) {
-    const { pending } = useFormStatus()
-
-    const deleteListDescriptionWithId = formActionFun.bind(
-      null,
-      `${description.id}`
-    )
-    const [state, formAction] = useFormState(
-      deleteListDescriptionWithId,
-      initialState
-    )
-
     return (
       <form
         name='deleteListDescriptionForm'
