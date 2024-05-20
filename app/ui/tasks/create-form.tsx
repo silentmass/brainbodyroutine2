@@ -6,16 +6,22 @@ import TaskCategoriesSelect from '@/app/ui/form-components/task-categories-selec
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
 import { FormButton } from '@/app/ui/form-components/buttons'
+import { RefObject } from 'react'
 
 export default function CreateTaskForm ({
-  taskCategories
+  taskCategories,
+  formActionFun,
+  createFormRef
 }: {
   taskCategories: TaskCategory[]
+  formActionFun: (prevState: any, formData: FormData) => Promise<any>
+  createFormRef: RefObject<HTMLFormElement>
 }) {
-  const [state, formAction] = useFormState(createTask, initialState)
+  const [state, formAction] = useFormState(formActionFun, initialState)
 
   return (
     <form
+      ref={createFormRef}
       name='createTaskForm'
       id='createTaskForm'
       action={formAction}

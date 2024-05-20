@@ -42,6 +42,10 @@ export const createTask = async (prevState: any, formData: FormData) => {
 
   const data = validatedFields.data
 
+  // REMOVEEEEEEEEEEEEEEEEE
+  await new Promise(res => setTimeout(res, 2000))
+  // REMOVEEEEEEEEEEEEEEEEE
+
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}`,

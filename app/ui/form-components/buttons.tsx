@@ -2,6 +2,7 @@
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import Link from 'next/link'
+import { FormEvent } from 'react'
 import { useFormStatus } from 'react-dom'
 
 export const CreateButton = ({
@@ -49,6 +50,39 @@ export const FormButton = ({
       aria-disabled={pending}
       aria-label={ariaLabel}
       disabled={pending}
+    >
+      {children}
+    </button>
+  )
+}
+export const FormButtonView = ({
+  children,
+  ariaLabel,
+  className = '',
+  type = 'submit',
+  onClick,
+  value
+}: {
+  children: React.ReactNode
+  ariaLabel: string
+  className: string
+  type: 'submit' | 'button' | 'reset' | undefined
+  onClick: (event: FormEvent<HTMLButtonElement>) => void
+  value: number | string
+}) => {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      className={`${className} flex items-center justify-center px-3 py-1.5 rounded-3xl min-w-16 ${clsx(
+        { pending: pending, formActionButtonView: !pending }
+      )}`}
+      type={type}
+      aria-disabled={pending}
+      aria-label={ariaLabel}
+      disabled={pending}
+      value={value}
+      onClick={onClick}
     >
       {children}
     </button>

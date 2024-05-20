@@ -23,17 +23,17 @@ export const optimisticFnLists = (
     }
   } else if (typeof crudObject === 'number') {
     // Delete
-    if (state && crudObject) {
+    if (state && crudObject !== null && crudObject !== undefined) {
       return [
         ...state.filter(list => ('id' in list ? list.id !== crudObject : true))
       ]
-    } else if (state && !crudObject) {
+    } else if (state && (crudObject === null || crudObject === undefined)) {
       return [...state]
     } else {
       return null
     }
   } else {
-    if (state && !crudObject) {
+    if (state && (crudObject === null || crudObject === undefined)) {
       return [...state]
     } else {
       return null

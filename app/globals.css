@@ -259,19 +259,32 @@ button.bottom-navi-active {
 
 button.formActionButton {
   background-color: rgb(var(--color-accent3));
-  box-shadow: inset 0 4px 6.8em rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
+}
+button.formActionButtonView {
+  background-color: rgb(var(--color-accent1));
+}
+button.formActionButtonView:hover {
+  background-color: rgb(var(--color-accent1));
+  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
+}
+button.formActionButtonView:active {
+  background-color: rgb(var(--color-accent3));
+  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
 }
 button.pending {
   background-color: rgb(var(--color-accent2));
   color: rgb(var(--color-accent3));
   cursor: not-allowed;
-  box-shadow: inset 0 4px 6.8em rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
 }
 button.formActionButton:hover {
   background-color: rgb(var(--color-accent4));
+  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
 }
 button.formActionButton:active {
   background-color: rgb(var(--color-accent5));
+  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
 }
 
 h2 {

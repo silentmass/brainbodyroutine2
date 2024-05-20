@@ -3,7 +3,7 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { deleteTask } from '@/app/lib/actions/tasks'
 import { CheckIcon, PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { Task } from '@/app/lib/definitions'
+import { Task, TaskBase } from '@/app/lib/definitions'
 import { DeleteButton } from '../form-components/buttons'
 
 import { initialState } from '@/app/_components/response-state'
@@ -61,7 +61,7 @@ export const SetTaskActiveForm = ({
   formAction,
   formRef
 }: {
-  task: Task
+  task: Task | TaskBase
   isActive: boolean
   isActiveOnClick: (event: FormEvent<HTMLButtonElement>) => void
   formAction: (payload: FormData) => void

@@ -1,11 +1,16 @@
 'use client'
 import { Task, TaskCategory } from '@/app/lib/definitions'
-import { FormEvent, Suspense, useEffect, useRef, useState } from 'react'
+import { FormEvent, useEffect, useOptimistic, useRef, useState } from 'react'
 import CreateTaskForm from './create-form'
 import TasksTable from './table'
 import TaskCarouselWrapper from '@/app/_components/task-carousel/task-carousel-wrapper'
 import TaskViewBottomNavi from './task-view-bottom-navi'
 import TaskViewTopNavi from './task-view-top-navi'
+import {
+  formActionCreateTaskWrapper,
+  formActionDeleteTaskWrapper,
+  optimisticFnTasks
+} from './optimistic-utils'
 
 export default function TaskViewSwitcher ({
   categories,
@@ -33,6 +38,18 @@ export default function TaskViewSwitcher ({
   useEffect(() => {
     selectedCategoryRef.current = selectedCategory
   }, [selectedCategory])
+
+  const categoryTasks = tasks.filter(task =>
+    selectedCategory !== null
+      ? task.task_category_id === selectedCategory.id
+      : true
+  )
+
+  const createFormRef = useRef<HTMLFormElement>(null)
+  const [optimisticTasks, crudOptimisticTask] = useOptimistic(
+    categoryTasks,
+    optimisticFnTasks
+  )
 
   function handleViewModeClick (event: FormEvent<HTMLButtonElement>) {
     console.log('handleViewTaskClick', event.currentTarget.value)
@@ -125,12 +142,6 @@ export default function TaskViewSwitcher ({
     console.groupEnd()
   }
 
-  const categoryTasks = tasks.filter(task =>
-    selectedCategory !== null
-      ? task.task_category_id === selectedCategory.id
-      : true
-  )
-
   return (
     <div className='flex flex-col w-full h-full'>
       {/* Task view top navi */}
@@ -164,15 +175,30 @@ export default function TaskViewSwitcher ({
           <div className='flex flex-col w-full h-fit gap-y-6 pt-6'>
             {/* Create task */}
             {categories && categories.length && (
-              <CreateTaskForm taskCategories={categories} />
+              <CreateTaskForm
+                taskCategories={categories}
+                formActionFun={formActionCreateTaskWrapper.bind(
+                  null,
+                  crudOptimisticTask,
+                  createFormRef,
+                  tasks && tasks.length && tasks[0].user_id !== null
+                    ? tasks[0].user_id
+                    : null
+                )}
+                createFormRef={createFormRef}
+              />
             )}
             {/* Tasks table */}
-            {categoryTasks && categoryTasks.length && (
+            {optimisticTasks && optimisticTasks.length && (
               <TasksTable
-                tasks={categoryTasks}
+                tasks={optimisticTasks}
                 showTaskLink={true}
                 handleViewModeClick={handleViewModeClick}
                 className='flex flex-col gap-y-3 w-full'
+                formActionDeleteTaskFun={formActionDeleteTaskWrapper.bind(
+                  null,
+                  crudOptimisticTask
+                )}
               />
             )}
           </div>

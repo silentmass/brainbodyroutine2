@@ -1,5 +1,5 @@
 'use client'
-import { Task } from '@/app/lib/definitions'
+import { Task, TaskBase } from '@/app/lib/definitions'
 import { SetTaskActiveForm } from './buttons'
 import { ChevronRightIcon, PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -9,20 +9,28 @@ import { initialState } from '@/app/_components/response-state'
 import { duplicateNullUserTask, updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 import clsx from 'clsx'
-import { FormButton } from '../form-components/buttons'
+import { FormButton, FormButtonView } from '../form-components/buttons'
 
 const TaskCard = ({
   task,
   showTaskLink,
-  handleViewModeClick
+  handleViewModeClick,
+  formActionDeleteTaskFun
 }: {
-  task: Task
+  task: Task | TaskBase
   showTaskLink: boolean
   handleViewModeClick: (event: FormEvent<HTMLButtonElement>) => void
+  formActionDeleteTaskFun: (
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
 }) => {
+  const isOptimistic = !('id' in task) || task.id === undefined
+
   const duplicateNullUserTaskWithID = duplicateNullUserTask.bind(
     null,
-    `${task.id}`
+    isOptimistic ? '' : `${task.id}`
   )
   const [stateDuplicateTask, formActionDuplicateTask] = useFormState(
     duplicateNullUserTaskWithID,
@@ -31,7 +39,10 @@ const TaskCard = ({
 
   const [isActive, setIsActive] = useState(task.is_active)
 
-  const updateTaskWithId = updateTask.bind(null, `${task.id}`)
+  const updateTaskWithId = updateTask.bind(
+    null,
+    isOptimistic ? '' : `${task.id}`
+  )
   const [state, formAction] = useFormState(updateTaskWithId, initialState)
 
   const formRef = useRef<HTMLFormElement>(null)
@@ -66,13 +77,25 @@ const TaskCard = ({
         <div className='flex items-center rounded-2xl justify-between gap-6 w-full'>
           <div>
             {showTaskLink ? (
-              <button
-                onClick={handleViewModeClick}
-                value={task.id}
-                className='flex'
-              >
-                <ChevronRightIcon className='icon w-10' />
-              </button>
+              isOptimistic ? (
+                <FormButton
+                  className={`flex items-center justify-center pending`}
+                  type={undefined}
+                  ariaLabel={'View task'}
+                >
+                  <ChevronRightIcon className='icon w-10 pending-icon' />
+                </FormButton>
+              ) : (
+                <FormButtonView
+                  onClick={handleViewModeClick}
+                  type={undefined}
+                  ariaLabel={'View task'}
+                  value={task.id}
+                  className='flex items-center justify-center'
+                >
+                  <ChevronRightIcon className='icon w-10' />
+                </FormButtonView>
+              )
             ) : (
               <></>
             )}
@@ -98,9 +121,25 @@ const TaskCard = ({
             <>
               {showTaskLink ? (
                 <div>
-                  <Link href={`/tasks/${task.id}/edit`}>
-                    <PencilIcon className='icon w-5' />
-                  </Link>
+                  {isOptimistic ? (
+                    <FormButton
+                      className={`flex items-center justify-center pending`}
+                      type={undefined}
+                      ariaLabel={'View task'}
+                    >
+                      <PencilIcon className='icon w-5 pending-icon' />
+                    </FormButton>
+                  ) : (
+                    <Link href={`/tasks/${task.id}/edit`}>
+                      <FormButton
+                        className={`flex items-center justify-center`}
+                        type={undefined}
+                        ariaLabel={'Edit task'}
+                      >
+                        <PencilIcon className='icon w-5' />
+                      </FormButton>
+                    </Link>
+                  )}
                 </div>
               ) : (
                 <></>
