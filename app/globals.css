@@ -258,8 +258,17 @@ button.bottom-navi-active {
 }
 
 button.formActionButton {
-  background-color: rgb(var(--color-accent3));
-  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
+  background-color: rgb(var(--color-accent2));
+  box-shadow: inset 0 4px 6.8em rgb(var(--color-accent1) / 0.1);
+}
+
+button.formActionButton:hover {
+  background-color: rgb(var(--color-accent4));
+  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.1);
+}
+button.formActionButton:active {
+  background-color: rgb(var(--color-accent5));
+  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.1);
 }
 
 
@@ -327,14 +336,7 @@ button.pending {
   cursor: not-allowed;
   box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
 }
-button.formActionButton:hover {
-  background-color: rgb(var(--color-accent4));
-  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
-}
-button.formActionButton:active {
-  background-color: rgb(var(--color-accent5));
-  box-shadow: inset 0 4px 6.8em rgb(var(--color-content) / 0.25);
-}
+
 
 h2 {
   font-weight: 600;
