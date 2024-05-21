@@ -21,7 +21,7 @@ export default function Home () {
           interaction, Reflection, and Nutrition.
         </p>
         <div className='flex gap-6 items-center'>
-          <p>Go to</p>
+          <p>Let's start with</p>
           <Link href='/tasks/filter'>
             <FormButton type={undefined} ariaLabel='Go to Tasks' className=''>
               Tasks
