@@ -34,7 +34,8 @@ export const TaskCarousel = ({
   horizontal = false,
   invert = true,
   formActionDeleteTaskFun,
-  formActionUpdateTaskFun
+  formActionUpdateTaskFun,
+  formActionDuplicateTaskFun
 }: {
   tasks: Task[]
   selectedTask: Task
@@ -54,6 +55,13 @@ export const TaskCarousel = ({
     description_lists: TaskDescriptionList[] | null,
     tags: Tag[] | null,
     id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+  formActionDuplicateTaskFun: (
+    user_id: string,
+    description_lists: TaskDescriptionList[] | null,
+    tags: Tag[] | null,
     prevState: any,
     formData: FormData
   ) => Promise<any>
@@ -389,6 +397,12 @@ export const TaskCarousel = ({
                   handleViewModeClick={handleViewModeClick}
                   formActionDeleteTaskFun={formActionDeleteTaskFun}
                   formActionUpdateTaskFun={formActionUpdateTaskFun.bind(
+                    null,
+                    `${task.user_id}`,
+                    task.description_lists,
+                    task.tags
+                  )}
+                  formActionDuplicateTaskFun={formActionDuplicateTaskFun.bind(
                     null,
                     `${task.user_id}`,
                     task.description_lists,

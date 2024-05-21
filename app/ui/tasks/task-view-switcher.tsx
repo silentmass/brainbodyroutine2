@@ -178,6 +178,10 @@ export default function TaskViewSwitcher ({
                 null,
                 crudOptimisticTask
               )}
+              formActionDuplicateTaskFun={formActionDuplicateTaskWrapper.bind(
+                null,
+                crudOptimisticTask
+              )}
             />
           </div>
         ) : (

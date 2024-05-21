@@ -19,7 +19,8 @@ export default function TaskCarouselWrapper ({
   horizontal = false,
   invert = true,
   formActionDeleteTaskFun,
-  formActionUpdateTaskFun
+  formActionUpdateTaskFun,
+  formActionDuplicateTaskFun
 }: {
   tasks: Task[]
   selectedTask: Task | null
@@ -39,6 +40,13 @@ export default function TaskCarouselWrapper ({
     description_lists: TaskDescriptionList[] | null,
     tags: Tag[] | null,
     id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+  formActionDuplicateTaskFun: (
+    user_id: string,
+    description_lists: TaskDescriptionList[] | null,
+    tags: Tag[] | null,
     prevState: any,
     formData: FormData
   ) => Promise<any>
@@ -62,6 +70,7 @@ export default function TaskCarouselWrapper ({
             invert={invert}
             formActionDeleteTaskFun={formActionDeleteTaskFun}
             formActionUpdateTaskFun={formActionUpdateTaskFun}
+            formActionDuplicateTaskFun={formActionDuplicateTaskFun}
           />
         )}
       </div>
