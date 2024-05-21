@@ -1,6 +1,11 @@
 'use client'
 import { Dispatch, FormEvent, SetStateAction } from 'react'
-import { Task, TaskCategory } from '@/app/lib/definitions'
+import {
+  Tag,
+  Task,
+  TaskCategory,
+  TaskDescriptionList
+} from '@/app/lib/definitions'
 import { DescriptionListsView } from '../../ui/tasks/description-lists/card-list'
 import { TaskCarousel } from './task-carousel'
 
@@ -12,7 +17,9 @@ export default function TaskCarouselWrapper ({
   handleViewModeClick,
   showTaskLink = true,
   horizontal = false,
-  invert = true
+  invert = true,
+  formActionDeleteTaskFun,
+  formActionUpdateTaskFun
 }: {
   tasks: Task[]
   selectedTask: Task | null
@@ -22,6 +29,19 @@ export default function TaskCarouselWrapper ({
   showTaskLink: boolean
   horizontal: boolean
   invert: boolean
+  formActionDeleteTaskFun: (
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+  formActionUpdateTaskFun: (
+    user_id: string,
+    description_lists: TaskDescriptionList[] | null,
+    tags: Tag[] | null,
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
 }) {
   if (!tasks || selectedTask === null) {
     return <p>No tasks</p>
@@ -40,6 +60,8 @@ export default function TaskCarouselWrapper ({
             handleViewModeClick={handleViewModeClick}
             horizontal={horizontal}
             invert={invert}
+            formActionDeleteTaskFun={formActionDeleteTaskFun}
+            formActionUpdateTaskFun={formActionUpdateTaskFun}
           />
         )}
       </div>

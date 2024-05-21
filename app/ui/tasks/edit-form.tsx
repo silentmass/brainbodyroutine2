@@ -1,6 +1,6 @@
 'use client'
 import { Task, TaskCategory } from '@/app/lib/definitions'
-import { updateTask } from '@/app/lib/actions/tasks'
+import { deleteTask, updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import { useEffect, useOptimistic, useState } from 'react'
@@ -8,7 +8,7 @@ import Link from 'next/link'
 import DescriptionListsTable from './description-lists/table'
 import TaskCategoriesSelect from '@/app/ui/form-components/task-categories-select'
 import { IsTaskActive } from '@/app/ui/form-components/is-task-active'
-import { DeleteTask } from './buttons'
+import { DeleteTaskReal } from './buttons'
 import clsx from 'clsx'
 import { FormButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
@@ -102,7 +102,7 @@ export default function EditTaskForm ({
         </form>
         {/* Delete form */}
         <div className='absolute top-0 right-0 p-6 flex items-center z-20'>
-          <DeleteTask id={`${task.id}`} />
+          <DeleteTaskReal task={task} formActionFun={deleteTask} />
         </div>
         {/* Form action state message floating above card requires relative parent */}
         <ResponseDurationMessage state={state} />

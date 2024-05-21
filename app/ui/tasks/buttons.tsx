@@ -4,12 +4,13 @@ import { deleteTask } from '@/app/lib/actions/tasks'
 import { CheckIcon, PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Task, TaskBase } from '@/app/lib/definitions'
-import { DeleteButton } from '../form-components/buttons'
+import { DeleteButton, FormButton } from '../form-components/buttons'
 
 import { initialState } from '@/app/_components/response-state'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { FormEvent, RefObject, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import clsx from 'clsx'
 
 export function CreateTask () {
   const { pending } = useFormStatus()
@@ -46,6 +47,38 @@ export function DeleteTask ({ id }: { id: string }) {
   )
 }
 
+export const DeleteTaskReal = ({
+  task,
+  formActionFun
+}: {
+  task: Task
+  formActionFun: (
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+}) => {
+  const { pending } = useFormStatus()
+  const deleteTaskWithId = formActionFun.bind(
+    null,
+    'id' in task ? `${task.id}` : ''
+  )
+  const [state, formAction] = useFormState(deleteTaskWithId, initialState)
+  if ('id' in task) {
+    return (
+      <form name='deleteTaskForm' id='deleteTaskForm' action={formAction}>
+        <DeleteButton ariaDisabled={pending} classNameIcon='' />
+      </form>
+    )
+  } else {
+    return (
+      <form name='deleteTaskForm' id='deleteTaskForm'>
+        <DeleteButton ariaDisabled={true} classNameIcon=''></DeleteButton>
+      </form>
+    )
+  }
+}
+
 export function UpdateTask ({ id }: { id: string }) {
   return (
     <Link href={`/tasks/${id}/edit`}>
@@ -54,25 +87,20 @@ export function UpdateTask ({ id }: { id: string }) {
   )
 }
 
-export const SetTaskActiveForm = ({
+export const DuplicateTaskForm = ({
   task,
-  isActive,
-  isActiveOnClick,
-  formAction,
-  formRef
+  formAction
 }: {
   task: Task | TaskBase
-  isActive: boolean
-  isActiveOnClick: (event: FormEvent<HTMLButtonElement>) => void
   formAction: (payload: FormData) => void
-  formRef: RefObject<HTMLFormElement>
 }) => {
+  const isOptimistic = !('id' in task) || task.id === undefined
+  const pending = 'sending' in task && task.sending === true
   return (
     <form
-      name='editTaskForm'
-      id='editTaskForm'
+      name='duplicateTaskForm'
+      id='duplicateTaskForm'
       action={formAction}
-      ref={formRef}
       className='flex'
     >
       {/* Task marked */}
@@ -80,22 +108,84 @@ export const SetTaskActiveForm = ({
         type='hidden'
         name='taskIsActive'
         id='taskIsActive'
-        value={`${isActive}`}
+        value={`${task.is_active}`}
+      />
+      {/* Task title */}
+      <input
+        type='hidden'
+        name='taskTitle'
+        id='taskTitle'
+        defaultValue={task.title}
+      />
+      {/* Task category */}
+      <input
+        type='hidden'
+        name='taskCategoryId'
+        id='taskCategoryId'
+        defaultValue={task.task_category_id}
+      />
+      <input
+        type='hidden'
+        name='sortOrder'
+        id='sortOrder'
+        defaultValue={`${task.sort_order}`}
+      />
+      <FormButton className='' ariaLabel='Duplicate task' type='submit'>
+        Duplicate
+      </FormButton>
+    </form>
+  )
+}
+
+export const SetTaskActiveForm = ({
+  task,
+  formAction
+}: {
+  task: Task | TaskBase
+  formAction: (payload: FormData) => void
+}) => {
+  const isOptimistic = !('id' in task) || task.id === undefined
+  const pending = 'sending' in task && task.sending === true
+  return (
+    <form
+      name='editTaskForm'
+      id='editTaskForm'
+      action={formAction}
+      className='flex'
+    >
+      {/* Task marked */}
+      <input
+        type='hidden'
+        name='taskIsActive'
+        id='taskIsActive'
+        value={`${!task.is_active}`}
       />
       <button
         id='isActiveButton'
         type='submit'
-        className='flex justify-center items-center w-8 h-8 rounded-full border z-30 border-accent-5'
-        value={`${isActive}`}
-        onClick={isActiveOnClick}
+        aria-label={task.is_active ? 'Check task' : 'Uncheck task'}
+        // aria-disabled={pending}
+        disabled={pending}
+        className={`formActionButtonCheck flex justify-center items-center w-8 h-8 rounded-full border z-30 ${clsx(
+          {
+            pending: isOptimistic || pending,
+            '': !isOptimistic && !pending
+            // pending: !(isOptimistic || pending),
+            // '': !(!isOptimistic && !pending)
+          }
+        )}`}
       >
-        {isActive ? (
-          // Empty
-          <></>
-        ) : (
-          // Checked
-          <CheckIcon className='w-full h-full z-10 stroke-accent-5' />
-        )}
+        <CheckIcon
+          className={`icon w-full h-full z-10 ${clsx({
+            invisible: task.is_active,
+            '': !task.is_active
+          })} ${clsx({
+            'pending-icon': isOptimistic || pending,
+            '': !isOptimistic && !pending
+            // 'pending-icon': !(isOptimistic || pending),
+            // '': !(!isOptimistic && !pending)
+          })}`}
+        />
       </button>
 
       {/* Task title */}

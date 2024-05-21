@@ -9,6 +9,8 @@ import TaskViewTopNavi from './task-view-top-navi'
 import {
   formActionCreateTaskWrapper,
   formActionDeleteTaskWrapper,
+  formActionDuplicateTaskWrapper,
+  formActionUpdateTaskWrapper,
   optimisticFnTasks
 } from './optimistic-utils'
 
@@ -168,6 +170,14 @@ export default function TaskViewSwitcher ({
               handleViewModeClick={handleViewModeClick}
               horizontal={false}
               invert={true}
+              formActionDeleteTaskFun={formActionDeleteTaskWrapper.bind(
+                null,
+                crudOptimisticTask
+              )}
+              formActionUpdateTaskFun={formActionUpdateTaskWrapper.bind(
+                null,
+                crudOptimisticTask
+              )}
             />
           </div>
         ) : (
@@ -196,6 +206,14 @@ export default function TaskViewSwitcher ({
                 handleViewModeClick={handleViewModeClick}
                 className='flex flex-col gap-y-3 w-full'
                 formActionDeleteTaskFun={formActionDeleteTaskWrapper.bind(
+                  null,
+                  crudOptimisticTask
+                )}
+                formActionUpdateTaskFun={formActionUpdateTaskWrapper.bind(
+                  null,
+                  crudOptimisticTask
+                )}
+                formActionDuplicateTaskFun={formActionDuplicateTaskWrapper.bind(
                   null,
                   crudOptimisticTask
                 )}

@@ -1,4 +1,4 @@
-import { Task, TaskBase } from '@/app/lib/definitions'
+import { Tag, Task, TaskBase, TaskDescriptionList } from '@/app/lib/definitions'
 import TaskCard from './card'
 import { FormEvent } from 'react'
 import { formActionDeleteTaskWrapper } from './optimistic-utils'
@@ -8,7 +8,9 @@ export default function TasksTable ({
   showTaskLink = true,
   handleViewModeClick,
   className = '',
-  formActionDeleteTaskFun
+  formActionDeleteTaskFun,
+  formActionUpdateTaskFun,
+  formActionDuplicateTaskFun
 }: {
   tasks: Task[] | TaskBase[]
   showTaskLink: boolean
@@ -16,6 +18,21 @@ export default function TasksTable ({
   className: string
   formActionDeleteTaskFun: (
     id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+  formActionUpdateTaskFun: (
+    user_id: string,
+    description_lists: TaskDescriptionList[] | null,
+    tags: Tag[] | null,
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+  formActionDuplicateTaskFun: (
+    user_id: string,
+    description_lists: TaskDescriptionList[] | null,
+    tags: Tag[] | null,
     prevState: any,
     formData: FormData
   ) => Promise<any>
@@ -35,6 +52,18 @@ export default function TasksTable ({
             showTaskLink={showTaskLink}
             handleViewModeClick={handleViewModeClick}
             formActionDeleteTaskFun={formActionDeleteTaskFun}
+            formActionUpdateTaskFun={formActionUpdateTaskFun.bind(
+              null,
+              `${task.user_id}`,
+              task.description_lists,
+              task.tags
+            )}
+            formActionDuplicateTaskFun={formActionDuplicateTaskFun.bind(
+              null,
+              `${task.user_id}`,
+              task.description_lists,
+              task.tags
+            )}
           />
         </li>
       ))}

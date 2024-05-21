@@ -7,7 +7,12 @@ import {
   useRef,
   useState
 } from 'react'
-import { Task, TaskCategory } from '@/app/lib/definitions'
+import {
+  Tag,
+  Task,
+  TaskCategory,
+  TaskDescriptionList
+} from '@/app/lib/definitions'
 import TaskCard from '@/app/ui/tasks/card'
 import clsx from 'clsx'
 import useTouchHandler from './task-carousel-touch-handlers'
@@ -27,7 +32,9 @@ export const TaskCarousel = ({
   handleViewModeClick,
   showTaskLink = true,
   horizontal = false,
-  invert = true
+  invert = true,
+  formActionDeleteTaskFun,
+  formActionUpdateTaskFun
 }: {
   tasks: Task[]
   selectedTask: Task
@@ -37,6 +44,19 @@ export const TaskCarousel = ({
   showTaskLink: boolean
   horizontal: boolean
   invert: boolean
+  formActionDeleteTaskFun: (
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+  formActionUpdateTaskFun: (
+    user_id: string,
+    description_lists: TaskDescriptionList[] | null,
+    tags: Tag[] | null,
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
 }) => {
   const touchAreaRef = useRef<HTMLDivElement>(null)
 
@@ -367,6 +387,13 @@ export const TaskCarousel = ({
                   task={task}
                   showTaskLink={showTaskLink}
                   handleViewModeClick={handleViewModeClick}
+                  formActionDeleteTaskFun={formActionDeleteTaskFun}
+                  formActionUpdateTaskFun={formActionUpdateTaskFun.bind(
+                    null,
+                    `${task.user_id}`,
+                    task.description_lists,
+                    task.tags
+                  )}
                 />
               </li>
             ))}

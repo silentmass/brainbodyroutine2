@@ -2,6 +2,8 @@
 
 ## VERY IMPORTANT
 
+- [ ] Do optimistic duplicate and check id task delete is optimistic remove latency
+- [ ] Check also tasks mark swithc update through otimistic
 - [ ] Refresh session token and alarm when token is expired
   - [x] Inform user that session token has expired
   - [ ] Update NextAuth token and session

@@ -1,12 +1,11 @@
 'use client'
 import { Task, TaskBase } from '@/app/lib/definitions'
-import { SetTaskActiveForm } from './buttons'
+import { DuplicateTaskForm, SetTaskActiveForm } from './buttons'
 import { ChevronRightIcon, PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { FormEvent } from 'react'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
-import { duplicateNullUserTask, updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 import clsx from 'clsx'
 import { FormButton, FormButtonView } from '../form-components/buttons'
@@ -15,7 +14,9 @@ const TaskCard = ({
   task,
   showTaskLink,
   handleViewModeClick,
-  formActionDeleteTaskFun
+  formActionDeleteTaskFun,
+  formActionUpdateTaskFun,
+  formActionDuplicateTaskFun
 }: {
   task: Task | TaskBase
   showTaskLink: boolean
@@ -25,43 +26,28 @@ const TaskCard = ({
     prevState: any,
     formData: FormData
   ) => Promise<any>
+  formActionUpdateTaskFun: (
+    id: string,
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
+  formActionDuplicateTaskFun: (
+    prevState: any,
+    formData: FormData
+  ) => Promise<any>
 }) => {
   const isOptimistic = !('id' in task) || task.id === undefined
 
-  const duplicateNullUserTaskWithID = duplicateNullUserTask.bind(
-    null,
-    isOptimistic ? '' : `${task.id}`
-  )
   const [stateDuplicateTask, formActionDuplicateTask] = useFormState(
-    duplicateNullUserTaskWithID,
+    formActionDuplicateTaskFun,
     initialState
   )
 
-  const [isActive, setIsActive] = useState(task.is_active)
-
-  const updateTaskWithId = updateTask.bind(
+  const updateTaskWithId = formActionUpdateTaskFun.bind(
     null,
     isOptimistic ? '' : `${task.id}`
   )
   const [state, formAction] = useFormState(updateTaskWithId, initialState)
-
-  const formRef = useRef<HTMLFormElement>(null)
-
-  function isActiveOnClick (event: FormEvent<HTMLButtonElement>) {
-    // event.preventDefault()
-    // This is executed before form server action !!!!
-    const isActiveValue = event.currentTarget.value === 'true' ? true : false
-    console.log('isActiveOnClick', isActiveValue)
-    setIsActive(!isActiveValue)
-  }
-
-  useEffect(() => {
-    if (state.message !== 'Task updated' && state.message !== '') {
-      // When update fails change state back
-      console.log('isActive:', isActive, '->', `${!isActive}`, task.is_active)
-      setIsActive(prevState => !prevState)
-    }
-  }, [state])
 
   return (
     <div
@@ -78,13 +64,15 @@ const TaskCard = ({
           <div>
             {showTaskLink ? (
               isOptimistic ? (
-                <FormButton
+                <FormButtonView
+                  onClick={() => {}}
                   className={`flex items-center justify-center pending`}
                   type={undefined}
                   ariaLabel={'View task'}
+                  value={''}
                 >
                   <ChevronRightIcon className='icon w-10 pending-icon' />
-                </FormButton>
+                </FormButtonView>
               ) : (
                 <FormButtonView
                   onClick={handleViewModeClick}
@@ -103,19 +91,10 @@ const TaskCard = ({
           {task.user_id === null ? (
             // Duplicate task
             <div className=''>
-              <form
-                id='duplicateTaskForm'
-                name='duplicateTaskForm'
-                action={formActionDuplicateTask}
-              >
-                <FormButton
-                  className=''
-                  ariaLabel='Duplicate task'
-                  type='submit'
-                >
-                  Duplicate
-                </FormButton>
-              </form>
+              <DuplicateTaskForm
+                task={task}
+                formAction={formActionDuplicateTask}
+              />
             </div>
           ) : (
             <>
@@ -125,7 +104,7 @@ const TaskCard = ({
                     <FormButton
                       className={`flex items-center justify-center pending`}
                       type={undefined}
-                      ariaLabel={'View task'}
+                      ariaLabel={'Edit task'}
                     >
                       <PencilIcon className='icon w-5 pending-icon' />
                     </FormButton>
@@ -145,15 +124,8 @@ const TaskCard = ({
                 <></>
               )}
 
-              {/* Mark task as done: isActive = false or not done: isActive = true */}
               <div className='flex h-full items-center justify-center '>
-                <SetTaskActiveForm
-                  task={task}
-                  isActive={isActive}
-                  isActiveOnClick={isActiveOnClick}
-                  formAction={formAction}
-                  formRef={formRef}
-                />
+                <SetTaskActiveForm task={task} formAction={formAction} />
               </div>
             </>
           )}
