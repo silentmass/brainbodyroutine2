@@ -338,6 +338,12 @@ button.pending {
 }
 
 
+h1 {
+  font-weight: 600;
+  color: rgb(var(--color-content));
+  background-color: transparent;
+  font-size: xx-large;
+}
 h2 {
   font-weight: 600;
   color: rgb(var(--color-accent5));
