@@ -166,7 +166,7 @@ export const SetTaskActiveForm = ({
         aria-label={task.is_active ? 'Check task' : 'Uncheck task'}
         // aria-disabled={pending}
         disabled={pending}
-        className={`formActionButtonCheck flex justify-center items-center w-8 h-8 rounded-full border z-30 ${clsx(
+        className={`formActionButtonCheck flex justify-center items-center w-8 h-8 rounded-full border z-40 ${clsx(
           {
             pending: isOptimistic || pending,
             '': !isOptimistic && !pending

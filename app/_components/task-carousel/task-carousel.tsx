@@ -70,7 +70,7 @@ export const TaskCarousel = ({
 
   const touchAreaHeight = 200
   const gradientHeight = Math.round(touchAreaHeight / 5)
-  const gradientContainerStyle = `from-transparent to-bkg to-80% w-full z-40`
+  const gradientContainerStyle = `from-transparent to-bkg to-80% w-full z-20`
 
   // Get touch area dimension
   let initCounter = 0

@@ -124,7 +124,7 @@ const TaskCard = ({
                 <></>
               )}
 
-              <div className='flex h-full items-center justify-center '>
+              <div className='flex h-full items-center justify-center z-40'>
                 <SetTaskActiveForm task={task} formAction={formAction} />
               </div>
             </>

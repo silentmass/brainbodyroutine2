@@ -103,8 +103,14 @@ export default function useTouchHandler (
         )
 
         if (elementUnderClick) {
+          console.log('elementUnderClick', elementUnderClick.id)
           const buttonElement = getParentButtonElement(elementUnderClick)
-          if (buttonElement) {
+          console.log('buttonElement', buttonElement?.id)
+          if (buttonElement && buttonElement.id === 'isActiveButton') {
+            buttonElement.click()
+            setIsTouchMove(false)
+            return
+          } else if (buttonElement && buttonElement.id !== 'isActiveButton') {
             const nextTaskID = buttonElement?.value
             if (nextTaskID !== undefined) {
               const taskAbove = tasks.find(
