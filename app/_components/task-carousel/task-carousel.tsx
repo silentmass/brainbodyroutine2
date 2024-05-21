@@ -10,6 +10,7 @@ import {
 import {
   Tag,
   Task,
+  TaskBase,
   TaskCategory,
   TaskDescriptionList
 } from '@/app/lib/definitions'

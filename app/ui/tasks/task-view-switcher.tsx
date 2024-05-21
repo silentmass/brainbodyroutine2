@@ -160,30 +160,34 @@ export default function TaskViewSwitcher ({
       {/* Task list or carousel */}
       <div className='flex flex-col items-center w-full overflow-auto h-full gap-y-6 pl-6 pr-6 pb-6'>
         {viewMode === 'single' ? (
-          <div className='flex w-full justify-center pt-2'>
-            <TaskCarouselWrapper
-              tasks={categoryTasks}
-              selectedTask={selectedTask}
-              setSelectedTask={setSelectedTask}
-              selectedCategory={selectedCategory}
-              showTaskLink={false}
-              handleViewModeClick={handleViewModeClick}
-              horizontal={false}
-              invert={true}
-              formActionDeleteTaskFun={formActionDeleteTaskWrapper.bind(
-                null,
-                crudOptimisticTask
-              )}
-              formActionUpdateTaskFun={formActionUpdateTaskWrapper.bind(
-                null,
-                crudOptimisticTask
-              )}
-              formActionDuplicateTaskFun={formActionDuplicateTaskWrapper.bind(
-                null,
-                crudOptimisticTask
-              )}
-            />
-          </div>
+          optimisticTasks !== null ? (
+            <div className='flex w-full justify-center pt-2'>
+              <TaskCarouselWrapper
+                tasks={optimisticTasks as Task[]}
+                selectedTask={selectedTask}
+                setSelectedTask={setSelectedTask}
+                selectedCategory={selectedCategory}
+                showTaskLink={false}
+                handleViewModeClick={handleViewModeClick}
+                horizontal={false}
+                invert={true}
+                formActionDeleteTaskFun={formActionDeleteTaskWrapper.bind(
+                  null,
+                  crudOptimisticTask
+                )}
+                formActionUpdateTaskFun={formActionUpdateTaskWrapper.bind(
+                  null,
+                  crudOptimisticTask
+                )}
+                formActionDuplicateTaskFun={formActionDuplicateTaskWrapper.bind(
+                  null,
+                  crudOptimisticTask
+                )}
+              />
+            </div>
+          ) : (
+            <></>
+          )
         ) : (
           // Viewmode all
           <div className='flex flex-col w-full h-fit gap-y-6 pt-6'>

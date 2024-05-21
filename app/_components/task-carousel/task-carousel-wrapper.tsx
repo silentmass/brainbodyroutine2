@@ -3,6 +3,7 @@ import { Dispatch, FormEvent, SetStateAction } from 'react'
 import {
   Tag,
   Task,
+  TaskBase,
   TaskCategory,
   TaskDescriptionList
 } from '@/app/lib/definitions'
