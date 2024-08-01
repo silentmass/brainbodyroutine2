@@ -19,10 +19,10 @@ export default function TexturePaletteViews ({
   handleTextureNameChange: (textureName: textureContextType) => void
   onDropFileChange: (files: DropFile[]) => void
 }) {
-  if (!textures || textures.length === 0) return null
-
   const selectedMaterialName = useContext(MaterialContext)
   const selectedTextureName = useContext(TextureContext)
+
+  if (!textures || textures.length === 0) return null
 
   return (
     <ul className='flex flex-wrap gap-6 w-full p-2'>
