@@ -36,7 +36,7 @@ export const GetCustomMaterial = ({
   stimulusRef = null
 }: {
   materialName: string | null
-  stimulusRef: any
+  stimulusRef?: any
 }) => {
   switch (materialName) {
     case 'bg-orange-dodeca':

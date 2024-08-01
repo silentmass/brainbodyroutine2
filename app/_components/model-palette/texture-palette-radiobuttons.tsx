@@ -1,6 +1,5 @@
 import { useContext, useEffect } from 'react'
 import { TextureContext, textureContextType } from './TextureContext'
-import { useRenderTracker } from '../renderTracker'
 
 export default function TexturePaletteRadioButtons ({
   textures,
@@ -10,8 +9,6 @@ export default function TexturePaletteRadioButtons ({
   handleTextureNameChange: (textureName: textureContextType) => void
 }) {
   if (!textures || textures.length === 0) return null
-
-  useRenderTracker('TexturePaletteRadioButtons')
 
   const selectedTextureName = useContext(TextureContext)
 

@@ -6,7 +6,6 @@ import { PerspectiveCamera } from '@react-three/drei'
 import { GetCustomMaterial } from './materials'
 import { useContext } from 'react'
 import { MaterialContext } from './MaterialContext'
-import { useRenderTracker } from '../renderTracker'
 import { TextureContext, textureContextType } from './TextureContext'
 import clsx from 'clsx'
 import { DropFile } from '../model-upload-drop-zone/model-upload-drop-zone'
@@ -24,8 +23,6 @@ export default function TexturePaletteViews ({
 
   const selectedMaterialName = useContext(MaterialContext)
   const selectedTextureName = useContext(TextureContext)
-
-  useRenderTracker('TexturePaletteViews')
 
   return (
     <ul className='flex flex-wrap gap-6 w-full p-2'>
