@@ -77,7 +77,7 @@ export async function sendUpdateTask (
 export async function sendDeleteTask (
   id: string,
   prevState: any,
-  formData: FormData
+  formData?: FormData | undefined
 ) {
   await deleteTask(id, prevState, formData)
 }
@@ -218,7 +218,7 @@ export async function formActionDeleteTaskWrapper (
   crudOptimisticFun: (action: number | Task) => void,
   id: string,
   prevState: any,
-  formData: FormData
+  formData?: FormData | undefined
 ) {
   crudOptimisticFun(parseInt(id))
   await sendDeleteTask(id, prevState, formData)

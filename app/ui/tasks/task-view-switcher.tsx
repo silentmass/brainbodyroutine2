@@ -2,8 +2,6 @@
 import { Task, TaskCategory } from '@/app/lib/definitions'
 import { FormEvent, useEffect, useOptimistic, useRef, useState } from 'react'
 import CreateTaskForm from './create-form'
-import TasksTable from './table'
-import TaskCarouselWrapper from '@/app/_components/task-carousel/task-carousel-wrapper'
 import TaskViewBottomNavi from './task-view-bottom-navi'
 import TaskViewTopNavi from './task-view-top-navi'
 import {
@@ -13,13 +11,22 @@ import {
   formActionUpdateTaskWrapper,
   optimisticFnTasks
 } from './optimistic-utils'
+import TaskCard from './card'
+import TaskCarousel from '@/app/_components/task-carousel/task-carousel'
+import Card from '../Card'
+import {
+  CardRow,
+  CardTitleRow
+} from '@/app/_components/circle-vibes/UpdateTaskCard'
 
 export default function TaskViewSwitcher ({
   categories,
-  tasks
+  tasks,
+  isTokenValid = false
 }: {
   categories: TaskCategory[]
   tasks: Task[]
+  isTokenValid?: boolean
 }) {
   const [viewMode, setViewMode] = useState<string | null>(null)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
@@ -54,7 +61,6 @@ export default function TaskViewSwitcher ({
   )
 
   function handleViewModeClick (event: FormEvent<HTMLButtonElement>) {
-    console.log('handleViewTaskClick', event.currentTarget.value)
     if (event.currentTarget.value !== 'null') {
       const taskID = parseInt(event.currentTarget.value)
       const task = tasks.filter(task => task.id === taskID)[0]
@@ -160,37 +166,85 @@ export default function TaskViewSwitcher ({
       {/* Task list or carousel */}
       <div className='flex flex-col items-center w-full overflow-auto h-full gap-y-6 pl-6 pr-6 pb-6'>
         {viewMode === 'single' ? (
-          optimisticTasks !== null ? (
+          optimisticTasks !== null && (
             <div className='flex w-full justify-center pt-2'>
-              <TaskCarouselWrapper
-                tasks={optimisticTasks as Task[]}
-                selectedTask={selectedTask}
-                setSelectedTask={setSelectedTask}
-                selectedCategory={selectedCategory}
-                showTaskLink={false}
-                handleViewModeClick={handleViewModeClick}
-                horizontal={false}
-                invert={true}
-                formActionDeleteTaskFun={formActionDeleteTaskWrapper.bind(
-                  null,
-                  crudOptimisticTask
-                )}
-                formActionUpdateTaskFun={formActionUpdateTaskWrapper.bind(
-                  null,
-                  crudOptimisticTask
-                )}
-                formActionDuplicateTaskFun={formActionDuplicateTaskWrapper.bind(
-                  null,
-                  crudOptimisticTask
-                )}
-              />
+              <div className='flex flex-col w-full gap-6 h-full'>
+                <div className='flex w-full'>
+                  {tasks && selectedTask !== null && (
+                    <TaskCarousel
+                      tasks={optimisticTasks as Task[]}
+                      selectedTask={selectedTask}
+                      handleTaskChange={setSelectedTask}
+                      selectedCategory={selectedCategory}
+                      showOpenTaskLink={false}
+                      showEditTaskButtons={false}
+                      handleViewModeClick={handleViewModeClick}
+                      horizontal={false}
+                      invert={true}
+                      formActionDeleteTaskFun={formActionDeleteTaskWrapper.bind(
+                        null,
+                        crudOptimisticTask
+                      )}
+                      formActionUpdateTaskFun={formActionUpdateTaskWrapper.bind(
+                        null,
+                        crudOptimisticTask
+                      )}
+                      formActionDuplicateTaskFun={formActionDuplicateTaskWrapper.bind(
+                        null,
+                        crudOptimisticTask
+                      )}
+                      isTokenValid={isTokenValid}
+                    />
+                  )}
+                </div>
+                <div className='flex w-full'>
+                  <ul className={`flex flex-col w-full gap-2`}>
+                    {selectedTask &&
+                      selectedTask.description_lists &&
+                      selectedTask.description_lists.map(
+                        ({ id, title, descriptions }) => {
+                          if (id) {
+                            return (
+                              <li key={`list_${id}`}>
+                                <Card>
+                                  <CardTitleRow>
+                                    <h2 className=''>{title}</h2>
+                                  </CardTitleRow>
+                                  <CardRow>
+                                    {descriptions && (
+                                      <ul className='flex flex-col w-full pl-2 list-disc list-inside'>
+                                        {descriptions.map(
+                                          ({
+                                            id: descriptionId,
+                                            description
+                                          }) => {
+                                            return (
+                                              <li
+                                                key={`description_${descriptionId}`}
+                                                className={`w-full h-full items-center`}
+                                              >
+                                                {description}
+                                              </li>
+                                            )
+                                          }
+                                        )}
+                                      </ul>
+                                    )}
+                                  </CardRow>
+                                </Card>
+                              </li>
+                            )
+                          }
+                        }
+                      )}
+                  </ul>
+                </div>
+              </div>
             </div>
-          ) : (
-            <></>
           )
         ) : (
           // Viewmode all
-          <div className='flex flex-col w-full h-fit gap-y-6 pt-6'>
+          <div className='flex flex-col w-full h-fit gap-y-large pt-large'>
             {/* Create task */}
             {categories && categories.length && (
               <CreateTaskForm
@@ -208,24 +262,47 @@ export default function TaskViewSwitcher ({
             )}
             {/* Tasks table */}
             {optimisticTasks && optimisticTasks.length && (
-              <TasksTable
-                tasks={optimisticTasks}
-                showTaskLink={true}
-                handleViewModeClick={handleViewModeClick}
-                className='flex flex-col gap-y-3 w-full'
-                formActionDeleteTaskFun={formActionDeleteTaskWrapper.bind(
-                  null,
-                  crudOptimisticTask
-                )}
-                formActionUpdateTaskFun={formActionUpdateTaskWrapper.bind(
-                  null,
-                  crudOptimisticTask
-                )}
-                formActionDuplicateTaskFun={formActionDuplicateTaskWrapper.bind(
-                  null,
-                  crudOptimisticTask
-                )}
-              />
+              <ul className={`flex flex-col gap-y-3 w-full`}>
+                {optimisticTasks.map((task, idx) => (
+                  <li
+                    key={
+                      'id' in task && task.id !== undefined
+                        ? `${task.id}`
+                        : `${task.title}${idx}`
+                    }
+                  >
+                    <TaskCard
+                      task={task}
+                      showOpenTaskLink={true}
+                      handleViewModeClick={handleViewModeClick}
+                      formActionDeleteTaskFun={formActionDeleteTaskWrapper.bind(
+                        null,
+                        crudOptimisticTask
+                      )}
+                      formActionUpdateTaskFun={formActionUpdateTaskWrapper
+                        .bind(null, crudOptimisticTask)
+                        .bind(
+                          null,
+                          `${task.user_id}`,
+                          task.description_lists,
+                          task.tags,
+                          !('id' in task) || task.id === undefined
+                            ? ''
+                            : `${task.id}`
+                        )}
+                      formActionDuplicateTaskFun={formActionDuplicateTaskWrapper
+                        .bind(null, crudOptimisticTask)
+                        .bind(
+                          null,
+                          `${task.user_id}`,
+                          task.description_lists,
+                          task.tags
+                        )}
+                      isTokenValid={isTokenValid}
+                    />
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         )}

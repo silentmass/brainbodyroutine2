@@ -5,8 +5,8 @@ import { revalidateTag } from 'next/cache'
 import { TaskSchema, TaskWithIdSchema } from '../definitions'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
-import { redirect } from 'next/dist/server/api-utils'
-import { permanentRedirect } from 'next/navigation'
+
+import { redirect } from 'next/navigation'
 
 export const createTask = async (prevState: any, formData: FormData) => {
   // Check access token cookie
@@ -42,10 +42,6 @@ export const createTask = async (prevState: any, formData: FormData) => {
 
   const data = validatedFields.data
 
-  // REMOVEEEEEEEEEEEEEEEEE
-  await new Promise(res => setTimeout(res, 2000))
-  // REMOVEEEEEEEEEEEEEEEEE
-
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}${process.env.API_ROUTER_TASKS}`,
@@ -80,7 +76,7 @@ export const createTask = async (prevState: any, formData: FormData) => {
 export const deleteTask = async (
   id: string,
   prevState: any,
-  formData: FormData
+  formData?: FormData | undefined
 ) => {
   // Check access token cookie
   // Assume `cookies().get()` returns an object { token: "your_token_here" }
@@ -115,11 +111,7 @@ export const deleteTask = async (
       console.error(`Failed to delete task revalidate: `, revalidateErr)
     }
 
-    // return {
-    //   ...prevState,
-    //   message: `Deleted task: ${id}`,
-    //   redirectTo: '/tasks/filter'
-    // }
+    return redirect(prevState.redirectTo)
   } catch (err) {
     console.error(`Failed to delete task: ${id}`, err)
     return {
@@ -128,7 +120,7 @@ export const deleteTask = async (
       errors: err
     }
   }
-  return permanentRedirect('/tasks/filter')
+  // return permanentRedirect('/tasks/filter')
 }
 
 export const updateTask = async (

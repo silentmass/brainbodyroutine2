@@ -2,6 +2,7 @@
 import { AuthError } from 'next-auth'
 import { deleteSession } from '@/app/lib/session'
 import { signIn, signOut } from '@/app/auth'
+import { cookies } from 'next/headers'
 
 export async function getToken (username: string, password: string) {
   try {
@@ -82,5 +83,7 @@ export async function authenticate (prevState: any, formData: FormData) {
 
 export const signOutAction = async () => {
   deleteSession()
+  cookies().delete('authjs.session-token')
+  cookies().delete('access_token')
   await signOut()
 }

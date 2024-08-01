@@ -151,7 +151,7 @@ export const updateListDescription = async (
 export const deleteListDescription = async (
   id: string,
   prevState: any,
-  formData: FormData
+  formData?: FormData | undefined
 ) => {
   // Check access token cookie
   // Assume `cookies().get()` returns an object { token: "your_token_here" }

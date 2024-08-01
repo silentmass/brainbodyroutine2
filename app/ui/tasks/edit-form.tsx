@@ -3,20 +3,30 @@ import { Task, TaskCategory } from '@/app/lib/definitions'
 import { deleteTask, updateTask } from '@/app/lib/actions/tasks'
 import { useFormState } from 'react-dom'
 import { useRouter } from 'next/navigation'
-import { useEffect, useOptimistic, useState } from 'react'
-import Link from 'next/link'
-import DescriptionListsTable from './description-lists/table'
-import TaskCategoriesSelect from '@/app/ui/form-components/task-categories-select'
+import { RefObject, useEffect, useOptimistic, useRef, useState } from 'react'
 import { IsTaskActive } from '@/app/ui/form-components/is-task-active'
-import { DeleteTaskReal } from './buttons'
-import clsx from 'clsx'
-import { FormButton } from '@/app/ui/form-components/buttons'
 import ResponseDurationMessage from '@/app/_components/response-duration'
-import { initialState } from '@/app/_components/response-state'
+import { InitialState, initialState } from '@/app/_components/response-state'
 import {
   formActionDeleteDescriptionListWrapper,
   optimisticFnLists
 } from './description-lists/optimistic-utils'
+import { useDebouncedCallback } from 'use-debounce'
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import Card from '../Card'
+import BasicButton from '@/app/_components/circle-vibes/BasicButton'
+import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import CreateTaskDescriptionListCard from '@/app/_components/circle-vibes/CreateTaskDescriptionListCard'
+import TightCard from '@/app/_components/circle-vibes/TightCard'
+import {
+  CardTitleRow,
+  CardRow,
+  TextareaInput,
+  SelectCategoryInput,
+  CardButtonRow
+} from '@/app/_components/circle-vibes/UpdateTaskCard'
+import { sendDeleteDescription } from './description-lists/descriptions/optimistic-utils'
+import { updateListDescription } from '@/app/lib/actions/descriptions'
 
 export default function EditTaskForm ({
   task,
@@ -25,11 +35,15 @@ export default function EditTaskForm ({
   task: Task
   categories: TaskCategory[]
 }) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [title, setTitle] = useState<null | string>(task.title)
+
   const [isActive, setIsActive] = useState(task.is_active)
   const [state, formAction] = useFormState(
     updateTask.bind(null, `${task.id}`),
     initialState
   )
+
   const router = useRouter()
 
   useEffect(() => {
@@ -38,112 +52,215 @@ export default function EditTaskForm ({
     }
   }, [state, router])
 
-  const [optimisticLists, crudOptimisticList] = useOptimistic(
+  const handleChange = useDebouncedCallback(
+    (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
+      console.log('handleChange', ev.target.value)
+      setTitle(ev.target.value)
+    },
+    300
+  )
+  const handleBlur = (ev: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (!textareaRef.current) return
+
+    console.log('Update title')
+    handleChange(ev)
+  }
+  const handleKeyDown = (ev: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (ev.code !== 'Enter' || !textareaRef.current) return
+    ev.preventDefault()
+    handleChange.cancel()
+    textareaRef.current.blur()
+  }
+  const handleTitleReset = (ev: React.FormEvent) => {
+    if (!textareaRef.current) return
+    textareaRef.current.value = ''
+    setTitle(null)
+  }
+
+  const [optimisticLists, crudOptimisticListFun] = useOptimistic(
     task.description_lists,
     optimisticFnLists
   )
 
-  const isList = task.description_lists && task.description_lists.length > 0
-
   return (
-    <div className='flex flex-col w-full gap-y-6'>
-      {/* Edit task card */}
-      <div className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-6'>
-        <form
+    <div className='flex flex-col gap-3'>
+      {/* 
+      Task update card - Task info
+       */}
+      <Card>
+        <FormWrapper
           name='editTaskForm'
-          action={formAction}
-          className='flex flex-col gap-y-4 w-full'
+          id='editTaskForm'
+          formActionFun={updateTask.bind(null, `${task.id}`)}
+          initialState={initialState}
         >
-          {/* Title */}
-          <div className='flex w-full items-center pr-6'>
-            <label className={`flex`}>
-              <h2 className=''>Title</h2>
-            </label>
-            <input
-              type='text'
-              name='taskTitle'
-              id='taskTitle'
-              required
-              className={`w-full`}
-              defaultValue={task.title}
-            />
-          </div>
-          {/* Category */}
-          <div className='flex w-full items-center'>
-            <label className={`flex`}>
-              <h2 className=''>Category</h2>
-            </label>
-            <TaskCategoriesSelect
-              categories={categories}
-              defaultCategoryId={task.task_category_id}
-              className=''
-            />
-          </div>
-          {/* Is active */}
-          <div className='flex w-full items-center'>
-            <label className={`flex`}>
-              <h2 className=''>Is active</h2>
-            </label>
-            <div className='flex items-center h-fit'>
-              <IsTaskActive isActiveValue={isActive} />
+          <CardTitleRow>
+            <h2>Task</h2>
+            <div className='flex h-fit'>
+              <BasicButton
+                type='delete'
+                ariaLabel='Delete task'
+                isDisabled={'id' in task === false}
+                onClick={(ev: React.FormEvent<HTMLButtonElement>) => {
+                  ev.preventDefault()
+                  const deleteAction = deleteTask.bind(
+                    null,
+                    'id' in task ? `${task.id}` : '',
+                    { ...initialState, redirectTo: '/tasks/filter' }
+                  )
+                  return deleteAction()
+                }}
+              >
+                <TrashIcon className='icon w-5 h-5' />
+              </BasicButton>
             </div>
-          </div>
-          {/* Controls */}
-          <div className='flex w-full justify-center items-center gap-6'>
-            <Link href={`/tasks/filter`} className={`rounded-2xl`}>
-              <FormButton className='' ariaLabel='Cancel' type={undefined}>
-                Cancel
-              </FormButton>
-            </Link>
-            <FormButton className='' ariaLabel='Edit task' type='submit'>
-              Edit
-            </FormButton>
-          </div>
-        </form>
-        {/* Delete form */}
-        <div className='absolute top-0 right-0 p-6 flex items-center z-20'>
-          <DeleteTaskReal task={task} formActionFun={deleteTask} />
-        </div>
-        {/* Form action state message floating above card requires relative parent */}
-        <ResponseDurationMessage state={state} />
-      </div>
-
-      {/* Task description lists */}
-      <div className='flex flex-col gap-y-2 w-full'>
-        {/* Lists title and create button */}
-        <div className='flex justify-between items-center w-full'>
-          <div className='flex items-center'>
-            <h2 className=''>
-              {clsx({
-                Lists: isList,
-                'No lists': !isList
-              })}
-            </h2>
-          </div>
-          <div className='flex items-center'>
-            <Link
-              href={`/tasks/${task.id}/description-lists/create`}
-              className={``}
-            >
-              <FormButton className='' ariaLabel='Create list' type={undefined}>
-                Create List
-              </FormButton>
-            </Link>
-          </div>
-        </div>
-        {/* Lists  */}
-        {task.description_lists !== null && (
-          <div className='flex w-full'>
-            <DescriptionListsTable
-              lists={optimisticLists}
-              formActionDeleteDescriptionListFun={formActionDeleteDescriptionListWrapper.bind(
-                null,
-                crudOptimisticList
-              )}
+          </CardTitleRow>
+          <CardRow className='mb-3'>
+            <label className='flex'>Title</label>
+            <TextareaInput
+              id='taskTitle'
+              name='taskTitle'
+              currentValue={title ? title : ''}
             />
-          </div>
-        )}
-      </div>
+          </CardRow>
+          <CardRow className='mb-3'>
+            <label className='flex min-w-[100px]'>Category</label>
+            <SelectCategoryInput
+              id='taskCategoryId'
+              name='taskCategoryId'
+              categories={categories.map(({ id, title }) => ({
+                id: `${id}`,
+                value: `${title}`
+              }))}
+              defaultId={`${task.task_category_id}`}
+            />
+          </CardRow>
+          <CardRow className='mb-3'>
+            <label className='flex min-w-[100px]'>Is active</label>
+            <IsTaskActive isActiveValue={isActive} />
+          </CardRow>
+          <CardButtonRow>
+            <BasicTextButton href={'/tasks/filter'}>Cancel</BasicTextButton>
+            <BasicTextButton type='submit' ariaLabel='Save changes'>
+              Edit
+            </BasicTextButton>
+          </CardButtonRow>
+        </FormWrapper>
+      </Card>
+      {/* 
+      Task update card - Create List card 
+      */}
+      <CreateTaskDescriptionListCard>
+        <label className='flex min-w-[100px]'>
+          <h3>Lists</h3>
+        </label>
+        <div className='flex min-w-[100px]'>
+          <BasicTextButton
+            href={`/tasks/${task.id}/description-lists/create`}
+            ariaLabel='Create list'
+          >
+            Create list
+          </BasicTextButton>
+        </div>
+      </CreateTaskDescriptionListCard>
+      {/* 
+      Task update card - Update or create list desriptions
+      */}
+      {optimisticLists && (
+        <ul className={`flex flex-col w-full gap-y-2`}>
+          {optimisticLists.map((list, idx) => (
+            <li
+              key={
+                'id' in list && list.id !== undefined
+                  ? `${list.id}`
+                  : `${list.title}${idx}`
+              }
+            >
+              <Card>
+                <CardTitleRow>
+                  <h2>List</h2>
+                  <div className='flex h-fit'>
+                    <BasicButton
+                      type='delete'
+                      ariaLabel='Delete list'
+                      onClick={(ev: React.FormEvent) => {
+                        ev.preventDefault()
+                        const deleteAction =
+                          formActionDeleteDescriptionListWrapper.bind(
+                            null,
+                            crudOptimisticListFun,
+                            'id' in list ? `${list.id}` : '',
+                            initialState
+                          )
+                        return deleteAction()
+                      }}
+                    >
+                      <TrashIcon className='icon w-5 h-5' />
+                    </BasicButton>
+                  </div>
+                </CardTitleRow>
+                <CardTitleRow>
+                  <h3 className='flex min-w-[100px] text-xl'>{list.title}</h3>
+                  <div className='flex h-full items-center justify-center'>
+                    <BasicButton
+                      href={
+                        'id' in list === true
+                          ? `/tasks/${list.task_id}/description-lists/${list.id}/edit`
+                          : undefined
+                      }
+                      isDisabled={'id' in list === false}
+                      ariaLabel='Edit list'
+                    >
+                      <PencilIcon className='icon w-5 h-5' />
+                    </BasicButton>
+                  </div>
+                </CardTitleRow>
+                <ul className='flex flex-col w-full gap-y-3'>
+                  {list.descriptions &&
+                    list.descriptions.map((description, idx) => (
+                      <li
+                        key={`${
+                          'id' in description && description.id !== undefined
+                            ? description?.id
+                            : `${description.description}${idx}`
+                        }`}
+                      >
+                        <TightCard>{description.description}</TightCard>
+                      </li>
+                    ))}
+                </ul>
+              </Card>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
+  )
+}
+
+export const FormWrapper = ({
+  children,
+  formRef = undefined,
+  name,
+  id,
+  formActionFun,
+  initialState
+}: {
+  children: React.ReactNode
+  formRef?: undefined | RefObject<HTMLFormElement>
+  name: string
+  id: string
+  formActionFun: (prevState: any, formData: FormData) => Promise<any> | void
+  initialState: InitialState
+}) => {
+  const [state, formAction] = useFormState(formActionFun, initialState)
+  return (
+    <>
+      <form ref={formRef} name={`${name}`} id={`${id}`} action={formAction}>
+        {children}
+      </form>
+      {/* Form action state message floating above card. Requires relative parent. */}
+      <ResponseDurationMessage state={state} />
+    </>
   )
 }

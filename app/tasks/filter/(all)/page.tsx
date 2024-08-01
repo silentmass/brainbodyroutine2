@@ -1,3 +1,4 @@
+import { auth } from '@/app/auth'
 import {
   fetchTaskCategories,
   fetchNullUserTasks,
@@ -18,6 +19,12 @@ export default async function Page () {
     const userTasks: Task[] | { message: string; errors: any } =
       await fetchUserTasks()
     const nullUserTasks = await fetchNullUserTasks()
+    const session = await auth()
+
+    function getIsTokenValid () {
+      if (!session || !session.accessTokenExp) return false
+      return session.accessTokenExp - new Date().getTime() > 0
+    }
 
     const tasks =
       typeof userTasks === 'object' && 'message' in userTasks
@@ -26,7 +33,11 @@ export default async function Page () {
 
     return (
       <Suspense fallback={<p>Loading categories and tasks...</p>}>
-        <TaskViewSwitcher categories={categories} tasks={tasks} />
+        <TaskViewSwitcher
+          categories={categories}
+          tasks={tasks}
+          isTokenValid={getIsTokenValid()}
+        />
       </Suspense>
     )
   } catch (error) {

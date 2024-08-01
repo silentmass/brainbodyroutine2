@@ -42,8 +42,11 @@ export default function TokenMonitor () {
           )
 
           if (timeRemaining <= 0) {
+            const logOut = async () => {
+              return signOutAction()
+            }
+            logOut()
             alert('Token expired, logging out')
-            await signOutAction()
           }
         }
       }

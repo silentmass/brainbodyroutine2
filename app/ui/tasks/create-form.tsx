@@ -1,12 +1,18 @@
 'use client'
 import { TaskCategory } from '@/app/lib/definitions'
-import { createTask } from '@/app/lib/actions/tasks'
-import { useFormState } from 'react-dom'
-import TaskCategoriesSelect from '@/app/ui/form-components/task-categories-select'
-import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
-import { FormButton } from '@/app/ui/form-components/buttons'
-import { RefObject } from 'react'
+import { RefObject, useState } from 'react'
+import {
+  CardRow,
+  CardButtonRow,
+  CardTitleRow,
+  SelectCategoryInput,
+  TextareaInput
+} from '@/app/_components/circle-vibes/UpdateTaskCard'
+import Card from '../Card'
+import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import { FormWrapper } from './edit-form'
+import { getNewRandomKey } from '@/app/utils/getRandomKey'
 
 export default function CreateTaskForm ({
   taskCategories,
@@ -17,57 +23,62 @@ export default function CreateTaskForm ({
   formActionFun: (prevState: any, formData: FormData) => Promise<any>
   createFormRef: RefObject<HTMLFormElement>
 }) {
-  const [state, formAction] = useFormState(formActionFun, initialState)
-
+  const [textareaKey, setTextareaKey] = useState(getNewRandomKey('taskTitle'))
   return (
-    <form
-      ref={createFormRef}
-      name='createTaskForm'
-      id='createTaskForm'
-      action={formAction}
-      className='card relative flex flex-col p-6 gap-6 w-full rounded-2xl'
-    >
-      <input
-        type='hidden'
-        name='taskIsActive'
-        id='taskIsActive'
-        className={``}
-        defaultValue={`true`}
-      />
-      <div className='flex flex-col gap-4'>
-        <div className='flex w-full'>
-          <label className={`flex`}>
-            <h2 className=''>Title</h2>
-          </label>
-          <input
-            type='text'
-            name='taskTitle'
+    <Card>
+      <FormWrapper
+        formRef={createFormRef}
+        name='createTaskForm'
+        id='createTaskForm'
+        formActionFun={formActionFun}
+        initialState={initialState}
+      >
+        <input
+          type='hidden'
+          name='taskIsActive'
+          id='taskIsActive'
+          className={``}
+          defaultValue={`true`}
+        />
+        <CardTitleRow>
+          <h2>Task</h2>
+        </CardTitleRow>
+        <CardRow className='mb-3'>
+          <label className='flex'>Title</label>
+          <TextareaInput
+            key={textareaKey}
             id='taskTitle'
-            required
-            className={``}
+            name='taskTitle'
+            placeholder='Happy title'
           />
-        </div>
-        <div className='flex w-full'>
-          <label className={`flex`}>
-            <h2 className=''>Category</h2>
-          </label>
-          <div className='flex w-full'>
-            <TaskCategoriesSelect
-              categories={taskCategories}
-              defaultCategoryId={taskCategories[0].id}
-              className={``}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className='flex w-full justify-center'>
-        <FormButton ariaLabel='Create task' type='submit' className=''>
-          Create
-        </FormButton>
-      </div>
-      {/* Form action state message floating above card */}
-      <ResponseDurationMessage state={state} />
-    </form>
+        </CardRow>
+        <CardRow className='mb-3'>
+          <label className='flex min-w-[100px]'>Category</label>
+          <SelectCategoryInput
+            id='taskCategoryId'
+            name='taskCategoryId'
+            categories={taskCategories.map(({ id, title }) => ({
+              id: `${id}`,
+              value: `${title}`
+            }))}
+            defaultId={`${taskCategories[0].id}`}
+          />
+        </CardRow>
+        <CardButtonRow>
+          <BasicTextButton
+            type='submit'
+            ariaLabel='Create task'
+            onClick={(ev: React.FormEvent<HTMLButtonElement>) => {
+              ev.preventDefault()
+              if (!createFormRef || !createFormRef.current) return
+              createFormRef.current.requestSubmit()
+              setTextareaKey(getNewRandomKey('taskTitle'))
+            }}
+          >
+            Create
+          </BasicTextButton>
+        </CardButtonRow>
+      </FormWrapper>
+    </Card>
   )
 }

@@ -8,7 +8,7 @@ import { DeleteButton, FormButton } from '../form-components/buttons'
 
 import { initialState } from '@/app/_components/response-state'
 import ResponseDurationMessage from '@/app/_components/response-duration'
-import { FormEvent, RefObject, useEffect } from 'react'
+import { FormEvent, RefObject, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import clsx from 'clsx'
 
@@ -146,8 +146,11 @@ export const SetTaskActiveForm = ({
 }) => {
   const isOptimistic = !('id' in task) || task.id === undefined
   const pending = 'sending' in task && task.sending === true
+  const ref = useRef<HTMLButtonElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
   return (
     <form
+      ref={formRef}
       name='editTaskForm'
       id='editTaskForm'
       action={formAction}
@@ -161,30 +164,30 @@ export const SetTaskActiveForm = ({
         value={`${!task.is_active}`}
       />
       <button
+        ref={ref}
         id='isActiveButton'
         type='submit'
         aria-label={task.is_active ? 'Check task' : 'Uncheck task'}
-        // aria-disabled={pending}
         disabled={pending}
-        className={`formActionButtonCheck flex justify-center items-center w-8 h-8 rounded-full border z-40 ${clsx(
+        className={`formActionButtonCheck flex justify-center items-center w-8 h-8 rounded-full border z-10 ${clsx(
           {
-            pending: isOptimistic || pending,
+            'formActionButtonCheck-pending': isOptimistic || pending,
             '': !isOptimistic && !pending
-            // pending: !(isOptimistic || pending),
-            // '': !(!isOptimistic && !pending)
           }
         )}`}
+        onClick={(ev: React.FormEvent<HTMLButtonElement>) => {
+          ev.preventDefault()
+          if (!ref.current) return
+          if (!formRef.current) return
+          formRef.current.requestSubmit()
+        }}
       >
         <CheckIcon
-          className={`icon w-full h-full z-10 ${clsx({
-            invisible: task.is_active,
-            '': !task.is_active
-          })} ${clsx({
+          className={`w-full h-full z-10 ${clsx({
             'pending-icon': isOptimistic || pending,
-            '': !isOptimistic && !pending
-            // 'pending-icon': !(isOptimistic || pending),
-            // '': !(!isOptimistic && !pending)
+            icon: !isOptimistic && !pending
           })}`}
+          style={{ visibility: task.is_active ? 'hidden' : 'visible' }}
         />
       </button>
 

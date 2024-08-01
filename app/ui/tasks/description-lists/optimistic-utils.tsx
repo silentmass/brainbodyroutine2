@@ -52,7 +52,7 @@ export async function sendDescriptionList (
 export async function sendDeleteDescriptionList (
   id: string,
   prevState: any,
-  formData: FormData
+  formData?: FormData
 ) {
   await deleteDescriptionList(id, prevState, formData)
 }
@@ -61,16 +61,15 @@ export async function formActionCreateDescriptionListWrapper (
   crudOptimisticFun: (
     action: number | TaskDescriptionListBase | TaskDescriptionList
   ) => void,
-  formRef: RefObject<HTMLFormElement>,
   taskId: string,
   prevState: any,
   formData: FormData
 ) {
   crudOptimisticFun({
     title: `${formData.get('taskDescriptionListTitle')}`,
-    task_id: parseInt(taskId)
+    task_id: parseInt(taskId),
+    descriptions: []
   })
-  formRef.current?.reset()
   await sendDescriptionList(taskId, prevState, formData)
 }
 
@@ -80,7 +79,7 @@ export async function formActionDeleteDescriptionListWrapper (
   ) => void,
   id: string,
   prevState: any,
-  formData: FormData
+  formData?: FormData
 ) {
   crudOptimisticFun(parseInt(id))
   await sendDeleteDescriptionList(id, prevState, formData)

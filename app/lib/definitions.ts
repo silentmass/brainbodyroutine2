@@ -76,11 +76,11 @@ export interface ListDescription extends ListDescriptionBase {
 export interface TaskDescriptionListBase {
   title: string
   task_id: number
+  descriptions: ListDescription[] | null
 }
 
 export interface TaskDescriptionList extends TaskDescriptionListBase {
   id: number
-  descriptions: ListDescription[] | null
 }
 
 export interface ListDescriptionBase {
@@ -159,4 +159,8 @@ export const UserRegisterSchema = z.object({
   full_name: z.string().nullable(),
   disabled: z.boolean().nullable(),
   password: z.string().min(1)
+})
+
+export const CroqSearchQuerySchema = z.object({
+  searchQuery: z.string().min(1)
 })

@@ -7,7 +7,7 @@ import { DragEvent, useRef, useState } from 'react'
 import React from 'react'
 import { number } from 'zod'
 
-interface DropFile {
+export interface DropFile {
   name: string
   url: string
   type: string
@@ -43,9 +43,75 @@ const getDataTransferListItemFileUrls = (list: DataTransferItemList) => {
   return newList
 }
 
-export default function ModelUploadDropZone () {
-  const divRef = useRef<null | HTMLDivElement>(null)
-  const pointerContainer = useRef<null | HTMLDivElement>(null)
+const PointerStats = ({
+  draggedObject,
+  pointerContainerAttributes
+}: {
+  draggedObject: any
+  pointerContainerAttributes: {
+    x: number | null
+    y: number | null
+    visible: boolean
+  }
+}) => {
+  return (
+    <ul
+      id='stats'
+      className='absolute flex flex-col top-0 left-0 text-xs p-6'
+      style={{
+        visibility: pointerContainerAttributes.visible ? 'visible' : 'hidden'
+      }}
+    >
+      <li>
+        Dragged:{' '}
+        {draggedObject !== null && typeof draggedObject === 'object'
+          ? draggedObject.length
+          : 'null'}
+      </li>
+      <li>
+        {`pointer: x: ${pointerContainerAttributes.x}, y: ${pointerContainerAttributes.y}`}
+      </li>
+    </ul>
+  )
+}
+
+export const ListDroppedFilesImages = ({
+  files
+}: {
+  files:
+    | {
+        name: string
+        url: string
+        type: string
+        size: number
+      }[]
+    | DropFile[]
+    | null
+}) => {
+  return (
+    files &&
+    files.map(entry => {
+      return (
+        <li key={`${entry.name}`} className='flex bg-accent-3'>
+          <Image
+            src={entry.url}
+            width={30}
+            height={30}
+            alt={`${entry.name}`}
+            // onLoad={() => URL.revokeObjectURL(entry.url)}
+          />
+          <p className='flex text-xs items-center'>{entry.name}</p>
+        </li>
+      )
+    })
+  )
+}
+
+export default function ModelUploadDropZone ({
+  onFileChange = null
+}: {
+  onFileChange: null | ((newFile: any) => void)
+}) {
   const [pointerContainerAttributes, setPointerContainerAttributes] = useState<{
     x: null | number
     y: null | number
@@ -53,7 +119,7 @@ export default function ModelUploadDropZone () {
   }>({
     x: null,
     y: null,
-    visible: false
+    visible: false // show stats
   })
   const [draggedObject, setDraggedObject] = useState<null | number | any[]>(
     null
@@ -61,23 +127,15 @@ export default function ModelUploadDropZone () {
   const [isDragOver, setIsDragOver] = useState(false)
 
   function setPointerContainerPosition (e: React.MouseEvent) {
-    if (divRef.current && pointerContainer.current) {
-      const newPosition = {
-        x:
-          e.clientX -
-          divRef.current.offsetLeft -
-          pointerContainer.current.offsetWidth,
-        y:
-          e.clientY -
-          divRef.current.offsetTop -
-          pointerContainer.current.offsetHeight
-      }
-      setPointerContainerAttributes(previousState =>
-        previousState !== null
-          ? { ...previousState, ...newPosition }
-          : previousState
-      )
+    const newPosition = {
+      x: e.clientX,
+      y: e.clientY
     }
+    setPointerContainerAttributes(previousState =>
+      previousState !== null
+        ? { ...previousState, ...newPosition }
+        : previousState
+    )
   }
 
   function dragEndHandler (ev: React.DragEvent) {
@@ -93,49 +151,12 @@ export default function ModelUploadDropZone () {
     }
   }
 
-  function mouseMoveHandler (ev: React.MouseEvent) {
-    ev.preventDefault()
-    console.log('mouseMove')
-    let childElements: any[] = []
-    if (ev.currentTarget && ev.currentTarget.hasChildNodes()) {
-      childElements = [...ev.currentTarget.children].filter(
-        element => !/dropZone|stats|redBox/.exec(element.id)
-      )
-    }
-    if (childElements.length) {
-      return console.log(childElements)
-    }
-    setPointerContainerPosition(ev)
-  }
-
-  function dragEnterHandler (ev: React.DragEvent) {
-    ev.preventDefault()
-    console.log('dragEnter')
-    setPointerContainerAttributes(previousState =>
-      previousState ? { ...previousState, visible: true } : previousState
-    )
-  }
-
-  function dragLeaveHandler (ev: React.DragEvent) {
-    ev.preventDefault()
-    console.log('dragLeave')
-    if (
-      divRef.current &&
-      (ev.clientX < divRef.current?.offsetLeft ||
-        ev.clientX > divRef.current.offsetLeft + divRef.current.offsetWidth)
-    ) {
-      setPointerContainerAttributes(previousState =>
-        previousState ? { ...previousState, visible: false } : previousState
-      )
-    }
-  }
-
   function dragOverHandler (ev: React.DragEvent) {
     ev.preventDefault()
     let childElements: any[] = []
     if (ev.currentTarget && ev.currentTarget.hasChildNodes()) {
       childElements = [...ev.currentTarget.children].filter(
-        element => !/dropZone|stats|redBox/.exec(element.id)
+        element => !/dropZone|stats|redBox|deleteObject/.exec(element.id)
       )
     }
     if (childElements.length) {
@@ -164,15 +185,17 @@ export default function ModelUploadDropZone () {
     if (dt.items) {
       const urls = getDataTransferListItemFileUrls(dt.items)
       setDraggedObject(urls ? [...urls] : null)
+
+      onFileChange && onFileChange(urls)
     } else {
-      setDraggedObject(
-        [...dt.files].map(entry => ({
-          name: entry.name,
-          url: URL.createObjectURL(entry),
-          type: entry.type,
-          size: entry.size
-        }))
-      )
+      const files = [...dt.files].map(entry => ({
+        name: entry.name,
+        url: URL.createObjectURL(entry),
+        type: entry.type,
+        size: entry.size
+      }))
+      setDraggedObject(files)
+      onFileChange && onFileChange(files)
     }
     setPointerContainerAttributes(previousState =>
       previousState ? { ...previousState, visible: false } : previousState
@@ -182,55 +205,37 @@ export default function ModelUploadDropZone () {
 
   return (
     <div
-      ref={divRef}
-      className='relative flex w-full h-full bg-gray-800 justify-center items-center'
-      onMouseMove={mouseMoveHandler}
-      onDragEnter={dragEnterHandler}
-      onDragLeave={dragLeaveHandler}
+      className='relative flex h-full w-full justify-center items-center'
       onDragOver={dragOverHandler}
     >
-      <div id='dropZoneRelativeParent' className='flex flex-col relative'>
-        {/* Drop zone */}
-        <div
-          id='dropZone'
-          className={`flex border border-dashed w-[200px] h-[200px] items-center justify-center ${clsx(
-            {
-              'outline outline-offset-2 outline-rose-400 border-0 bg-gray-700':
-                isDragOver,
-              '': !isDragOver
-            }
-          )}`}
-          onDragOver={dropZoneDragOverHandler}
-          onDragLeave={dropZoneDragLeave}
-          onDrop={dropZoneDropHandler}
-          onDragEnd={dragEndHandler}
-        >
-          <ul className='flex flex-col w-full h-full items-center justify-center gap-1'>
-            {draggedObject && typeof draggedObject !== 'number' ? (
-              draggedObject.map(entry => {
-                return (
-                  <li key={`${entry.name}`} className='flex bg-content/10'>
-                    <Image
-                      src={entry.url}
-                      width={30}
-                      height={30}
-                      alt={`${entry.name}`}
-                      onLoad={() => URL.revokeObjectURL(entry.url)}
-                    />
-                    {entry.name}
-                  </li>
-                )
-              })
-            ) : (
-              <li>Drop zone</li>
-            )}
-          </ul>
-        </div>
+      {/* Drop zone */}
+      <div
+        id='dropZone'
+        className={`flex relative w-full h-full items-center justify-center bg-accent-1 rounded-md outline-dashed outline-accent-3 p-2 ${clsx(
+          {
+            'outline outline-offset-2 outline-accent-8 bg-accent-3 border-0':
+              isDragOver,
+            '': !isDragOver
+          }
+        )}`}
+        onDragOver={dropZoneDragOverHandler}
+        onDragLeave={dropZoneDragLeave}
+        onDrop={dropZoneDropHandler}
+        onDragEnd={dragEndHandler}
+      >
+        <ul className='flex flex-col w-full h-full items-center justify-center gap-1'>
+          {draggedObject && typeof draggedObject !== 'number' ? (
+            <ListDroppedFilesImages files={draggedObject} />
+          ) : (
+            <li>
+              <label>Drop zone</label>
+            </li>
+          )}
+        </ul>
         <button
-          className={`absolute top-0 right-0 flex p-6 ${clsx({
-            '': draggedObject,
-            hidden: !draggedObject
-          })}`}
+          id='deleteObject'
+          className={`flex absolute top-0 right-0 p-1`}
+          style={{ visibility: draggedObject ? 'visible' : 'hidden' }}
           onClick={e => {
             e.preventDefault()
             setDraggedObject(null)
@@ -240,56 +245,10 @@ export default function ModelUploadDropZone () {
           <BackspaceIcon className='icon flex w-5 h-5' />
         </button>
       </div>
-      {/* Stats */}
-      <ul
-        id='stats'
-        className='absolute flex flex-col top-0 w-full text-xs p-6'
-      >
-        <li>
-          Dragged:{' '}
-          {draggedObject !== null && typeof draggedObject === 'object'
-            ? draggedObject.length
-            : 'null'}
-        </li>
-        <li>
-          redBox visible:{' '}
-          {pointerContainerAttributes
-            ? `${pointerContainerAttributes.visible}`
-            : null}
-        </li>
-      </ul>
-      {/* Red pointer box container */}
-      <div
-        ref={pointerContainer}
-        id='redBox'
-        className={`absolute flex min-w-[30px] min-h-[30px] bg-red-400 top-20 left-0 p-6 ${clsx(
-          {
-            '': pointerContainerAttributes.visible,
-            hidden: !pointerContainerAttributes.visible
-          }
-        )}`}
-        style={{
-          left:
-            pointerContainerAttributes.x !== null
-              ? pointerContainerAttributes.x
-              : 0,
-          top:
-            pointerContainerAttributes.y !== null
-              ? pointerContainerAttributes.y
-              : 0
-        }}
-        draggable
-      >
-        <ul className='flex flex-col w-full h-full items-center justify-center'>
-          {draggedObject && typeof draggedObject !== 'number' ? (
-            draggedObject.map(entry => (
-              <li key={`${entry.name}`}>{entry.name}</li>
-            ))
-          ) : (
-            <li className='flex w-full h-full'>Drop zone</li>
-          )}
-        </ul>
-      </div>
+      <PointerStats
+        draggedObject={draggedObject}
+        pointerContainerAttributes={pointerContainerAttributes}
+      />
     </div>
   )
 }

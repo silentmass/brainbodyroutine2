@@ -1,41 +1,59 @@
 'use client'
 import { Task, TaskBase } from '@/app/lib/definitions'
 import { DuplicateTaskForm, SetTaskActiveForm } from './buttons'
-import { ChevronRightIcon, PencilIcon } from '@heroicons/react/24/outline'
+import {
+  ChevronRightIcon,
+  PencilIcon,
+  TrashIcon
+} from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { FormEvent } from 'react'
+import { FormEvent, useRef } from 'react'
 import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
 import { useFormState } from 'react-dom'
 import clsx from 'clsx'
 import { FormButton, FormButtonView } from '../form-components/buttons'
+import Card from '../Card'
+import CardBottomRow from '@/app/_components/circle-vibes/CardBottomRow'
+import CardTopRow from '@/app/_components/circle-vibes/CardTopRow'
+import CardTopRowCheckButtonContainer from '@/app/_components/circle-vibes/CardTopRowCheckButtonContainer'
+import CardTopRowEditButtonContainer from '@/app/_components/circle-vibes/CardTopRowEditButtonContainer'
+import CardTopRowOpenButtonContainer from '@/app/_components/circle-vibes/CardTopRowOpenButtonContainer'
+import EditButtonsContainer from '@/app/_components/circle-vibes/EditButtonsContainer'
+import LargeCheckButton from '@/app/_components/circle-vibes/LargeCheckButton'
+import LargeOpenButton from '@/app/_components/circle-vibes/LargeOpenButton'
+import BasicButton from '@/app/_components/circle-vibes/BasicButton'
+import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import { FormWrapper } from './edit-form'
 
 const TaskCard = ({
   task,
-  showTaskLink,
+  showOpenTaskLink = true,
+  showEditTaskButtons = true,
   handleViewModeClick,
   formActionDeleteTaskFun,
   formActionUpdateTaskFun,
-  formActionDuplicateTaskFun
+  formActionDuplicateTaskFun,
+  isTokenValid = false
 }: {
   task: Task | TaskBase
-  showTaskLink: boolean
+  showOpenTaskLink?: boolean
+  showEditTaskButtons?: boolean
   handleViewModeClick: (event: FormEvent<HTMLButtonElement>) => void
   formActionDeleteTaskFun: (
     id: string,
     prevState: any,
     formData: FormData
   ) => Promise<any>
-  formActionUpdateTaskFun: (
-    id: string,
-    prevState: any,
-    formData: FormData
-  ) => Promise<any>
+  formActionUpdateTaskFun: (prevState: any, formData: FormData) => Promise<any>
   formActionDuplicateTaskFun: (
     prevState: any,
     formData: FormData
   ) => Promise<any>
+  isTokenValid?: boolean
 }) => {
+  const formRef = useRef<HTMLFormElement | null>(null)
+  const deleteFormRef = useRef<HTMLFormElement | null>(null)
   const isOptimistic = !('id' in task) || task.id === undefined
 
   const [stateDuplicateTask, formActionDuplicateTask] = useFormState(
@@ -43,105 +61,170 @@ const TaskCard = ({
     initialState
   )
 
-  const updateTaskWithId = formActionUpdateTaskFun.bind(
+  const deleteTaskWithId = formActionDeleteTaskFun.bind(
     null,
     isOptimistic ? '' : `${task.id}`
   )
-  const [state, formAction] = useFormState(updateTaskWithId, initialState)
+
+  const [deleteState, formActionDelete] = useFormState(
+    deleteTaskWithId,
+    initialState
+  )
+
+  const handleCheckButtonClick = (ev: React.FormEvent<HTMLButtonElement>) => {
+    ev.preventDefault()
+    if (!formRef.current) return
+    formRef.current.requestSubmit()
+  }
+  const handleCheckButtonClickDelete = (
+    ev: React.FormEvent<HTMLButtonElement>
+  ) => {
+    ev.preventDefault()
+    if (!deleteFormRef.current) return
+    deleteFormRef.current.requestSubmit()
+  }
 
   return (
-    <div
-      className={`relative flex h-fit w-full p-6 items-center rounded-2xl ${clsx(
-        {
-          'card-nulluser': task.user_id === null,
-          card: task.user_id !== null
-        }
-      )}`}
-    >
-      <div className='flex flex-col w-full items-center h-full gap-6 justify-between'>
-        {/* Open task */}
-        <div className='flex items-center rounded-2xl justify-between gap-6 w-full'>
-          <div>
-            {showTaskLink ? (
-              isOptimistic ? (
-                <FormButtonView
-                  onClick={() => {}}
-                  className={`flex items-center justify-center pending`}
-                  type={undefined}
-                  ariaLabel={'View task'}
-                  value={''}
-                >
-                  <ChevronRightIcon className='icon w-10 pending-icon' />
-                </FormButtonView>
-              ) : (
-                <FormButtonView
-                  onClick={handleViewModeClick}
-                  type={undefined}
-                  ariaLabel={'View task'}
-                  value={task.id}
-                  className='flex items-center justify-center'
-                >
-                  <ChevronRightIcon className='icon w-10' />
-                </FormButtonView>
-              )
-            ) : (
-              <></>
-            )}
-          </div>
-          {task.user_id === null ? (
-            // Duplicate task
-            <div className=''>
-              <DuplicateTaskForm
-                task={task}
-                formAction={formActionDuplicateTask}
+    <Card>
+      <CardTopRow>
+        <CardTopRowOpenButtonContainer>
+          <LargeOpenButton
+            type={undefined}
+            ariaLabel={'View task'}
+            onClick={isOptimistic ? () => null : handleViewModeClick}
+            isDisabled={isOptimistic}
+            defaultValue={isOptimistic ? '' : task.id}
+            isVisible={showOpenTaskLink}
+          />
+        </CardTopRowOpenButtonContainer>
+        {task.user_id !== null && (
+          <CardTopRowCheckButtonContainer>
+            <FormWrapper
+              formRef={formRef}
+              name='editTaskForm'
+              id='editTaskForm'
+              formActionFun={formActionUpdateTaskFun}
+              initialState={initialState}
+            >
+              {/* Task marked */}
+              <input
+                type='hidden'
+                name='taskIsActive'
+                id='taskIsActive'
+                value={`${!task.is_active}`}
               />
-            </div>
-          ) : (
-            <>
-              {showTaskLink ? (
-                <div>
-                  {isOptimistic ? (
-                    <FormButton
-                      className={`flex items-center justify-center pending`}
-                      type={undefined}
-                      ariaLabel={'Edit task'}
-                    >
-                      <PencilIcon className='icon w-5 pending-icon' />
-                    </FormButton>
-                  ) : (
-                    <Link href={`/tasks/${task.id}/edit`}>
-                      <FormButton
-                        className={`flex items-center justify-center`}
-                        type={undefined}
-                        ariaLabel={'Edit task'}
-                      >
-                        <PencilIcon className='icon w-5' />
-                      </FormButton>
-                    </Link>
-                  )}
-                </div>
-              ) : (
-                <></>
-              )}
-
-              <div className='flex h-full items-center justify-center z-40'>
-                <SetTaskActiveForm task={task} formAction={formAction} />
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className='flex h-full w-full'>
-          <p className='flex h-full text-wrap items-center text-xl break-words'>
-            {task.title}
-          </p>
-        </div>
-      </div>
-      {/* Form action state message floating above the card. Must have relative parent. */}
-      <ResponseDurationMessage state={state} />
-      <ResponseDurationMessage state={stateDuplicateTask} />
+              <LargeCheckButton
+                id='isActiveButton'
+                name='isActiveButton'
+                checked={!task.is_active}
+                aria-label={task.is_active ? 'Check task' : 'Uncheck task'}
+                isDisabled={isOptimistic}
+                onClick={handleCheckButtonClick}
+              />
+              {/* Task title */}
+              <input
+                type='hidden'
+                name='taskTitle'
+                id='taskTitle'
+                defaultValue={task.title}
+              />
+              {/* Task category */}
+              <input
+                type='hidden'
+                name='taskCategoryId'
+                id='taskCategoryId'
+                defaultValue={task.task_category_id}
+              />
+              <input
+                type='hidden'
+                name='sortOrder'
+                id='sortOrder'
+                defaultValue={`${task.sort_order}`}
+              />
+            </FormWrapper>
+          </CardTopRowCheckButtonContainer>
+        )}
+        {task.user_id !== null && showEditTaskButtons && (
+          <CardTopRowEditButtonContainer>
+            <EditButtonsContainer>
+              <BasicButton
+                href={isOptimistic ? '' : `/tasks/${task.id}/edit`}
+                ariaLabel={'Edit task'}
+                isDisabled={isOptimistic}
+                isVisible={task.user_id !== null && showOpenTaskLink}
+              >
+                <PencilIcon
+                  className={`icon w-5 ${clsx({
+                    'pending-icon': isOptimistic
+                  })}`}
+                />
+              </BasicButton>
+              <form ref={deleteFormRef} action={formActionDelete}>
+                <BasicButton
+                  ariaLabel='Delete task'
+                  type='delete'
+                  onClick={handleCheckButtonClickDelete}
+                >
+                  <TrashIcon className='icon w-5 h-5' />
+                </BasicButton>
+              </form>
+            </EditButtonsContainer>
+          </CardTopRowEditButtonContainer>
+        )}
+        {/* 
+        Duplicate task button
+        */}
+        {task.user_id === null && (
+          <div className='absolute flex top-0 right-0'>
+            <FormWrapper
+              name='duplicateTaskForm'
+              id='duplicateTaskForm'
+              formActionFun={formActionDuplicateTaskFun}
+              initialState={initialState}
+            >
+              {/* Task marked */}
+              <input
+                type='hidden'
+                name='taskIsActive'
+                id='taskIsActive'
+                value={`${task.is_active}`}
+              />
+              {/* Task title */}
+              <input
+                type='hidden'
+                name='taskTitle'
+                id='taskTitle'
+                defaultValue={task.title}
+              />
+              {/* Task category */}
+              <input
+                type='hidden'
+                name='taskCategoryId'
+                id='taskCategoryId'
+                defaultValue={task.task_category_id}
+              />
+              <input
+                type='hidden'
+                name='sortOrder'
+                id='sortOrder'
+                defaultValue={`${task.sort_order}`}
+              />
+              <BasicTextButton
+                ariaLabel='Duplicate task'
+                type='submit'
+                isDisabled={!isTokenValid}
+              >
+                Duplicate
+              </BasicTextButton>
+            </FormWrapper>
+          </div>
+        )}
+      </CardTopRow>
+      <CardBottomRow isPaddingRight={true}>
+        <p>{task.title}</p>
+      </CardBottomRow>
       {/* Other controls */}
-    </div>
+    </Card>
   )
 }
 

@@ -10,7 +10,6 @@ import {
 import {
   Tag,
   Task,
-  TaskBase,
   TaskCategory,
   TaskDescriptionList
 } from '@/app/lib/definitions'
@@ -31,19 +30,22 @@ export const TaskCarousel = ({
   handleTaskChange,
   selectedCategory,
   handleViewModeClick,
-  showTaskLink = true,
+  showOpenTaskLink = true,
+  showEditTaskButtons = true,
   horizontal = false,
   invert = true,
   formActionDeleteTaskFun,
   formActionUpdateTaskFun,
-  formActionDuplicateTaskFun
+  formActionDuplicateTaskFun,
+  isTokenValid
 }: {
   tasks: Task[]
   selectedTask: Task
   handleTaskChange: Dispatch<SetStateAction<Task | null>>
   selectedCategory: TaskCategory | null
   handleViewModeClick: (event: FormEvent<HTMLButtonElement>) => void
-  showTaskLink: boolean
+  showOpenTaskLink?: boolean
+  showEditTaskButtons?: boolean
   horizontal: boolean
   invert: boolean
   formActionDeleteTaskFun: (
@@ -66,6 +68,7 @@ export const TaskCarousel = ({
     prevState: any,
     formData: FormData
   ) => Promise<any>
+  isTokenValid: boolean
 }) => {
   const touchAreaRef = useRef<HTMLDivElement>(null)
 
@@ -266,26 +269,19 @@ export const TaskCarousel = ({
     ]
   )
 
-  const selectedTaskIdx =
-    tasks && tasks.length && selectedTask
-      ? tasks
-          .map((task, idx) => (task.id === selectedTask.id ? idx : NaN))
-          .filter(idx => !isNaN(idx))[0]
-      : null
-
   return (
     <div
       id='touchArea'
       ref={touchAreaRef}
-      className={`relative flex flex-col w-full rounded-2xl select-none overflow-auto hide-scrollbar`}
+      className={`relative flex flex-col w-full select-none overflow-auto hide-scrollbar rounded-cool border-0`}
       style={{ height: `${touchAreaHeight}px` }}
     >
       {/* Top gradient fade */}
       <div
         id='touchAreaTopGradient'
-        className={`flex sticky bg-gradient-to-t ${gradientContainerStyle} rounded-t-2xl select-none ${clsx(
+        className={`flex sticky bg-gradient-to-t ${gradientContainerStyle} rounded-t-cool select-none border-0 ${clsx(
           {
-            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-2xl hover:border-accent-4':
+            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-cool hover:border-accent-4':
               selectedTask && tasks && selectedTask.id !== tasks[0].id,
             '': selectedTask && tasks && selectedTask.id === tasks[0].id
           }
@@ -299,17 +295,19 @@ export const TaskCarousel = ({
           id='listButtonUp'
           name='listButtonUp'
           onClick={handleMouseClick}
-          className={`flex w-full h-full justify-center items-center rounded-t-2xl ${clsx(
+          className={`flex w-full h-full justify-center items-center rounded-t-cool  border-0 ${clsx(
             {
               '': selectedTask && selectedTask.id !== tasks[0].id,
               hidden: selectedTask && selectedTask.id === tasks[0].id
             }
           )}`}
           value={
-            selectedTaskIdx !== null &&
-            selectedTaskIdx >= 0 &&
-            tasks[selectedTaskIdx - 1]
-              ? tasks[selectedTaskIdx - 1].id
+            tasks &&
+            selectedTask !== undefined &&
+            tasks.findIndex(({ id }) => id === selectedTask.id) !== -1 &&
+            tasks.findIndex(({ id }) => id === selectedTask.id) > 0
+              ? tasks[tasks.findIndex(({ id }) => id === selectedTask.id) - 1]
+                  .id
               : 'null'
           }
         >
@@ -320,9 +318,9 @@ export const TaskCarousel = ({
       {/* Bottom gradient fade */}
       <div
         id='touchAreaBottomGradient'
-        className={`flex sticky bg-gradient-to-b ${gradientContainerStyle} select-none ${clsx(
+        className={`flex sticky bg-gradient-to-b ${gradientContainerStyle} select-none  border-0 ${clsx(
           {
-            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-2xl hover:border-accent-4':
+            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-cool hover:border-accent-4':
               selectedTask &&
               tasks &&
               selectedTask.id !== tasks[tasks.length - 1].id,
@@ -334,14 +332,14 @@ export const TaskCarousel = ({
         )}`}
         style={{
           height: `${gradientHeight}px`,
-          top: `${touchAreaHeight - gradientHeight + 5}px`
+          top: `${touchAreaHeight - gradientHeight}px`
         }}
       >
         <button
           id='listButtonDown'
           name='listButtonDown'
           onClick={handleMouseClick}
-          className={`flex w-full h-full justify-center items-center rounded-b-2xl ${clsx(
+          className={`flex w-full h-full justify-center items-center rounded-b-cool  border-0 ${clsx(
             {
               '':
                 selectedTask &&
@@ -354,10 +352,13 @@ export const TaskCarousel = ({
             }
           )}`}
           value={
-            selectedTaskIdx !== null &&
-            selectedTaskIdx <= tasks.length - 1 &&
-            tasks[selectedTaskIdx + 1]
-              ? tasks[selectedTaskIdx + 1].id
+            tasks &&
+            selectedTask !== undefined &&
+            tasks.findIndex(({ id }) => id === selectedTask.id) !== -1 &&
+            tasks.length - 1 >
+              tasks.findIndex(({ id }) => id === selectedTask.id)
+              ? tasks[tasks.findIndex(({ id }) => id === selectedTask.id) + 1]
+                  .id
               : 'null'
           }
         >
@@ -373,7 +374,7 @@ export const TaskCarousel = ({
         <ul
           ref={listRef}
           id='taskList'
-          className={`absolute flex flex-col w-full gap-y-1 items-center select-none z-0 rounded-2xl pt-[100px] pb-[100px]`}
+          className={`absolute flex flex-col w-full px-1 gap-y-1 items-center select-none z-0 pt-[100px] pb-[100px]  border-0 `}
           style={{
             top: `${listTopPositionState}px`,
             paddingTop: `${listPaddingState.top}px`,
@@ -385,7 +386,7 @@ export const TaskCarousel = ({
               <li
                 id={`taskCard${task.id}`}
                 key={task.id}
-                className={`flex relative w-full rounded-2xl  ${clsx({
+                className={`flex relative w-full rounded-cool  border-0 ${clsx({
                   'outline-2 outline-offset-0 outline-dashed outline-accent-3 opacity-100':
                     task.id === selectedTask?.id && isTouchMove,
                   'opacity-50': task.id !== selectedTask?.id && isTouchMove,
@@ -394,14 +395,16 @@ export const TaskCarousel = ({
               >
                 <TaskCard
                   task={task}
-                  showTaskLink={showTaskLink}
+                  showOpenTaskLink={showOpenTaskLink}
+                  showEditTaskButtons={showEditTaskButtons}
                   handleViewModeClick={handleViewModeClick}
                   formActionDeleteTaskFun={formActionDeleteTaskFun}
                   formActionUpdateTaskFun={formActionUpdateTaskFun.bind(
                     null,
                     `${task.user_id}`,
                     task.description_lists,
-                    task.tags
+                    task.tags,
+                    !('id' in task) || task.id === undefined ? '' : `${task.id}`
                   )}
                   formActionDuplicateTaskFun={formActionDuplicateTaskFun.bind(
                     null,
@@ -409,6 +412,7 @@ export const TaskCarousel = ({
                     task.description_lists,
                     task.tags
                   )}
+                  isTokenValid={isTokenValid}
                 />
               </li>
             ))}

@@ -1,0 +1,32 @@
+{
+    "task_lists": [
+      {
+        "id": 1,
+        "title": "Daily Tasks",
+        "description": [
+          "Check emails and respond to urgent messages.",
+          "Review and update task list for the day.",
+          "Attend morning stand-up meeting with the team."
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Project Milestones",
+        "description": [
+          "Complete phase 1 development and testing.",
+          "Prepare project status report for stakeholders.",
+          "Discuss upcoming milestones with the project manager."
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Marketing Campaign",
+        "description": [
+          "Finalize content for social media posts.",
+          "Review and approve design concepts for ads.",
+          "Schedule launch of the campaign on all platforms."
+        ]
+      }
+    ]
+}
+  

@@ -51,7 +51,7 @@ export async function sendDescription (
 export async function sendDeleteDescription (
   id: string,
   prevState: any,
-  formData: FormData
+  formData?: FormData | undefined
 ) {
   await deleteListDescription(id, prevState, formData)
 }
@@ -60,7 +60,6 @@ export async function formActionCreateDescriptionWrapper (
   crudOptimisticFun: (
     action: number | ListDescriptionBase | ListDescription
   ) => void,
-  formRef: RefObject<HTMLFormElement>,
   listId: string,
   prevState: any,
   formData: FormData
@@ -69,7 +68,6 @@ export async function formActionCreateDescriptionWrapper (
     description: `${formData.get('description')}`,
     description_list_id: parseInt(listId)
   })
-  formRef.current?.reset()
   await sendDescription(listId, prevState, formData)
 }
 

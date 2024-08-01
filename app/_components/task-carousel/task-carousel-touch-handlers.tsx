@@ -18,6 +18,7 @@ import {
   animateListMovement,
   animateRollingWrapper
 } from './task-carousel-animation'
+import { getDropTargetElementsAtPoint } from '@/app/context/DndProvider'
 
 export default function useTouchHandler (
   touchAreaRef: RefObject<HTMLDivElement>,
@@ -51,7 +52,13 @@ export default function useTouchHandler (
   const handleTouchStart = useCallback(
     (event: TouchEvent) => {
       event.preventDefault()
-      if (!isTouchMove) {
+      const buttons = getPointElementByString(
+        event.touches[0].clientX,
+        event.touches[0].clientY,
+        'listButton'
+      )
+
+      if (!isTouchMove && !buttons) {
         setIsTouchMove(true)
       }
 
@@ -352,4 +359,21 @@ export default function useTouchHandler (
   }, [handleTouchStart, handleTouchMove, handleTouchEnd, touchAreaRef])
 
   return { handleTouchStart, handleTouchMove, handleTouchEnd }
+}
+
+export const getPointElementByString = (x: number, y: number, id: string) => {
+  return getElementsAtPoint(
+    x,
+    y,
+    Array.from(document.documentElement.querySelectorAll(`[id^="${id}"]`))
+  )
+}
+
+export function getElementsAtPoint (x: number, y: number, elements: Element[]) {
+  return elements.filter(t => {
+    const rect = t.getBoundingClientRect()
+    return (
+      x >= rect.left && x <= rect.right && y <= rect.bottom && y >= rect.top
+    )
+  })
 }

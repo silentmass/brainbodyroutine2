@@ -1,79 +1,61 @@
 'use client'
 
-import { useFormState } from 'react-dom'
-import { createDescriptionList } from '@/app/lib/actions/descriptionlists'
-import { useRouter } from 'next/navigation'
-import { RefObject, useEffect } from 'react'
+import { RefObject, useRef, useState } from 'react'
 import { Task } from '@/app/lib/definitions'
-import Link from 'next/link'
-import { FormButton } from '../../form-components/buttons'
-import ResponseDurationMessage from '@/app/_components/response-duration'
 import { initialState } from '@/app/_components/response-state'
+import Card from '../../Card'
+import { FormWrapper } from '../edit-form'
+import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import {
+  CardTitleRow,
+  CardRow,
+  TextareaInput,
+  CardButtonRow
+} from '@/app/_components/circle-vibes/UpdateTaskCard'
 
 export default function CreateTaskDescriptionListForm ({
-  task,
-  formActionFun,
-  createFormRef
+  onSubmit,
+  cancelRedirect = undefined
 }: {
-  task: Task
-  formActionFun: (
-    taskId: string,
-    prevState: any,
-    formData: FormData
-  ) => Promise<any>
-  createFormRef: RefObject<HTMLFormElement>
+  onSubmit?: undefined | (() => void)
+  cancelRedirect?: string | undefined
 }) {
-  const createTaskDescriptionListWithTaskId = formActionFun.bind(
-    null,
-    `${task.id}`
-  )
-  const [state, formAction] = useFormState(
-    createTaskDescriptionListWithTaskId,
-    initialState
-  )
-
-  // const router = useRouter()
-
-  // useEffect(() => {
-  //   if (state?.redirectTo !== '' && state.redirectTo !== null) {
-  //     router.push(state?.redirectTo)
-  //   }
-  // }, [state, router])
-
+  const [textareaKey, setTextareaKey] = useState(getNewTitleKey())
+  function getNewTitleKey () {
+    return `title_${Math.round(10000 * Math.random())}`
+  }
   return (
-    <form
-      ref={createFormRef}
-      name='createTaskDescriptionListForm'
-      id='createTaskDescriptionListForm'
-      action={formAction}
-      className='card relative flex flex-col gap-y-4 w-full rounded-2xl p-5'
-    >
-      <div className='flex flex-col w-full gap-2'>
-        <label className={``}>
-          <h2 className=''>List Title</h2>
-        </label>
-        <input
-          type='text'
+    <Card>
+      <CardTitleRow>
+        <h2>Description List</h2>
+      </CardTitleRow>
+      <CardRow>
+        <label>Title</label>
+        <TextareaInput
+          key={textareaKey}
           name='taskDescriptionListTitle'
           id='taskDescriptionListTitle'
-          required
-          className={``}
+          placeholder='Happy title'
         />
-      </div>
-
-      {/* Form controls */}
-      <div className='flex w-full justify-center items-center gap-4'>
-        <Link href={`/tasks/${task.id}/edit`} className={`rounded-2xl`}>
-          <FormButton className='' ariaLabel='Cancel' type={undefined}>
-            Cancel
-          </FormButton>
-        </Link>
-        <FormButton className='' ariaLabel='Create list' type='submit'>
+      </CardRow>
+      <CardButtonRow>
+        <BasicTextButton href={cancelRedirect} ariaLabel='Cancel'>
+          Cancel
+        </BasicTextButton>
+        <BasicTextButton
+          type='submit'
+          ariaLabel='Create list'
+          onClick={(ev: React.FormEvent) => {
+            if (!onSubmit) return
+            ev.preventDefault()
+            onSubmit()
+            // Clear textarea
+            setTextareaKey(getNewTitleKey())
+          }}
+        >
           Create
-        </FormButton>
-      </div>
-      {/* Form action state message floating above card requires relative parent */}
-      <ResponseDurationMessage state={state} />
-    </form>
+        </BasicTextButton>
+      </CardButtonRow>
+    </Card>
   )
 }

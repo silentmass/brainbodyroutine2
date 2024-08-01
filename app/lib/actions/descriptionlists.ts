@@ -8,6 +8,7 @@ import {
   TaskDescriptionListWithIdSchema
 } from '../definitions'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export const createDescriptionList = async (
   taskId: string,
@@ -80,7 +81,7 @@ export const createDescriptionList = async (
 
 export const updateDescriptionList = async (
   id: string,
-  descriptions: ListDescription[] | null,
+  taskId: string,
   prevState: any,
   formData: FormData
 ) => {
@@ -94,16 +95,10 @@ export const updateDescriptionList = async (
       message: 'You need to authenticate. List not updated.'
     }
 
-  const taskIdValue = formData.get('taskId')
-  const taskId =
-    taskIdValue && typeof taskIdValue == 'string' && taskIdValue !== ''
-      ? parseInt(taskIdValue)
-      : null
-
   const validatedFields = TaskDescriptionListWithIdSchema.safeParse({
     id: parseInt(id),
     title: formData.get('title'),
-    task_id: taskId
+    task_id: parseInt(taskId)
   })
 
   if (!validatedFields.success) {
@@ -151,7 +146,7 @@ export const updateDescriptionList = async (
 export const deleteDescriptionList = async (
   id: string,
   prevState: any,
-  formData: FormData
+  formData?: FormData
 ) => {
   // Check access token cookie
   // Assume `cookies().get()` returns an object { token: "your_token_here" }
@@ -187,6 +182,10 @@ export const deleteDescriptionList = async (
         `Task description list delete revalidate failed ${id}`,
         revalidateErr
       )
+    }
+
+    if ('redirectTo' in prevState === true && prevState.redirectTo) {
+      return redirect(prevState.redirectTo)
     }
 
     return { ...prevState, message: `List ${id} deleted` }

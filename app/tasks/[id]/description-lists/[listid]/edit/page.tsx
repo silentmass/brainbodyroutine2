@@ -36,7 +36,12 @@ export default async function Page ({
       throw new Error('No list')
     }
 
-    return <EditDescriptionListView descriptionList={descriptionList} />
+    return (
+      <EditDescriptionListView
+        descriptionList={descriptionList}
+        cancelRedirect={`/tasks/${taskId}/edit`}
+      />
+    )
   } catch (error) {
     console.error('Fetch error', error)
     redirect('/tasks/filter')
