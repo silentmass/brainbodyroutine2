@@ -1,7 +1,6 @@
 'use client'
 import { Canvas } from '@react-three/fiber'
 import Image from 'next/image'
-import * as THREE from 'three'
 import { PerspectiveCamera } from '@react-three/drei'
 import { GetCustomMaterial } from './materials'
 import { useContext } from 'react'

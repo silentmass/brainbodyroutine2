@@ -8,11 +8,11 @@ import {
   CardTitleRow,
   SelectCategoryInput,
   TextareaInput
-} from '@/app/_components/circle-vibes/UpdateTaskCard'
+} from '@/app/_components/demos/circle-vibes/UpdateTaskCard'
 import Card from '../Card'
-import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import BasicTextButton from '@/app/_components/demos/circle-vibes/BasicTextButton'
 import { FormWrapper } from './edit-form'
-import { getNewRandomKey } from '@/app/utils/getRandomKey'
+import { getNewRandomKey } from '@/app/lib/utils/getRandomKey'
 
 export default function CreateTaskForm ({
   taskCategories,

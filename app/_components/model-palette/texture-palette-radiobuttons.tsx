@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { TextureContext, textureContextType } from './TextureContext'
 
 export default function TexturePaletteRadioButtons ({
@@ -8,9 +8,9 @@ export default function TexturePaletteRadioButtons ({
   textures: { name: textureContextType; src: string | null }[]
   handleTextureNameChange: (textureName: textureContextType) => void
 }) {
-  if (!textures || textures.length === 0) return null
-
   const selectedTextureName = useContext(TextureContext)
+
+  if (!textures || textures.length === 0) return null
 
   return (
     <ul className='flex flex-wrap gap-6 w-full justify-between bg-purple-400'>

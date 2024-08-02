@@ -1,48 +1,25 @@
 'use client'
 import {
   ChevronDownIcon,
-  ChevronRightIcon,
   MinusCircleIcon,
   PlusCircleIcon
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import {
-  Dispatch,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
+import { isStringEmpty, sliceText } from './TaskFormUtils'
 
 export type bullet = {
   id: string
   body: string
 }
 
-function sliceText (
-  currentText: string,
-  visibleHeight: null | number,
-  totalHeight: null | number
-) {
-  if (!visibleHeight || !totalHeight) {
-    return currentText.slice(0, 50) + '...'
-  }
-
-  if (Number(visibleHeight) / Number(totalHeight) > 0.9) {
-    return currentText
-  }
-
-  return `${currentText.slice(0, 50)} ...`
-}
-
 export default function CreateDesriptionForm ({
   taskBullets,
-  setTaskBullets
+  setCards
 }: {
   taskBullets: bullet[] | null
-  setTaskBullets: Dispatch<SetStateAction<bullet[] | null>>
+  setCards: (newCards: bullet[] | null) => void
 }) {
   const [currentBullet, setCurrentBullet] = useState<bullet | null>(null)
   const divRef = useRef<HTMLDivElement>(null)
@@ -71,7 +48,7 @@ export default function CreateDesriptionForm ({
       ? [...taskBullets, updatedBullet]
       : [updatedBullet]
 
-    setTaskBullets(newBullets)
+    setCards(newBullets)
 
     setCurrentBullet(null)
     textareaRef.current.value = ''
@@ -110,22 +87,21 @@ export default function CreateDesriptionForm ({
 
 export function UpdateDescriptionForm ({
   taskBullet,
-  taskBullets,
-  setTaskBullets,
-  isDragging,
+  setCards,
+  onDelete,
+  onChange,
   isDraggingAction,
   containerHeight,
   setIsDraggingAction
 }: {
   taskBullet: bullet | null
-  taskBullets: bullet[] | null
-  setTaskBullets: Dispatch<SetStateAction<bullet[] | null>>
-  isDragging: boolean
+  setCards: (newCards: bullet[] | null) => void
+  onDelete: (id: number) => void
+  onChange: (newCard: bullet) => void
   isDraggingAction: boolean
   containerHeight: string
   setIsDraggingAction: Dispatch<SetStateAction<boolean>>
 }) {
-  if (!taskBullet) return null
   const divRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -151,37 +127,24 @@ export function UpdateDescriptionForm ({
   useEffect(() => {
     if (!textareaRef.current) return
     setScrollHeight(textareaRef.current.scrollHeight)
-  }, [setScrollHeight, textareaRef.current])
+  }, [setScrollHeight])
 
   useEffect(() => {
     if (!textareaRef.current) return
     setScrollPosition(textareaRef.current.offsetTop)
-  }, [setScrollPosition, textareaRef.current])
+  }, [setScrollPosition])
 
   useEffect(() => {
     if (!textareaRef.current) return
 
     textareaRef.current.style.height = 'auto'
     textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
-  }, [taskBullet, textareaRef.current])
-
-  useEffect(() => {
-    setIsDraggingAction(isDragging)
-  }, [isDragging, setIsDraggingAction])
-
-  useEffect(() => {
-    if (!textareaRef.current) return
-    textareaRef.current.blur()
-  }, [isDragging, textareaRef.current])
+  }, [taskBullet])
 
   const deleteDescription = () => {
     if (!currentBullet) return
 
-    setTaskBullets(previousState =>
-      previousState
-        ? previousState.filter(entry => entry.id !== currentBullet.id)
-        : null
-    )
+    onDelete(parseInt(currentBullet.id))
     setCurrentBullet(null)
   }
 
@@ -220,14 +183,7 @@ export function UpdateDescriptionForm ({
 
     setCurrentBullet(updatedBullet)
 
-    setTaskBullets(previousState =>
-      previousState
-        ? previousState?.map(entry => {
-            if (entry.id !== updatedBullet.id) return entry
-            return updatedBullet
-          })
-        : null
-    )
+    onChange(updatedBullet)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -275,6 +231,8 @@ export function UpdateDescriptionForm ({
     setFormContainerHeight(Number(`${scrollHeight}`.replace('px', '')))
   }
 
+  if (!taskBullet) return null
+
   const slicedBody = sliceText(
     taskBullet.body,
     formContainerHeight,
@@ -284,12 +242,7 @@ export function UpdateDescriptionForm ({
   return (
     <div
       ref={divRef}
-      className={`relative flex w-full bg-accent-2/50 overflow-hidden rounded-md ${clsx(
-        {
-          '': !isDraggingAction,
-          'opacity-50': isDraggingAction && !isDragging
-        }
-      )}`}
+      className={`relative flex w-full bg-accent-2/50 overflow-hidden rounded-md`}
       style={{
         cursor: 'move',
         height: isDraggingAction
@@ -346,14 +299,5 @@ export function UpdateDescriptionForm ({
         />
       </div>
     </div>
-  )
-}
-
-export function isStringEmpty (testString: string) {
-  return (
-    testString == '' ||
-    (testString.search(/^ /) !== -1 &&
-      testString.split('\n') &&
-      testString.search(/\n$/) !== -1)
   )
 }

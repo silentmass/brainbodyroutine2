@@ -1,4 +1,4 @@
-import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import BasicTextButton from '@/app/_components/demos/circle-vibes/BasicTextButton'
 import { SpinnerFormButton } from '@/app/ui/form-components/buttons'
 
 export default function ConfirmationDialog ({

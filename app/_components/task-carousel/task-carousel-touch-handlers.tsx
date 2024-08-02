@@ -3,7 +3,8 @@ import {
   RefObject,
   SetStateAction,
   useCallback,
-  useEffect
+  useEffect,
+  useRef
 } from 'react'
 import { Task, TaskCategory } from '@/app/lib/definitions'
 import {
@@ -18,7 +19,7 @@ import {
   animateListMovement,
   animateRollingWrapper
 } from './task-carousel-animation'
-import { getDropTargetElementsAtPoint } from '@/app/context/DndProvider'
+import { getDropTargetElementsAtPoint } from '@/app/contexts/DndProvider'
 
 export default function useTouchHandler (
   touchAreaRef: RefObject<HTMLDivElement>,
@@ -36,15 +37,19 @@ export default function useTouchHandler (
   handleTouchMove: (event: TouchEvent) => void
   handleTouchEnd: (event: TouchEvent) => void
 } {
-  let touchTimer: number
-  let touchStartPosition: { x: number; y: number; time: number }
-  let touchCurrentPosition: {
+  const touchTimerRef = useRef<number | null>(null)
+  const touchStartPositionRef = useRef<{
+    x: number
+    y: number
+    time: number
+  } | null>(null)
+  const touchCurrentPositionRef = useRef<{
     x: number
     y: number
     time: number
     velocity: { x: number; y: number }
     acceleration: { x: number; y: number }
-  }
+  } | null>(null)
 
   // Touch event handlers
 
@@ -62,17 +67,17 @@ export default function useTouchHandler (
         setIsTouchMove(true)
       }
 
-      touchTimer = performance.now()
+      touchTimerRef.current = performance.now()
 
-      touchStartPosition = {
+      touchStartPositionRef.current = {
         x: event.touches[0].clientX,
         y: event.touches[0].clientY,
         time: performance.now()
       }
-      touchCurrentPosition = {
-        x: touchStartPosition.x,
-        y: touchStartPosition.y,
-        time: touchStartPosition.time,
+      touchCurrentPositionRef.current = {
+        x: touchStartPositionRef.current.x,
+        y: touchStartPositionRef.current.y,
+        time: touchStartPositionRef.current.time,
         velocity: { x: 0, y: 0 },
         acceleration: { x: 0, y: 0 }
       }
@@ -83,7 +88,13 @@ export default function useTouchHandler (
   // Touch end event handler
   const handleTouchEnd = useCallback(
     (event: TouchEvent) => {
-      const touchDuration = performance.now() - touchTimer
+      if (touchStartPositionRef.current === null) return
+
+      if (touchTimerRef.current === null) return
+
+      if (touchCurrentPositionRef.current === null) return
+
+      const touchDuration = performance.now() - touchTimerRef.current
 
       if (!selectedTaskRef.current) {
         return
@@ -105,8 +116,8 @@ export default function useTouchHandler (
         }
 
         const elementUnderClick = document.elementFromPoint(
-          touchCurrentPosition.x,
-          touchCurrentPosition.y
+          touchCurrentPositionRef.current.x,
+          touchCurrentPositionRef.current.y
         )
 
         if (elementUnderClick) {
@@ -168,8 +179,10 @@ export default function useTouchHandler (
       event.preventDefault()
 
       const averageEndVelocity =
-        (touchCurrentPosition.y - touchStartPosition.y) /
-        ((touchCurrentPosition.time - touchStartPosition.time) / 1000)
+        (touchCurrentPositionRef.current.y - touchStartPositionRef.current.y) /
+        ((touchCurrentPositionRef.current.time -
+          touchStartPositionRef.current.time) /
+          1000)
 
       if (
         listTopPositionRef.current === null ||
@@ -223,7 +236,11 @@ export default function useTouchHandler (
       tasksRef,
       setTaskChange,
       setIsTouchMove,
-      setListTopPositionFun
+      setListTopPositionFun,
+      isTouchMove,
+      touchTimerRef,
+      touchCurrentPositionRef,
+      touchStartPositionRef
     ]
   )
 
@@ -235,16 +252,18 @@ export default function useTouchHandler (
         setIsTouchMove(true)
       }
 
+      if (touchCurrentPositionRef.current === null) return
+
       const touchX = event.touches[0].clientX
       const touchY = event.touches[0].clientY
       const currentTime = performance.now()
       const currentVelocity = {
         x:
-          (touchCurrentPosition.x - touchX) /
-          (currentTime - touchCurrentPosition.time),
+          (touchCurrentPositionRef.current.x - touchX) /
+          (currentTime - touchCurrentPositionRef.current.time),
         y:
-          (touchCurrentPosition.y - touchY) /
-          (currentTime - touchCurrentPosition.time)
+          (touchCurrentPositionRef.current.y - touchY) /
+          (currentTime - touchCurrentPositionRef.current.time)
       }
 
       // Get list dimensions
@@ -273,7 +292,7 @@ export default function useTouchHandler (
         return
       }
 
-      const yChange = touchY - touchCurrentPosition.y
+      const yChange = touchY - touchCurrentPositionRef.current.y
 
       if (
         listTopPositionRef.current == null ||
@@ -295,25 +314,25 @@ export default function useTouchHandler (
         setListTopPositionFun(newListTopPosition)
       }
 
-      touchCurrentPosition = {
+      touchCurrentPositionRef.current = {
         x: touchX,
         y: touchY,
         time: currentTime,
         velocity: {
           x:
-            (touchCurrentPosition.x - touchX) /
-            (currentTime - touchCurrentPosition.time),
+            (touchCurrentPositionRef.current.x - touchX) /
+            (currentTime - touchCurrentPositionRef.current.time),
           y:
-            (touchCurrentPosition.y - touchY) /
-            (currentTime - touchCurrentPosition.time)
+            (touchCurrentPositionRef.current.y - touchY) /
+            (currentTime - touchCurrentPositionRef.current.time)
         },
         acceleration: {
           x:
-            (touchCurrentPosition.velocity.x - currentVelocity.x) /
-            (currentTime - touchCurrentPosition.time),
+            (touchCurrentPositionRef.current.velocity.x - currentVelocity.x) /
+            (currentTime - touchCurrentPositionRef.current.time),
           y:
-            (touchCurrentPosition.velocity.y - currentVelocity.y) /
-            (currentTime - touchCurrentPosition.time)
+            (touchCurrentPositionRef.current.velocity.y - currentVelocity.y) /
+            (currentTime - touchCurrentPositionRef.current.time)
         }
       }
 
@@ -341,20 +360,22 @@ export default function useTouchHandler (
   )
 
   useEffect(() => {
-    touchAreaRef?.current?.addEventListener('touchstart', handleTouchStart, {
+    const toucharea = touchAreaRef.current
+    if (!toucharea) return
+    toucharea.addEventListener('touchstart', handleTouchStart, {
       passive: false
     })
-    touchAreaRef?.current?.addEventListener('touchmove', handleTouchMove, {
+    toucharea.addEventListener('touchmove', handleTouchMove, {
       passive: false
     })
-    touchAreaRef?.current?.addEventListener('touchend', handleTouchEnd, {
+    toucharea.addEventListener('touchend', handleTouchEnd, {
       passive: false
     })
 
     return () => {
-      touchAreaRef?.current?.removeEventListener('touchstart', handleTouchStart)
-      touchAreaRef?.current?.removeEventListener('touchmove', handleTouchMove)
-      touchAreaRef?.current?.removeEventListener('touchend', handleTouchEnd)
+      toucharea.removeEventListener('touchstart', handleTouchStart)
+      toucharea.removeEventListener('touchmove', handleTouchMove)
+      toucharea.removeEventListener('touchend', handleTouchEnd)
     }
   }, [handleTouchStart, handleTouchMove, handleTouchEnd, touchAreaRef])
 

@@ -13,7 +13,7 @@ import { ListCard } from './ListDndCard'
 import { ItemTypesContainer } from './ItemTypes'
 import { ContainerCard, listContainer } from './definitions'
 import update from 'immutability-helper'
-import { getDropTargetElementsAtPoint } from '@/app/context/DndProvider'
+import { getDropTargetElementsAtPoint } from '@/app/contexts/DndProvider'
 import { GSSP_NO_RETURNED_VALUE } from 'next/dist/lib/constants'
 
 export const ListContainer: FC<listContainer> = memo(function Container ({
@@ -27,7 +27,6 @@ export const ListContainer: FC<listContainer> = memo(function Container ({
   showTextureText,
   adUrl
 }: listContainer) {
-  if (!cards || cards === undefined) return null
   const ref = useRef<HTMLUListElement>(null)
 
   const findCard = useCallback(
@@ -151,7 +150,7 @@ export const ListContainer: FC<listContainer> = memo(function Container ({
     return () => {
       document.documentElement.removeEventListener('touchstart', handleTap)
     }
-  }, [])
+  }, [isDraggingAction, isModelEdit])
 
   const handleClick = (ev: React.MouseEvent) => {
     const dhandlers = getPointDragHandlers(

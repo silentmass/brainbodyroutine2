@@ -22,9 +22,8 @@ import { TextureUvContext } from '@/app/_components/model-palette/TextureUvConte
 import clsx from 'clsx'
 import { useDebouncedCallback } from 'use-debounce'
 import { MaterialContext } from '@/app/_components/model-palette/MaterialContext'
-import { FormButtonView } from '@/app/ui/form-components/buttons'
 import { checkListsDiffer, isStringEmpty } from './descriptionlist-form/utils'
-import ColorPicker, { getHslHex } from './ColorPicker'
+import { getHslHex } from './ColorPicker'
 import { DropFile } from '@/app/_components/model-upload-drop-zone/model-upload-drop-zone'
 import EditModel from './ModelEditor'
 import ConfirmationDialog from './ConfirmationDialog'
@@ -38,9 +37,7 @@ import {
   listIdExists,
   sendUpdateWithId
 } from './TaskEditorUtils'
-import { R3FTest } from '@/app/r3f-example/page'
-import ModelViewPreview from '@/app/_components/model-palette/model-preview'
-import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import BasicTextButton from '@/app/_components/demos/circle-vibes/BasicTextButton'
 
 export default function TaskEditor ({
   lists,
@@ -60,7 +57,7 @@ export default function TaskEditor ({
 
   const { descriptions: placeholderDescriptions } = useMemo(
     () => descriptionsPlaceholderData,
-    [descriptionsPlaceholderData]
+    []
   )
 
   const [containerCards, setContainerCards] = useState<null | ContainerCard[]>(
@@ -567,17 +564,19 @@ export default function TaskEditor ({
                   </div>
                 </div>
               </div>
-              <ListContainer
-                cards={containerCards}
-                setCards={setContainerCards}
-                onSelectList={handleSelectListClick}
-                onEditModel={handleEditModelClick}
-                isModal={checkIsModal(selectedList, isModelEdit)}
-                isModelEdit={isModelEdit}
-                textureText={textureText}
-                showTextureText={showTextureText}
-                adUrl={adUrl}
-              />
+              {containerCards && (
+                <ListContainer
+                  cards={containerCards}
+                  setCards={setContainerCards}
+                  onSelectList={handleSelectListClick}
+                  onEditModel={handleEditModelClick}
+                  isModal={checkIsModal(selectedList, isModelEdit)}
+                  isModelEdit={isModelEdit}
+                  textureText={textureText}
+                  showTextureText={showTextureText}
+                  adUrl={adUrl}
+                />
+              )}
               {checkIsModal(selectedList, isModelEdit) && (
                 <FormContext.Provider
                   value={{
@@ -614,7 +613,7 @@ export default function TaskEditor ({
                             onConfirmClick={handleConfirmClick}
                           />
                         )}
-                        {!isModelEdit && (
+                        {!isModelEdit && selectedList && (
                           <form
                             id={'descriptionListForm'}
                             ref={ref}
@@ -671,37 +670,5 @@ export default function TaskEditor ({
         </TexturesContext.Provider>
       </TextureContext.Provider>
     </MaterialContext.Provider>
-  )
-}
-
-export const ModelOptimization = ({
-  textureText,
-  showTextureText
-}: {
-  textureText: string
-  showTextureText: boolean
-}) => {
-  return (
-    <div className='flex flex-col w-full items-center gap-10 mb-10'>
-      {false && (
-        <div>
-          <label>R3F Test</label>
-          <div className='flex w-[300px] h-[300px] border'>
-            <R3FTest />
-          </div>
-        </div>
-      )}
-      {true && (
-        <div>
-          <label>ModelViewPreview</label>
-          <div className='flex w-[300px] h-[300px] border'>
-            <ModelViewPreview
-              textureText={textureText}
-              showTextureText={showTextureText}
-            />
-          </div>
-        </div>
-      )}
-    </div>
   )
 }

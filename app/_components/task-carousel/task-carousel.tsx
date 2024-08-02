@@ -4,6 +4,7 @@ import {
   FormEvent,
   SetStateAction,
   useEffect,
+  useMemo,
   useRef,
   useState
 } from 'react'
@@ -23,6 +24,9 @@ import {
 } from './task-carousel-utils'
 import useMouseHandler from './task-carousel-mouse-handlers'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline'
+
+const touchAreaHeight = 200
+const gradientHeight = Math.round(touchAreaHeight / 5)
 
 export const TaskCarousel = ({
   tasks,
@@ -72,12 +76,8 @@ export const TaskCarousel = ({
 }) => {
   const touchAreaRef = useRef<HTMLDivElement>(null)
 
-  const touchAreaHeight = 200
-  const gradientHeight = Math.round(touchAreaHeight / 5)
-  const gradientContainerStyle = `from-transparent to-bkg to-80% w-full z-20`
-
   // Get touch area dimension
-  let initCounter = 0
+  const initCounter = useRef(0)
 
   const listRef = useRef<HTMLUListElement>(null)
 
@@ -173,101 +173,82 @@ export const TaskCarousel = ({
     }
   }, [selectedCategory])
 
-  useEffect(
-    () => {
-      if (!selectedTaskRef.current) {
-        handleTaskChange(tasks[0])
-        selectedTaskRef.current = tasks[0]
+  useEffect(() => {
+    if (!selectedTaskRef.current) {
+      handleTaskChange(tasks[0])
+      selectedTaskRef.current = tasks[0]
+    }
+
+    // Pad card list to position first and last cards at the center of the touch area
+
+    // Get start and end card positions
+    const listVerticalPadding = getListVerticalPadding(touchAreaRef, tasks)
+    listPaddingRef.current = listVerticalPadding
+    setListPaddingState(listVerticalPadding)
+
+    if (touchAreaRef?.current?.scrollHeight === undefined) {
+      console.error('Touch area has no height')
+      return
+    }
+
+    const selectedTaskYCenter = yCenterTask(
+      touchAreaRef,
+      selectedTaskRef.current.id
+    )
+
+    // Init list position to show selected task
+    // Move list for mobile and scroll on desktop and mouse
+    const isMobile = window.innerWidth <= 767
+
+    if (isMobile) {
+      // Move list on mobile
+
+      if (selectedTaskYCenter !== null) {
+        setListTopPositionState(
+          selectedTaskYCenter - listPaddingRef.current.top
+        )
       }
+    } else {
+      // Scroll on desktop
 
-      // Pad card list to position first and last cards at the center of the touch area
-
-      // Get start and end card positions
-      const listVerticalPadding = getListVerticalPadding(touchAreaRef, tasks)
-      listPaddingRef.current = listVerticalPadding
-      setListPaddingState(listVerticalPadding)
-
-      if (touchAreaRef?.current?.scrollHeight === undefined) {
-        console.error('Touch area has no height')
-        return
-      }
-
-      const selectedTaskYCenter = yCenterTask(
+      const endPositionSelectedCardScroll = yCenterTaskScroll(
         touchAreaRef,
         selectedTaskRef.current.id
       )
 
-      // Init list position to show selected task
-      // Move list for mobile and scroll on desktop and mouse
-      const isMobile = window.innerWidth <= 767
+      initCounter.current += 1
 
-      if (isMobile) {
-        // Move list on mobile
+      selectedTaskYCenter !== null &&
+        touchAreaRef.current.scrollTo({
+          top: -selectedTaskYCenter + listPaddingRef.current.top,
+          behavior: 'instant'
+        })
+    }
 
-        if (selectedTaskYCenter !== null) {
-          setListTopPositionState(
-            selectedTaskYCenter - listPaddingRef.current.top
-          )
-        }
-      } else {
-        // Scroll on desktop
+    const toucharea = touchAreaRef.current
 
-        const endPositionSelectedCardScroll = yCenterTaskScroll(
-          touchAreaRef,
-          selectedTaskRef.current.id
-        )
-
-        console.log('selectedTask', selectedTaskRef.current.title)
-        console.log('selectedTaskYCenter', selectedTaskYCenter)
-        console.log(
-          'endPositionSelectedCardScroll',
-          endPositionSelectedCardScroll
-        )
-        console.log('element.scrollTop', touchAreaRef?.current.scrollTop)
-        console.log('initCounter', initCounter)
-        initCounter += 1
-        console.groupEnd()
-
-        selectedTaskYCenter !== null &&
-          touchAreaRef.current.scrollTo({
-            top: -selectedTaskYCenter + listPaddingRef.current.top,
-            behavior: 'instant'
-          })
-      }
-
-      touchAreaRef?.current?.addEventListener('scroll', handleScroll, {
-        passive: false
-      })
-      touchAreaRef?.current?.addEventListener('scrollend', handleScrollEnd)
-      touchAreaRef?.current?.addEventListener('mousemove', handleMouseMove)
-      touchAreaRef?.current?.addEventListener('touchstart', handleTouchStart, {
-        passive: false
-      })
-      touchAreaRef?.current?.addEventListener('touchmove', handleTouchMove, {
-        passive: false
-      })
-      touchAreaRef?.current?.addEventListener('touchend', handleTouchEnd, {
-        passive: false
-      })
-      return () => {
-        touchAreaRef?.current?.removeEventListener('scrollend', handleScrollEnd)
-        touchAreaRef?.current?.removeEventListener('mousemove', handleMouseMove)
-        touchAreaRef?.current?.removeEventListener(
-          'touchstart',
-          handleTouchStart
-        )
-        touchAreaRef?.current?.removeEventListener('touchmove', handleTouchMove)
-        touchAreaRef?.current?.removeEventListener('touchend', handleTouchEnd)
-      }
-    },
-    [
-      // selectedCategoryRef,
-      // selectedCategory
-      // selectedTaskRef,
-      // selectedTask,
-      // touchAreaRef
-    ]
-  )
+    toucharea.addEventListener('scroll', handleScroll, {
+      passive: false
+    })
+    toucharea.addEventListener('scrollend', handleScrollEnd)
+    toucharea.addEventListener('mousemove', handleMouseMove)
+    toucharea.addEventListener('touchstart', handleTouchStart, {
+      passive: false
+    })
+    toucharea.addEventListener('touchmove', handleTouchMove, {
+      passive: false
+    })
+    toucharea.addEventListener('touchend', handleTouchEnd, {
+      passive: false
+    })
+    return () => {
+      toucharea.removeEventListener('scrollend', handleScrollEnd)
+      toucharea.removeEventListener('mousemove', handleMouseMove)
+      toucharea.removeEventListener('touchstart', handleTouchStart)
+      toucharea.removeEventListener('touchmove', handleTouchMove)
+      toucharea.removeEventListener('touchend', handleTouchEnd)
+    }
+  }, [])
 
   return (
     <div
@@ -279,14 +260,12 @@ export const TaskCarousel = ({
       {/* Top gradient fade */}
       <div
         id='touchAreaTopGradient'
-        className={`flex sticky bg-gradient-to-t ${gradientContainerStyle} rounded-t-cool select-none border-0 ${clsx(
-          {
-            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-cool hover:border-accent-4':
-              selectedTask && tasks && selectedTask.id !== tasks[0].id,
-            '': selectedTask && tasks && selectedTask.id === tasks[0].id
-          }
-        )}`}
+        className={`task-carousel-gradient-mask bg-gradient-to-t`}
         style={{
+          visibility:
+            selectedTask && tasks && selectedTask.id !== tasks[0].id
+              ? 'visible'
+              : 'hidden',
           height: `${gradientHeight}px`,
           top: `0px`
         }}
@@ -318,19 +297,14 @@ export const TaskCarousel = ({
       {/* Bottom gradient fade */}
       <div
         id='touchAreaBottomGradient'
-        className={`flex sticky bg-gradient-to-b ${gradientContainerStyle} select-none  border-0 ${clsx(
-          {
-            'hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-cool hover:border-accent-4':
-              selectedTask &&
-              tasks &&
-              selectedTask.id !== tasks[tasks.length - 1].id,
-            '':
-              selectedTask &&
-              tasks &&
-              selectedTask.id === tasks[tasks.length - 1].id
-          }
-        )}`}
+        className={`task-carousel-gradient-mask bg-gradient-to-b`}
         style={{
+          visibility:
+            selectedTask &&
+            tasks &&
+            selectedTask.id !== tasks[tasks.length - 1].id
+              ? 'visible'
+              : 'hidden',
           height: `${gradientHeight}px`,
           top: `${touchAreaHeight - gradientHeight}px`
         }}

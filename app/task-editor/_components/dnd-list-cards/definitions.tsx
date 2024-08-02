@@ -17,7 +17,7 @@ export interface ContainerCard {
 }
 
 export interface listContainer {
-  cards: ContainerCard[] | null
+  cards: ContainerCard[]
   setCards: Dispatch<SetStateAction<ContainerCard[] | null>>
   onSelectList: (id: number) => void
   onEditModel: () => void
@@ -42,7 +42,7 @@ export interface ListDescriptionCard {
 }
 
 export interface DescriptionCard {
-  cards: DescriptionCards[] | null
+  cards: DescriptionCards[]
   setCards: (cards: DescriptionCards[] | null) => void
   onChange: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>

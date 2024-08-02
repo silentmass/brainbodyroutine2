@@ -1,7 +1,8 @@
 'use client'
-import { PolychromeThemeType } from '@/app/context/PolyChromeThemeProvider'
-import React, { useEffect, useState } from 'react'
+import { PolychromeThemeType } from '@/app/contexts/PolyChromeThemeProvider'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
+import { number } from 'zod'
 
 export function getPrimaryHsl () {
   return {
@@ -95,12 +96,13 @@ const ColorPicker = ({
 }) => {
   const [color, setColor] = useState(defaultHexColor)
 
+  const hsl = useMemo(() => hexToHSL(defaultHexColor), [defaultHexColor])
+
   useEffect(() => {
-    const hsl = hexToHSL(defaultHexColor)
     document.documentElement.style.setProperty('--primary-h', `${hsl.h}`)
     document.documentElement.style.setProperty('--primary-s', `${hsl.s}%`)
     document.documentElement.style.setProperty('--primary-s', `${hsl.l}%`)
-  }, [])
+  }, [hsl])
 
   const handleSetPolychromeTheme = (newTheme: PolychromeThemeType) => {
     if (onChange) {

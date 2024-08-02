@@ -5,13 +5,13 @@ import { Task } from '@/app/lib/definitions'
 import { initialState } from '@/app/_components/response-state'
 import Card from '../../Card'
 import { FormWrapper } from '../edit-form'
-import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import BasicTextButton from '@/app/_components/demos/circle-vibes/BasicTextButton'
 import {
   CardTitleRow,
   CardRow,
   TextareaInput,
   CardButtonRow
-} from '@/app/_components/circle-vibes/UpdateTaskCard'
+} from '@/app/_components/demos/circle-vibes/UpdateTaskCard'
 
 export default function CreateTaskDescriptionListForm ({
   onSubmit,

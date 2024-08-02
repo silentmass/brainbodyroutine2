@@ -37,7 +37,7 @@ export function DeleteTask ({ id }: { id: string }) {
     if (state.redirectTo !== null) {
       router.push(state.redirectTo)
     }
-  }, [state])
+  }, [state, router])
 
   return (
     <form name='deleteTaskForm' action={formAction}>

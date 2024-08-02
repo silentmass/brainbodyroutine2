@@ -14,12 +14,12 @@ import { FormEvent, useContext, useMemo } from 'react'
 import {
   MonochromeThemeContext,
   MonochromeThemeType
-} from '../context/MonochromeThemeProvider'
+} from '../contexts/MonochromeThemeProvider'
 import ColorPickerButton from '../task-editor/_components/ColorPickerButton'
 import {
   PolychromeThemeContext,
   PolychromeThemeType
-} from '../context/PolyChromeThemeProvider'
+} from '../contexts/PolyChromeThemeProvider'
 import { hslToHex } from '../task-editor/_components/ColorPicker'
 
 function switchMonochromeTheme (
@@ -71,7 +71,7 @@ export function Links ({ className = '' }: { className?: string }) {
             Number(polychromeTheme.l) * 100
           )
         : null,
-    []
+    [polychromeTheme]
   )
 
   return (

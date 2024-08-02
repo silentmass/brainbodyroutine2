@@ -1,12 +1,5 @@
-import {
-  CSSProperties,
-  Suspense,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef
-} from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Suspense, useContext, useEffect, useMemo, useRef } from 'react'
+import { Canvas } from '@react-three/fiber'
 import * as THREE from 'three'
 import {
   Html,
@@ -228,6 +221,6 @@ export function DefaultmeshStandardMaterial ({
   textureSrc: string
 }) {
   const tex = useTexture(textureSrc)
-  const memoizedTex = useMemo(() => tex, [textureSrc])
+  const memoizedTex = useMemo(() => tex, [tex])
   return <meshStandardMaterial map={memoizedTex} />
 }

@@ -2,7 +2,7 @@
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { TouchBackend } from 'react-dnd-touch-backend'
-import isMobile from '../utils/isMobile'
+import isMobile from '../lib/utils/isMobile'
 
 export function getDropTargetElementsAtPoint (
   x: number,

@@ -34,7 +34,7 @@ export default function LargeCheckButton ({
   useEffect(() => {
     if (!onPending) return
     onPending(pending)
-  }, [pending])
+  }, [pending, onPending])
 
   return (
     <div

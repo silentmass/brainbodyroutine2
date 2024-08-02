@@ -1,4 +1,4 @@
-import { PolychromeThemeType } from '@/app/context/PolyChromeThemeProvider'
+import { PolychromeThemeType } from '@/app/contexts/PolyChromeThemeProvider'
 import { cookies } from 'next/headers'
 
 export const getPolychromeCookieToNumbers = (hslString: string) => {

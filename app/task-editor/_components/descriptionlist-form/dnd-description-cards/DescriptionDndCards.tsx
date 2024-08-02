@@ -15,7 +15,6 @@ export const DescriptionDndCards: FC<DescriptionCard> = memo(
     onChange,
     onDescriptionDelete
   }: DescriptionCard) {
-    if (!cards || cards == undefined) return null
     const ref = useRef<HTMLUListElement>(null)
 
     const findCard = useCallback(

@@ -2,7 +2,7 @@
 import clsx from 'clsx'
 import { useCallback, useEffect, useState } from 'react'
 import ColorPicker, { getHslHex, hslToHex } from './ColorPicker'
-import { PolychromeThemeType } from '@/app/context/PolyChromeThemeProvider'
+import { PolychromeThemeType } from '@/app/contexts/PolyChromeThemeProvider'
 
 export const ColorPickerButton = ({
   currentHex = null,

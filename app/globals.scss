@@ -1066,3 +1066,7 @@ button.delete:active, button.delete-activated {
     outline-color: transparent;
   }
 }
+
+.task-carousel-gradient-mask {
+  @apply flex sticky from-transparent to-bkg to-80% w-full z-20 select-none border-0 rounded-t-cool hover:bg-accent-2/30 hover:from-accent-2/30 hover:to-accent-2/30 hover:to-80% hover:border hover:rounded-cool hover:border-accent-4;
+}

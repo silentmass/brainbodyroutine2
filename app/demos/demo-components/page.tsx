@@ -4,11 +4,11 @@ import ColorPicker, {
   getHslHex,
   getPrimaryHsl,
   hslToHex
-} from '../task-editor/_components/ColorPicker'
-import { useEffect, useState } from 'react'
-import ModelUploadDropZone from '../_components/model-upload-drop-zone/model-upload-drop-zone'
+} from '../../task-editor/_components/ColorPicker'
+import { useEffect, useMemo, useState } from 'react'
+import ModelUploadDropZone from '../../_components/model-upload-drop-zone/model-upload-drop-zone'
 import Link from 'next/link'
-import BasicButton from '../_components/circle-vibes/BasicButton'
+import BasicButton from '../../_components/demos/circle-vibes/BasicButton'
 
 const repeatString = (text: string) => {
   return new Array(20).fill(text).join(', ')
@@ -16,10 +16,10 @@ const repeatString = (text: string) => {
 
 export default function Page () {
   const [hslHex, setHslHex] = useState<null | string>(null)
+  const currentHex = useMemo(() => getHslHex(), [])
   useEffect(() => {
-    setHslHex(getHslHex())
-    console.log(hslHex, getHslHex())
-  }, [])
+    setHslHex(currentHex)
+  }, [currentHex])
   return (
     <div className='relative page flex-col gap-2'>
       <div className='flex gap-5'>

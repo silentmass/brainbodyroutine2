@@ -1,7 +1,7 @@
 import TaskEditor from './_components/TaskEditor'
 import descriptionsData from './_assets/descriptionLists.json'
 import { DEFAULT_TEXTURES } from '../_components/model-palette/definitions'
-import DndContextProvider from '../context/DndProvider'
+import DndContextProvider from '../contexts/DndProvider'
 
 export default function Page () {
   const { task_lists } = descriptionsData

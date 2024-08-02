@@ -38,7 +38,7 @@ export const WaveMaterial = () => {
 
     shaderMaterialRef.current.uniforms.uTexture.value = image
     shaderMaterialRef.current.uniforms.uColor.value = colorVec
-  }, [image])
+  }, [image, colorVec])
 
   return (
     <RenderTextureWrapper>

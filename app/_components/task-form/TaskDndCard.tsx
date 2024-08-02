@@ -12,16 +12,10 @@ const style: CSSProperties = {
 }
 
 export interface CardProps {
+  children: React.ReactNode
   id: string
-  body: string
   moveCard: (id: string, to: number) => void
   findCard: (id: string) => { index: number }
-  taskBullet: bullet
-  taskBullets: bullet[]
-  setTaskBullets: Dispatch<SetStateAction<bullet[] | null>>
-  isDraggingAction: boolean
-  setIsDraggingAction: Dispatch<SetStateAction<boolean>>
-  containerHeight: string
 }
 
 interface Item {
@@ -30,16 +24,10 @@ interface Item {
 }
 
 export const TaskDndCard: FC<CardProps> = memo(function Card ({
+  children,
   id,
-  body,
   moveCard,
-  findCard,
-  taskBullet,
-  taskBullets,
-  setTaskBullets,
-  isDraggingAction,
-  setIsDraggingAction,
-  containerHeight
+  findCard
 }) {
   const ref = useRef<HTMLLIElement>(null)
   const originalIndex = findCard(id).index
@@ -74,21 +62,11 @@ export const TaskDndCard: FC<CardProps> = memo(function Card ({
     [findCard, moveCard]
   )
 
-  if (!taskBullet) return null
-
   drag(drop(ref))
 
   return (
-    <li ref={ref}>
-      <UpdateDescriptionForm
-        taskBullet={taskBullet}
-        taskBullets={taskBullets}
-        setTaskBullets={setTaskBullets}
-        isDragging={isDragging}
-        isDraggingAction={isDraggingAction}
-        containerHeight={containerHeight}
-        setIsDraggingAction={setIsDraggingAction}
-      />
+    <li ref={ref} className={`${clsx({ 'opacity-80': isDragging })}`}>
+      {children}
     </li>
   )
 })

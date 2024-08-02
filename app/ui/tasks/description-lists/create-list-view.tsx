@@ -10,14 +10,14 @@ import {
 } from './optimistic-utils'
 import { initialState } from '@/app/_components/response-state'
 import { FormWrapper } from '../edit-form'
-import BasicButton from '@/app/_components/circle-vibes/BasicButton'
-import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
-import TightCard from '@/app/_components/circle-vibes/TightCard'
+import BasicButton from '@/app/_components/demos/circle-vibes/BasicButton'
+import BasicTextButton from '@/app/_components/demos/circle-vibes/BasicTextButton'
+import TightCard from '@/app/_components/demos/circle-vibes/TightCard'
 import {
   CardTitleRow,
   TextareaInput,
   CardRow
-} from '@/app/_components/circle-vibes/UpdateTaskCard'
+} from '@/app/_components/demos/circle-vibes/UpdateTaskCard'
 import { updateListDescription } from '@/app/lib/actions/descriptions'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { sendDeleteDescription } from './descriptions/optimistic-utils'

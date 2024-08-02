@@ -1,5 +1,5 @@
 'use client'
-import { useContext, useRef } from 'react'
+import { useContext, useMemo, useRef } from 'react'
 import clsx from 'clsx'
 import { SpinnerFormButton } from '@/app/ui/form-components/buttons'
 import CreateDesriptionForm from './CreateDescriptionForm'
@@ -10,7 +10,7 @@ import {
 import { DescriptionDndCards } from './dnd-description-cards/DescriptionDndCards'
 import { DescriptionListHeader } from './definitions'
 import { FormContext } from '../Contexts'
-import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import BasicTextButton from '@/app/_components/demos/circle-vibes/BasicTextButton'
 
 export default function DescriptionListForm ({
   list,
@@ -22,7 +22,7 @@ export default function DescriptionListForm ({
   onListReset,
   isCreate
 }: {
-  list: ListDescriptionCard | null
+  list: ListDescriptionCard
   setCards: (cards: DescriptionCards[] | null) => void
   onChange: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -33,8 +33,6 @@ export default function DescriptionListForm ({
   onListReset: (event: React.FormEvent<HTMLButtonElement>) => void
   isCreate: boolean
 }) {
-  if (!list) return
-
   // const [message, formAction] = useFormState(createDescriptionList, null)
   const formContext = useContext(FormContext)
 

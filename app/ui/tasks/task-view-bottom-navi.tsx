@@ -1,4 +1,4 @@
-import BasicButton from '@/app/_components/circle-vibes/BasicButton'
+import BasicButton from '@/app/_components/demos/circle-vibes/BasicButton'
 import { ChevronRightIcon, ListBulletIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { FormEvent } from 'react'

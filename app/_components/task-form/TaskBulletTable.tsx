@@ -6,9 +6,13 @@ import {
   memo,
   SetStateAction,
   Dispatch,
-  useRef
+  useRef,
+  useMemo
 } from 'react'
-import CreateDesriptionForm, { bullet } from './DescriptionForm'
+import CreateDesriptionForm, {
+  bullet,
+  UpdateDescriptionForm
+} from './DescriptionForm'
 import update from 'immutability-helper'
 import { ItemTypes } from './ItemTypes'
 import CreateDescriptionListHeader from './DescriptionListHeaderForm'
@@ -20,24 +24,26 @@ import { TaskDndCard } from './TaskDndCard'
 import { useDrop } from 'react-dnd'
 
 export const Container: FC<{
-  cards: bullet[] | null
-  setCards: Dispatch<SetStateAction<bullet[] | null>>
+  cards: bullet[]
+  setCards: (newCards: bullet[] | null) => void
+  onDelete: (id: number) => void
+  onChange: (newCard: bullet) => void
 }> = memo(function Container ({
   cards,
-  setCards
+  setCards,
+  onDelete,
+  onChange
 }: {
-  cards: bullet[] | null
-  setCards: Dispatch<SetStateAction<bullet[] | null>>
+  cards: bullet[]
+  setCards: (newCards: bullet[] | null) => void
+  onDelete: (id: number) => void
+  onChange: (newCard: bullet) => void
 }) {
-  if (!cards) return null
   const ref = useRef<HTMLUListElement>(null)
 
   const findCard = useCallback(
     (id: string) => {
-      const card = cards.filter(c => `${c.id}` === id)[0] as {
-        id: string
-        body: string
-      }
+      const card = cards.filter(c => `${c.id}` === id)[0] as bullet
       return {
         card,
         index: cards.indexOf(card)
@@ -66,9 +72,13 @@ export const Container: FC<{
   }))
 
   const [isDraggingAction, setIsDraggingAction] = useState(false)
-  const containerHeight = `${Math.floor(100 / cards.length / 2)}vh`
 
   drop(ref)
+
+  const containerHeight = useMemo(
+    () => `${Math.floor(100 / cards.length / 2)}vh`,
+    []
+  )
 
   return (
     <ul ref={ref} className={'description'}>
@@ -76,16 +86,19 @@ export const Container: FC<{
         <TaskDndCard
           key={`${card.id}_${card.body.slice(0, 3)}`}
           id={`${card.id}`}
-          body={card.body}
           moveCard={moveCard}
           findCard={findCard}
-          taskBullet={card}
-          taskBullets={cards}
-          setTaskBullets={setCards}
-          isDraggingAction={isDraggingAction}
-          setIsDraggingAction={setIsDraggingAction}
-          containerHeight={containerHeight}
-        />
+        >
+          <UpdateDescriptionForm
+            taskBullet={card}
+            setCards={setCards}
+            onDelete={onDelete}
+            onChange={onChange}
+            isDraggingAction={isDraggingAction}
+            setIsDraggingAction={setIsDraggingAction}
+            containerHeight={containerHeight}
+          />
+        </TaskDndCard>
       ))}
     </ul>
   )
@@ -162,14 +175,36 @@ export default function TaskBulletTable () {
           </h1>
         </div>
         {taskBullets && (
-          <Container cards={taskBullets} setCards={setTaskBullets} />
+          <Container
+            cards={taskBullets}
+            setCards={(newCards: bullet[] | null) => {
+              setTaskBullets(newCards)
+            }}
+            onDelete={(id: number) => {
+              setTaskBullets(previousState =>
+                previousState
+                  ? previousState.filter(entry => parseInt(entry.id) !== id)
+                  : null
+              )
+            }}
+            onChange={(newCard: bullet) => {
+              setTaskBullets(previousState =>
+                previousState
+                  ? previousState?.map(entry => {
+                      if (entry.id !== newCard.id) return entry
+                      return newCard
+                    })
+                  : null
+              )
+            }}
+          />
         )}
 
         <div className='flex flex-wrap w-full gap-2'>
           <div className='flex w-full'>
             <CreateDesriptionForm
               taskBullets={taskBullets}
-              setTaskBullets={setTaskBullets}
+              setCards={setTaskBullets}
             />
           </div>
           <div className='flex w-full'>

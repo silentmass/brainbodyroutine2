@@ -17,7 +17,7 @@ import Card from '../Card'
 import {
   CardRow,
   CardTitleRow
-} from '@/app/_components/circle-vibes/UpdateTaskCard'
+} from '@/app/_components/demos/circle-vibes/UpdateTaskCard'
 
 export default function TaskViewSwitcher ({
   categories,

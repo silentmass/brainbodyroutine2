@@ -43,7 +43,7 @@ export default function TokenExpireTimer ({ session }: { session: Session }) {
       clearInterval(expTimer)
       setTimeRemainingString('')
     }
-  }, [])
+  }, [session])
 
   return <p>{timeRemainingString}</p>
 }

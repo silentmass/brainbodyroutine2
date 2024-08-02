@@ -14,7 +14,6 @@ export default function LoginForm () {
 
   useEffect(() => {
     if (state.redirectTo !== null) {
-      console.log(state.redirectTo, 'status', status, 'session', session)
       window.location.replace(state.redirectTo)
     }
   }, [state])

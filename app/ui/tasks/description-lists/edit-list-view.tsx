@@ -7,7 +7,7 @@ import {
   formActionCreateDescriptionWrapper,
   sendDeleteDescription
 } from './descriptions/optimistic-utils'
-import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
+import BasicTextButton from '@/app/_components/demos/circle-vibes/BasicTextButton'
 import { FormWrapper } from '../edit-form'
 import { initialState } from '@/app/_components/response-state'
 import Card from '../../Card'
@@ -16,15 +16,15 @@ import {
   CardRow,
   CardTitleRow,
   TextareaInput
-} from '@/app/_components/circle-vibes/UpdateTaskCard'
+} from '@/app/_components/demos/circle-vibes/UpdateTaskCard'
 import { sendDeleteDescriptionList } from './optimistic-utils'
 import { updateDescriptionList } from '@/app/lib/actions/descriptionlists'
 import { useFormState } from 'react-dom'
-import TightCard from '@/app/_components/circle-vibes/TightCard'
+import TightCard from '@/app/_components/demos/circle-vibes/TightCard'
 import { updateListDescription } from '@/app/lib/actions/descriptions'
-import { getNewRandomKey } from '@/app/utils/getRandomKey'
+import { getNewRandomKey } from '@/app/lib/utils/getRandomKey'
 import { TrashIcon } from '@heroicons/react/24/outline'
-import BasicButton from '@/app/_components/circle-vibes/BasicButton'
+import BasicButton from '@/app/_components/demos/circle-vibes/BasicButton'
 
 export default function EditDescriptionListView ({
   descriptionList,

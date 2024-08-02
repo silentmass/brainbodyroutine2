@@ -75,7 +75,7 @@ const Inner = ({
   useEffect(() => {
     if (!onPending) return
     onPending(pending)
-  }, [pending])
+  }, [pending, onPending])
 
   return (
     <button

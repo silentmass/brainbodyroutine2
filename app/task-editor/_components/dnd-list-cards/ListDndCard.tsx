@@ -1,21 +1,20 @@
 'use client'
-import type { Dispatch, FC, SetStateAction } from 'react'
-import { memo, useEffect, useRef, useState } from 'react'
+import type { FC } from 'react'
+import { memo, useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 
 import { ItemTypesContainer } from './ItemTypes'
 import clsx from 'clsx'
 import { DragIcon } from './DragIcon'
-import EditModelCard from './EditModelCard'
 import { ContainerCard } from './definitions'
 import { PencilIcon } from '@heroicons/react/24/outline'
 import Card from '@/app/ui/Card'
 import {
   CardRow,
   CardTitleRow
-} from '@/app/_components/circle-vibes/UpdateTaskCard'
-import BasicTextButton from '@/app/_components/circle-vibes/BasicTextButton'
-import BasicButton from '@/app/_components/circle-vibes/BasicButton'
+} from '@/app/_components/demos/circle-vibes/UpdateTaskCard'
+import BasicTextButton from '@/app/_components/demos/circle-vibes/BasicTextButton'
+import BasicButton from '@/app/_components/demos/circle-vibes/BasicButton'
 import ModelViewPreview from '@/app/_components/model-palette/model-preview'
 
 export interface ListCardProps extends ContainerCard {
@@ -47,8 +46,6 @@ export const ListCard: FC<ListCardProps> = memo(function ListCardFun ({
   showTextureText,
   adUrl
 }) {
-  if (!body) return null
-
   const ref = useRef<HTMLLIElement>(null)
   const originalIndex = findCard(cardId).index
   const [{ isDragging }, drag] = useDrag(
