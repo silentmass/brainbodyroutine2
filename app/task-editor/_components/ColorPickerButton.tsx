@@ -1,18 +1,20 @@
 'use client'
 import clsx from 'clsx'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import ColorPicker, { getHslHex, hslToHex } from './ColorPicker'
 import { PolychromeThemeType } from '@/app/contexts/PolyChromeThemeProvider'
 
 export const ColorPickerButton = ({
-  currentHex = null,
-  onChange = null
+  currentHex,
+  onChange = null,
+  isVisible = false
 }: {
-  currentHex?: string | null
+  currentHex: string
   onChange?: null | ((newTheme: PolychromeThemeType) => void)
+  isVisible?: boolean
 }) => {
-  const [colorHex, setColorHex] = useState<string | null>(currentHex)
-  const [showPalette, setShowPalette] = useState(false)
+  const [colorHex, setColorHex] = useState<string>(currentHex)
+  const [showPalette, setShowPalette] = useState(isVisible)
 
   const handleOpenPalette = () => {
     setShowPalette(previousState => !previousState)
@@ -33,10 +35,6 @@ export const ColorPickerButton = ({
 
     onChange(newColor)
   }
-
-  // useEffect(() => {
-  //   setColorHex(getHslHex())
-  // }, [])
 
   return (
     <div
@@ -62,12 +60,12 @@ export const ColorPickerButton = ({
           'mt-5': showPalette
         })}`}
       >
-        {colorHex && (
+        <div>
           <ColorPicker
             defaultHexColor={colorHex}
             onChange={handleColorChange}
           />
-        )}
+        </div>
       </div>
     </div>
   )

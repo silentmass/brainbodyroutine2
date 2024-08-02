@@ -91,7 +91,7 @@ const ColorPicker = ({
   defaultHexColor = '#000000',
   onChange = null
 }: {
-  defaultHexColor: string
+  defaultHexColor?: string
   onChange?: null | ((newColor: PolychromeThemeType) => void)
 }) => {
   const [color, setColor] = useState(defaultHexColor)

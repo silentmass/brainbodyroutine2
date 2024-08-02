@@ -70,7 +70,7 @@ export function Links ({ className = '' }: { className?: string }) {
             Number(polychromeTheme.s),
             Number(polychromeTheme.l) * 100
           )
-        : null,
+        : '#000000',
     [polychromeTheme]
   )
 
