@@ -1,4 +1,4 @@
-import AdViewer from '../_components/ad-viewer/ad-viewer'
+import AdViewer from '@/app/_components/demos/ad-viewer/ad-viewer'
 
 export default function Page () {
   return (

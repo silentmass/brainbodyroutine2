@@ -1,8 +1,8 @@
 import {
   DEFAULT_TEXTURES,
   TextureType
-} from '../_components/model-palette/definitions'
-import ModelViewer from '../_components/model-palette/model-viewer'
+} from '@/app/_components/model-palette/definitions'
+import ModelViewer from '@/app/_components/model-palette/model-viewer'
 export default function Page () {
   const selectedTextures: TextureType[] = [
     ...DEFAULT_TEXTURES.filter(texture => texture.src),

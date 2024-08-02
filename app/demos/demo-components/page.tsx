@@ -1,9 +1,7 @@
 'use client'
 import { ListBulletIcon, PencilIcon } from '@heroicons/react/24/outline'
 import ColorPicker, {
-  getHslHex,
-  getPrimaryHsl,
-  hslToHex
+  getHslHex
 } from '../../task-editor/_components/ColorPicker'
 import { useEffect, useMemo, useState } from 'react'
 import ModelUploadDropZone from '../../_components/model-upload-drop-zone/model-upload-drop-zone'

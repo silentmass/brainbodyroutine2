@@ -1,4 +1,4 @@
-import RouterReplaceUrlDemo from '@/app/_components/demo-components/RouterReplaceUrlDemo'
+import RouterReplaceUrlDemo from '@/app/_components/demos/RouterReplaceUrlDemo'
 
 export default function Layout ({ children }: { children: React.ReactNode }) {
   return (

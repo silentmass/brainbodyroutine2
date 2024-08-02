@@ -1,4 +1,4 @@
-import TextureViewer from '../_components/model-palette/texture-viewer'
+import TextureViewer from '@/app/_components/model-palette/texture-viewer'
 
 export default function Page () {
   return (
