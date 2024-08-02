@@ -15,7 +15,7 @@ import Bottle from './bottle'
 export default function Scene () {
   const ref = useRef<THREE.Mesh>(null!)
   // const colorMap = useLoader(TextureLoader, 'uv_grid_opengl.jpg')
-  const colorMap = useLoader(TextureLoader, 'cool_company.png')
+  const colorMap = useLoader(TextureLoader, '/cool_company.png')
   colorMap.colorSpace = THREE.SRGBColorSpace
   // useFrame((state, delta) => (ref.current.rotation.z += delta / 4))
 
