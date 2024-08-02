@@ -38,7 +38,7 @@ export const ColorPickerButton = ({
 
   return (
     <div
-      className={`flex flex-col items-center rounded-cool p-2 transition ease-in-out delay-100 duration-200 ${clsx(
+      className={`flex flex-col items-end rounded-cool p-2 transition ease-in-out delay-100 duration-200 ${clsx(
         {
           'bg-transparent': !showPalette,
           'bg-content/10': showPalette

@@ -129,8 +129,8 @@ export function Links ({ className = '' }: { className?: string }) {
           </button>
         </li>
         <li>
-          <div className='relative flex bg-rose-400/0 min-w-7 min-h-7 justify-center'>
-            <div className='absolute flex bg-blue-400/0 justify-center left-1/2 -translate-x-1/2 -top-[4px]'>
+          <div className='relative flex bg-rose-400/0 min-w-7 min-h-7'>
+            <div className='absolute flex bg-blue-400/0 left-1/2 -translate-x-[198px] -top-[3px]'>
               <ColorPickerButton
                 currentHex={currentHex}
                 onChange={handleSetPolychromeTheme}
